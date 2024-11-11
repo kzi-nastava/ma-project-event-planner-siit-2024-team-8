@@ -6,4 +6,6 @@
     <color name="lavander">#A77BCA</color>
     <color name="deep_purple">#673AB7</color>
     <color name="light_gray">#F5F5F5</color>
+    <color name="bottom_card">#BDB5B5</color>
+    <color name="top_card">#6F6666</color>
 </resources>

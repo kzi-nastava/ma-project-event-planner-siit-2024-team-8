@@ -8,9 +8,9 @@
 
     <TextView
         android:id="@+id/editTextText"
-        android:layout_width="178dp"
+        android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="10dp"
         android:ems="10"
         android:gravity="center_vertical"
         android:inputType="text"
@@ -31,36 +31,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText">
-    </androidx.recyclerview.widget.RecyclerView>
+        app:layout_constraintTop_toBottomOf="@+id/editTextText"></androidx.recyclerview.widget.RecyclerView>
 
     <TextView
         android:id="@+id/editTextProduct"
-        android:layout_width="204dp"
+        android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginStart="10dp"
         android:ems="10"
-        android:gravity="center_horizontal"
+        android:gravity="fill_horizontal"
         android:inputType="text"
-        android:text="TOP 5 PRODUCTS"
+        android:text="TOP 5 ASSETS"
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/eventRecyclerView" />
-
-    <HorizontalScrollView
-        android:id="@+id/horizontalScrollView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="560dp"
-        android:contentDescription="@string/app_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
 
     <Button
         android:id="@+id/seeAllEventsButton"
@@ -73,6 +59,28 @@
         android:text="@string/seeAll"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/editTextText"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:onClick="onClickButton"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/topAssetRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextProduct" />
+
+    <Button
+        android:id="@+id/seeAllAssetsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:background="#00FFFFFF"
+        android:fontFamily="@font/roboto_black"
+        android:foregroundTint="#00FFFFFF"
+        android:text="@string/seeAll"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/topAssetRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         android:onClick="onClickButton"/>
 

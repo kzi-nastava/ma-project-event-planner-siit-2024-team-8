@@ -2,30 +2,28 @@ package com.example.eventplanner.fragments;
 
 
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.adapters.AssetCardAdapter;
 import com.example.eventplanner.adapters.EventCardAdapter;
-import com.example.eventplanner.domain.AllAssetsType;
+import com.example.eventplanner.domain.AssetDTO;
+import com.example.eventplanner.domain.AssetType;
 import com.example.eventplanner.domain.EventDTO;
-import com.google.android.material.carousel.CarouselLayoutManager;
+import com.example.eventplanner.domain.OfferingType;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
 /**
@@ -45,6 +43,7 @@ public class UserHomeFragment extends Fragment{
     private String mParam2;
 
     private RecyclerView eventRecyclerView;
+    private RecyclerView assetRecyclerView;
 
     public UserHomeFragment() {
         // Required empty public constructor
@@ -93,12 +92,19 @@ public class UserHomeFragment extends Fragment{
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
         super.onViewCreated(view,savedInstanceState);
-        // Initialize the RecyclerView
+        // Initialize the EventRecyclerView
         eventRecyclerView = view.findViewById(R.id.eventRecyclerView);
         EventCardAdapter eventCardAdapter = new EventCardAdapter(getContext());  // Use getContext() for context in fragments
         eventCardAdapter.set_eventCards(new ArrayList<EventDTO>(createEvents().stream().limit(5).collect(Collectors.toList())));
         eventRecyclerView.setAdapter(eventCardAdapter);
         eventRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(),LinearLayoutManager.HORIZONTAL,false));
+
+        //Initialize AssetRecyclerView
+        assetRecyclerView = view.findViewById(R.id.topAssetRecyclerView);
+        AssetCardAdapter adapter = new AssetCardAdapter(getContext());
+        adapter.setAssets(new ArrayList<>(createAssets().stream().limit(5).collect(Collectors.toList())));
+        assetRecyclerView.setAdapter(adapter);
+        assetRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(),LinearLayoutManager.HORIZONTAL,false));
     }
 
     public static ArrayList<EventDTO> createEvents(){
@@ -116,6 +122,25 @@ public class UserHomeFragment extends Fragment{
         eventCards.add(new EventDTO("Exit", new Date(2024, 7, 10), new Date(2024, 7, 14), "https://w7.pngwing.com/pngs/830/906/png-transparent-computer-icons-android-logo-android-logo-black-silhouette.png"));
         eventCards.add(new EventDTO("Exit", new Date(2024, 7, 10), new Date(2024, 7, 14), "https://w7.pngwing.com/pngs/830/906/png-transparent-computer-icons-android-logo-android-logo-black-silhouette.png"));
         return eventCards;
+    }
+
+    public static ArrayList<AssetDTO> createAssets(){
+        ArrayList<AssetDTO> assetCards = new ArrayList<>();
+        assetCards.add(new AssetDTO("Baloons", AssetType.PRODUCT,"https://www.balloonsdirect.com/media/catalog/product/cache/37d07aa740105e301b528c2cfe995ae1/b/l/black_lg_2.jpg"));
+        assetCards.add(new AssetDTO("Sound System Service",AssetType.SERVICE,"https://www.netplanet.rs/images/dynacord.png"));
+        assetCards.add(new AssetDTO("Baloons", AssetType.PRODUCT,"https://www.balloonsdirect.com/media/catalog/product/cache/37d07aa740105e301b528c2cfe995ae1/b/l/black_lg_2.jpg"));
+        assetCards.add(new AssetDTO("Sound System Service",AssetType.SERVICE,"https://www.netplanet.rs/images/dynacord.png"));
+        assetCards.add(new AssetDTO("Baloons", AssetType.PRODUCT,"https://www.balloonsdirect.com/media/catalog/product/cache/37d07aa740105e301b528c2cfe995ae1/b/l/black_lg_2.jpg"));
+        assetCards.add(new AssetDTO("Sound System Service",AssetType.SERVICE,"https://www.netplanet.rs/images/dynacord.png"));
+        assetCards.add(new AssetDTO("Baloons", AssetType.PRODUCT,"https://www.balloonsdirect.com/media/catalog/product/cache/37d07aa740105e301b528c2cfe995ae1/b/l/black_lg_2.jpg"));
+        assetCards.add(new AssetDTO("Sound System Service",AssetType.SERVICE,"https://www.netplanet.rs/images/dynacord.png"));
+        assetCards.add(new AssetDTO("Baloons", AssetType.PRODUCT,"https://www.balloonsdirect.com/media/catalog/product/cache/37d07aa740105e301b528c2cfe995ae1/b/l/black_lg_2.jpg"));
+        assetCards.add(new AssetDTO("Sound System Service",AssetType.SERVICE,"https://www.netplanet.rs/images/dynacord.png"));
+        assetCards.add(new AssetDTO("Baloons", AssetType.PRODUCT,"https://www.balloonsdirect.com/media/catalog/product/cache/37d07aa740105e301b528c2cfe995ae1/b/l/black_lg_2.jpg"));
+        assetCards.add(new AssetDTO("Sound System Service",AssetType.SERVICE,"https://www.netplanet.rs/images/dynacord.png"));
+        assetCards.add(new AssetDTO("Baloons", AssetType.PRODUCT,"https://www.balloonsdirect.com/media/catalog/product/cache/37d07aa740105e301b528c2cfe995ae1/b/l/black_lg_2.jpg"));
+        assetCards.add(new AssetDTO("Sound System Service",AssetType.SERVICE,"https://www.netplanet.rs/images/dynacord.png"));
+        return assetCards;
     }
 
 

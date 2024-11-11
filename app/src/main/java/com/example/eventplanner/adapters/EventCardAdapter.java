@@ -37,16 +37,16 @@ public class EventCardAdapter extends RecyclerView.Adapter<EventCardAdapter.View
         private ImageView imageViewEvent;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            txtName = itemView.findViewById(R.id.eventNameTextView);
-            txtDate = itemView.findViewById(R.id.eventDateTextView);
-            imageViewEvent = itemView.findViewById(R.id.imageViewEvent);
+            txtName = itemView.findViewById(R.id.nameTextView);
+            txtDate = itemView.findViewById(R.id.secondTextView);
+            imageViewEvent = itemView.findViewById(R.id.imageViewOffering);
         }
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_card,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.offering_card,parent,false);
         return new ViewHolder(view);
     }
 

@@ -13,15 +13,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.adapters.AssetCardAdapter;
 import com.example.eventplanner.adapters.EventCardAdapter;
-import com.example.eventplanner.domain.AllAssetsType;
+import com.example.eventplanner.domain.OfferingType;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link AssetsFragment#newInstance} factory method to
+ * Use the {@link OfferingsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AssetsFragment extends Fragment {
+public class OfferingsFragment<T,Z> extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -32,13 +33,13 @@ public class AssetsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private AllAssetsType type;
+    private OfferingType type;
 
-    public void setType(AllAssetsType type) {
+    public void setType(OfferingType type) {
         this.type = type;
     }
-    public AssetsFragment(){}
-    public AssetsFragment(AllAssetsType type){
+    public OfferingsFragment(){}
+    public OfferingsFragment(OfferingType type){
         this.type = type;
     }
 
@@ -51,8 +52,8 @@ public class AssetsFragment extends Fragment {
      * @return A new instance of fragment AssetsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AssetsFragment newInstance(String param1, String param2) {
-        AssetsFragment fragment = new AssetsFragment();
+    public static OfferingsFragment newInstance(String param1, String param2) {
+        OfferingsFragment fragment = new OfferingsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -78,14 +79,24 @@ public class AssetsFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
-        EventCardAdapter adapter = new EventCardAdapter(view.getContext());
-        adapter.set_eventCards(UserHomeFragment.createEvents());
         RecyclerView assetRecyclerView = view.findViewById(R.id.assetRecyclerView);
         TextView header = view.findViewById(R.id.textAssetHeader);
-        if (assetRecyclerView!=null) {
-            assetRecyclerView.setAdapter(adapter);
-            assetRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(),LinearLayoutManager.VERTICAL,false));
-            header.setText("All Events");
+        assetRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
+        switch (type) {
+            case EVENT:
+                EventCardAdapter eventAdapter = new EventCardAdapter(view.getContext());
+                eventAdapter.set_eventCards(UserHomeFragment.createEvents());
+                assetRecyclerView.setAdapter(eventAdapter);
+                header.setText("All Events");
+                break;
+            case ASSET:
+                AssetCardAdapter adapter = new AssetCardAdapter(view.getContext());
+                adapter.setAssets(UserHomeFragment.createAssets());
+                assetRecyclerView.setAdapter(adapter);
+                header.setText("All Assets");
+                break;
+            default:
+
         }
     }
 }

@@ -2,7 +2,6 @@ package com.example.eventplanner.activities;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,19 +9,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.adapters.EventCardAdapter;
-import com.example.eventplanner.domain.AllAssetsType;
-import com.example.eventplanner.domain.EventDTO;
-import com.example.eventplanner.fragments.AssetsFragment;
+import com.example.eventplanner.domain.OfferingType;
+import com.example.eventplanner.fragments.OfferingsFragment;
 import com.example.eventplanner.fragments.UserHomeFragment;
-
-import java.sql.Date;
-import java.util.ArrayList;
 
 public class HomeScreen extends AppCompatActivity {
 
@@ -47,12 +39,15 @@ public class HomeScreen extends AppCompatActivity {
 
     public void onClickButton(View view) {
         FragmentManager fragmentManager = getSupportFragmentManager();
+        OfferingsFragment fragment = new OfferingsFragment();
         if (view.getId() == R.id.seeAllEventsButton){
-            AssetsFragment assetsFragment = new AssetsFragment(AllAssetsType.EVENT);
-            fragmentManager.beginTransaction().
-                    replace(R.id.fragment_layout,assetsFragment)
-                    .addToBackStack(null)
-                    .commit();
+            fragment.setType(OfferingType.EVENT);
+        }else if (view.getId() == R.id.seeAllAssetsButton){
+            fragment.setType(OfferingType.ASSET);
         }
+        fragmentManager.beginTransaction().
+                replace(R.id.fragment_layout,fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

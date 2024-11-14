@@ -1,6 +1,7 @@
 package com.example.eventplanner.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -68,5 +69,14 @@ public class HomeScreen extends AppCompatActivity {
 
     public void onClickSearchBar(View view){
         return;
+    }
+
+    public void onClickNavbarButton(View view) {
+        if (view.getId() == R.id.profileButton) {
+            startActivity(new Intent(HomeScreen.this, LoginScreen.class));
+        }
+        if (view.getId() == R.id.homeButton) {
+            startActivity(new Intent(HomeScreen.this, HomeScreen.class));
+        }
     }
 }

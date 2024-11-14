@@ -1,6 +1,8 @@
 package com.example.eventplanner.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,5 +24,12 @@ public class RegisterScreen extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+
+    public void onClickBackButton(View view) {
+        startActivity(new Intent(RegisterScreen.this, HomeScreen.class));
+    }
+    public void onClickLoginButton(View view) {
+        startActivity(new Intent(RegisterScreen.this, LoginScreen.class));
     }
 }

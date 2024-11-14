@@ -10,12 +10,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.AssetCardAdapter;
 import com.example.eventplanner.adapters.EventCardAdapter;
 import com.example.eventplanner.domain.OfferingType;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -74,12 +76,12 @@ public class OfferingsFragment<T,Z> extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_assets, container, false);
+        return inflater.inflate(R.layout.fragment_offerings, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
-        RecyclerView assetRecyclerView = view.findViewById(R.id.assetRecyclerView);
+        RecyclerView assetRecyclerView = view.findViewById(R.id.offeringsRecyclerView);
         TextView header = view.findViewById(R.id.textAssetHeader);
         assetRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
         switch (type) {
@@ -87,16 +89,29 @@ public class OfferingsFragment<T,Z> extends Fragment {
                 EventCardAdapter eventAdapter = new EventCardAdapter(view.getContext());
                 eventAdapter.set_eventCards(UserHomeFragment.createEvents());
                 assetRecyclerView.setAdapter(eventAdapter);
-                header.setText("All Events");
+                header.setText("Search Events");
                 break;
             case ASSET:
                 AssetCardAdapter adapter = new AssetCardAdapter(view.getContext());
                 adapter.setAssets(UserHomeFragment.createAssets());
                 assetRecyclerView.setAdapter(adapter);
-                header.setText("All Assets");
+                header.setText("Search Assets");
                 break;
             default:
 
         }
+
+        //setting listener to out switch!
+        SwitchMaterial material = view.findViewById(R.id.orderSwitch);
+        material.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    material.setText("DESCENDING");
+                    return;
+                }
+                material.setText("ASCENDING");
+            }
+        });
     }
 }

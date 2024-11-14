@@ -1,7 +1,13 @@
 package com.example.eventplanner.activities;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.animation.TranslateAnimation;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,8 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.domain.OfferingType;
+import com.example.eventplanner.fragments.FilterFragment;
 import com.example.eventplanner.fragments.OfferingsFragment;
 import com.example.eventplanner.fragments.UserHomeFragment;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.search.SearchBar;
 
 public class HomeScreen extends AppCompatActivity {
 
@@ -49,5 +58,15 @@ public class HomeScreen extends AppCompatActivity {
                 replace(R.id.fragment_layout,fragment)
                 .addToBackStack(null)
                 .commit();
+    }
+    public void onClickFilterButton(View view){
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.FullScreenBottomSheetDialog);
+        View dialogView = getLayoutInflater().inflate(R.layout.fragment_filter, null);
+        bottomSheetDialog.setContentView(dialogView);
+        bottomSheetDialog.show();
+    }
+
+    public void onClickSearchBar(View view){
+        return;
     }
 }

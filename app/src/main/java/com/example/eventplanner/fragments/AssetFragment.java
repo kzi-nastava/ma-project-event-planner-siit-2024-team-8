@@ -80,7 +80,7 @@ public class AssetFragment extends Fragment {
         AssetEditFragment assetEditFragment = new AssetEditFragment();
 
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.profile_fragment_container, assetEditFragment);
+        transaction.replace(R.id.fragment_layout, assetEditFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -90,7 +90,7 @@ public class AssetFragment extends Fragment {
         offeringsFragment.setType(OfferingType.ASSET);
 
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.profile_fragment_container, offeringsFragment);
+        transaction.replace(R.id.fragment_layout, offeringsFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

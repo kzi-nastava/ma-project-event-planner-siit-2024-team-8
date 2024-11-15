@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ProviderRegisterScreen">
+    tools:context=".fragments.ProviderRegisterFragment">
 
     <Button
         android:id="@+id/backToRegisterButton"
@@ -16,6 +16,8 @@
         android:layout_marginEnd="309dp"
         android:text="BACK"
         android:textSize="12sp"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/red"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -122,6 +124,8 @@
         android:layout_marginEnd="155dp"
         android:layout_marginBottom="222dp"
         android:text="Register"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/red"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

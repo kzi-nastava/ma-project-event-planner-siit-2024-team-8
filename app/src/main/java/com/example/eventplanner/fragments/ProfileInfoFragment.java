@@ -123,7 +123,7 @@ public class ProfileInfoFragment extends Fragment {
         ProfileInfoEditFragment profileInfoEditFragment = new ProfileInfoEditFragment();
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.profile_fragment_container, profileInfoEditFragment);
+        transaction.replace(R.id.fragment_layout, profileInfoEditFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -133,7 +133,7 @@ public class ProfileInfoFragment extends Fragment {
         offeringsFragment.setType(OfferingType.ASSET);
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.profile_fragment_container, offeringsFragment);
+        transaction.replace(R.id.fragment_layout, offeringsFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -142,7 +142,7 @@ public class ProfileInfoFragment extends Fragment {
         AssetCreateFragment assetCreateFragment = new AssetCreateFragment();
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.profile_fragment_container, assetCreateFragment);
+        transaction.replace(R.id.fragment_layout, assetCreateFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

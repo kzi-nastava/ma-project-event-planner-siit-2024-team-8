@@ -23,7 +23,8 @@ public class RegisterFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
 
         // Back button to go back to HomeFragment
-        view.findViewById(R.id.backButton).setOnClickListener(v -> navigateToHome());
+        // DEPRECATED - use navbar instead
+        //view.findViewById(R.id.backButton).setOnClickListener(v -> navigateToHome());
 
         // Login Redirect button to go to LoginFragment
         view.findViewById(R.id.loginRedirectButton).setOnClickListener(v -> navigateToLogin());
@@ -33,13 +34,15 @@ public class RegisterFragment extends Fragment {
         return view;
     }
 
+    /*
+    DEPRECATED - use navbar instead
     private void navigateToHome() {
         UserHomeFragment userHomeFragment = new UserHomeFragment();
         requireActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_layout, userHomeFragment)
                 .addToBackStack(null)
                 .commit();
-    }
+    }*/
 
     private void navigateToLogin() {
         LoginFragment loginFragment = new LoginFragment();

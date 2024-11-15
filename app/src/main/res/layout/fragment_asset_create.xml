@@ -9,6 +9,15 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create New Asset"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Upload Picture -->
         <Button
             android:id="@+id/upload_picture_button"
             android:layout_width="300dp"
@@ -17,14 +26,15 @@
             android:layout_marginBottom="16dp"
             android:gravity="center" />
 
+        <!-- Asset Name -->
         <EditText
             android:id="@+id/asset_name_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:hint="Asset Name"
             android:inputType="text"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:layout_marginBottom="16dp" />
 
         <RadioGroup
             android:id="@+id/asset_type_radio_group"
@@ -37,7 +47,8 @@
                 android:id="@+id/product_radio_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Product" />
+                android:text="Product"
+                android:checked="false" />
 
             <RadioButton
                 android:id="@+id/service_radio_button"
@@ -47,43 +58,69 @@
                 android:checked="true" />
         </RadioGroup>
 
+        <!-- Category Spinner -->
+        <Spinner
+            android:id="@+id/category_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp" />
+
+        <!-- New Category Proposal -->
         <EditText
             android:id="@+id/asset_new_category_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Suggest New Category (if no match)"
             android:textSize="16sp"
-            android:layout_marginBottom="16dp"
             android:inputType="text"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_marginBottom="16dp" />
 
+        <!-- Description -->
         <EditText
             android:id="@+id/asset_description_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Asset Description"
-            android:textSize="16sp"
-            android:layout_marginBottom="16dp"
             android:inputType="textMultiLine"
-            android:lines="4" />
+            android:lines="4"
+            android:layout_marginBottom="16dp" />
 
+        <!-- Specific Features -->
+        <EditText
+            android:id="@+id/asset_specific_features_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Specific Features"
+            android:textSize="16sp"
+            android:inputType="text"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Price -->
         <EditText
             android:id="@+id/price_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:hint="Price"
             android:inputType="numberDecimal"
-            android:textSize="16sp" />
+            android:layout_marginBottom="16dp" />
 
+        <!-- Discount -->
         <EditText
             android:id="@+id/discount_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:hint="Discount"
             android:inputType="numberDecimal"
-            android:textSize="16sp" />
+            android:layout_marginBottom="16dp" />
+
+        <!-- Event Types -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event Types"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
 
         <Spinner
             android:id="@+id/event_type_spinner"
@@ -91,46 +128,56 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp" />
 
-        <Switch
-            android:id="@+id/availability_switch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="Available for Booking" />
-
+        <!-- Visibility -->
         <Switch
             android:id="@+id/visibility_switch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="Visible to Users" />
+            android:text="Visible to Users"
+            android:layout_marginBottom="16dp" />
 
+        <!-- Availability -->
+        <Switch
+            android:id="@+id/availability_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Available for Booking"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Service Duration -->
         <EditText
             android:id="@+id/duration_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:hint="Service Duration (e.g., 1h, 2h)"
             android:inputType="text"
-            android:textSize="16sp" />
+            android:layout_marginBottom="16dp" />
 
+        <!-- Reservation Deadline -->
         <EditText
             android:id="@+id/reservation_deadline_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:hint="Reservation Deadline (e.g., 24h before)"
+            android:hint="Reservation Deadline"
             android:inputType="text"
-            android:textSize="16sp" />
+            android:layout_marginBottom="16dp" />
 
+        <!-- Cancellation Deadline -->
         <EditText
             android:id="@+id/cancellation_deadline_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:hint="Cancellation Deadline (e.g., 12h before)"
+            android:hint="Cancellation Deadline"
             android:inputType="text"
-            android:textSize="16sp" />
+            android:layout_marginBottom="16dp" />
+
+        <!-- Confirmation Type -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Confirmation Type"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
 
         <RadioGroup
             android:id="@+id/confirmation_type_radio_group"
@@ -152,19 +199,20 @@
                 android:text="Manual" />
         </RadioGroup>
 
+        <!-- Submit Button -->
         <Button
-            android:id="@+id/save_button"
+            android:id="@+id/submit_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Save" />
+            android:text="Submit"
+            android:layout_marginBottom="16dp" />
 
         <Button
-            android:id="@+id/cancel_button"
+            android:id="@+id/back_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Cancel" />
+            android:text="Back"
+            android:layout_marginBottom="16dp" />
 
     </LinearLayout>
 </ScrollView>

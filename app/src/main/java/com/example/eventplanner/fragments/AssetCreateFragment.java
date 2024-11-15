@@ -1,24 +1,22 @@
 package com.example.eventplanner.fragments;
 
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.example.eventplanner.R;
-import com.example.eventplanner.domain.OfferingType;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link AssetFragment#newInstance} factory method to
+ * Use the {@link AssetCreateFragment#newInstance} factory method to
  * create an instance of this fragment.
- *
  */
-public class AssetFragment extends Fragment {
+public class AssetCreateFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,26 +27,26 @@ public class AssetFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    public AssetCreateFragment() {
+        // Required empty public constructor
+    }
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment AssetInfoFragment.
+     * @return A new instance of fragment AssetCreateFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AssetFragment newInstance(String param1, String param2) {
-        AssetFragment fragment = new AssetFragment();
+    public static AssetCreateFragment newInstance(String param1, String param2) {
+        AssetCreateFragment fragment = new AssetCreateFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public AssetFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -63,34 +61,17 @@ public class AssetFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_asset, container, false);
-
-        Button editButton = view.findViewById(R.id.edit_button);
+        View view = inflater.inflate(R.layout.fragment_asset_create, container, false);
         Button backButton = view.findViewById(R.id.back_button);
-
-        // Set click listeners for buttons
-        editButton.setOnClickListener(v -> openAssetEditFragment());
-        backButton.setOnClickListener(v -> openOfferingsFragment());
-
+        backButton.setOnClickListener(v -> openProfileInfoFragment());
         return view;
     }
 
-    private void openAssetEditFragment() {
-        AssetEditFragment assetEditFragment = new AssetEditFragment();
+    private void openProfileInfoFragment() {
+        ProfileInfoFragment profileInfoFragment = new ProfileInfoFragment();
 
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.profile_fragment_container, assetEditFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-
-    private void openOfferingsFragment() {
-        OfferingsFragment offeringsFragment = new OfferingsFragment();
-        offeringsFragment.setType(OfferingType.ASSET);
-
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.profile_fragment_container, offeringsFragment);
+        transaction.replace(R.id.profile_fragment_container, profileInfoFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

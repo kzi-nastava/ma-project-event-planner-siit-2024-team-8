@@ -15,12 +15,6 @@
         android:theme="@style/Base.Theme.EventPlanner.Dark"
         tools:targetApi="31">
         <activity
-            android:name=".activities.MyServicesScreen"
-            android:exported="false" />
-        <activity
-            android:name=".activities.EditProfileScreen"
-            android:exported="false" />
-        <activity
             android:name=".activities.ProfileScreen"
             android:exported="true" />
         <activity

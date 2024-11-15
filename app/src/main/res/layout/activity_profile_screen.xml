@@ -14,8 +14,8 @@
         android:layout_weight="1" />
 
     <include
-        android:id="@+id/include"
-        layout="@layout/navigation_tab"
+        android:id="@+id/navbar_bottom"
+        layout="@layout/navigation_tab_lower"
         android:layout_width="match_parent"
         android:layout_height="75dp" />
 </LinearLayout>

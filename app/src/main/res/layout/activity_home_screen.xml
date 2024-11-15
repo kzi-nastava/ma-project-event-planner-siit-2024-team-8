@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -8,18 +8,27 @@
     android:orientation="vertical"
     tools:context=".activities.HomeScreen">
 
-    <!-- FrameLayout for dynamic content, takes up most of the space -->
+    <include
+        android:id="@+id/navbar_top"
+        layout="@layout/navigation_tab_upper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"/>
+
     <FrameLayout
         android:id="@+id/fragment_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_above="@id/navbar_bottom"
+        android:layout_below="@+id/navbar_top"
         android:layout_marginTop="30dp" />
 
-    <!-- Navbar, fixed at the bottom with a fixed height -->
     <include
-        android:id="@+id/include"
-        layout="@layout/navigation_tab"
+        android:id="@+id/navbar_bottom"
+        layout="@layout/navigation_tab_lower"
         android:layout_width="match_parent"
-        android:layout_height="75dp" />
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"/>
+
+
+</RelativeLayout>

@@ -31,15 +31,17 @@ public class ProviderRegisterFragment extends Fragment {
         companyNameEditText = view.findViewById(R.id.editTextText11);
         companyImageButton = view.findViewById(R.id.imageButton2);
         registerProviderButton = view.findViewById(R.id.registerProviderButton);
-        backToRegisterButton = view.findViewById(R.id.backToRegisterButton);
+        //backToRegisterButton = view.findViewById(R.id.backToRegisterButton);
 
+        /*
+        DEPRECATED - use navbar instead
         backToRegisterButton.setOnClickListener(v -> {
             RegisterFragment registerFragment = new RegisterFragment();
             requireActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_layout, registerFragment)
                     .addToBackStack(null)
                     .commit();
-        });
+        });*/
 
         registerProviderButton.setOnClickListener(v -> {
         });

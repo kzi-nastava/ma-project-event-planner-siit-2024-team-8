@@ -8,24 +8,6 @@
     android:background="@color/background"
     tools:context=".fragments.LoginFragment">
 
-    <Button
-        android:id="@+id/backButton2"
-        android:layout_width="82dp"
-        android:layout_height="49dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="299dp"
-        android:layout_marginBottom="666dp"
-        android:onClick="onClickBackButton"
-        android:text="BACK"
-        android:textSize="12sp"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/red"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"

@@ -15,38 +15,28 @@
         android:padding="16dp">
 
         <!-- Back Button -->
-        <Button
-            android:id="@+id/backButton"
-            android:layout_width="82dp"
-            android:layout_height="49dp"
-            android:backgroundTint="@color/red"
-            android:onClick="onClickBackButton"
-            android:text="BACK"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            android:layout_marginBottom="16dp" />
 
         <TextView
             android:id="@+id/textView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:text="Join us"
             android:textAlignment="center"
             android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp"/>
+            android:textStyle="bold" />
 
         <!-- Login Redirect Button -->
         <Button
             android:id="@+id/loginRedirectButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/red"
             android:onClick="onClickLoginRedirectButton"
             android:text="Already have an account?"
-            android:textSize="12sp"
             android:textColor="@color/white"
-            android:backgroundTint="@color/red"
-            android:layout_marginBottom="16dp" />
+            android:textSize="12sp" />
 
         <!-- Layout for sections 1 to 3 -->
         <LinearLayout

@@ -24,20 +24,22 @@ public class LoginFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        view.findViewById(R.id.backButton2).setOnClickListener(v -> navigateToHome());
+        //view.findViewById(R.id.backButton2).setOnClickListener(v -> navigateToHome());
         view.findViewById(R.id.registerRedirectButton).setOnClickListener(v -> navigateToRegister());
         view.findViewById(R.id.buttonKT1).setOnClickListener(v -> navigateToProfile());
 
         return view;
     }
 
+    /*
+    DEPREDACTED - use navbar instead
     private void navigateToHome() {
         UserHomeFragment userHomeFragment = new UserHomeFragment();
         requireActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_layout, userHomeFragment)
                 .addToBackStack(null)
                 .commit();
-    }
+    }*/
 
     private void navigateToRegister() {
         RegisterFragment registerFragment = new RegisterFragment();

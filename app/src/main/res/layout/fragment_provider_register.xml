@@ -7,27 +7,11 @@
     android:layout_height="match_parent"
     tools:context=".fragments.ProviderRegisterFragment">
 
-    <Button
-        android:id="@+id/backToRegisterButton"
-        android:layout_width="85dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="17dp"
-        android:layout_marginTop="17dp"
-        android:layout_marginEnd="309dp"
-        android:text="BACK"
-        android:textSize="12sp"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/red"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="78dp"
         android:layout_marginEnd="28dp"
         android:layout_marginBottom="43dp"
         android:text="Enter your company information:"
@@ -35,8 +19,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/editTextText11"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/backToRegisterButton" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/editTextTextMultiLine"

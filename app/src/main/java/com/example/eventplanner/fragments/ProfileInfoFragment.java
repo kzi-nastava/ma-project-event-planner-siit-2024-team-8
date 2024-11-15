@@ -19,7 +19,7 @@ public class ProfileInfoFragment extends Fragment {
 
     private TextView userName, userEmail, userFullName, userAddress, userPhone, accountStatus, companyName, companyDescription;
     private ShapeableImageView profilePicture;
-    private Button editButton, myAssetsButton;
+    private Button editButton, myAssetsButton, createAssetButton;
 
     private String mUserName, mUserEmail, mUserFullName, mUserAddress, mUserPhone, mAccountStatus, mCompanyName, mCompanyDescription;
 
@@ -97,6 +97,7 @@ public class ProfileInfoFragment extends Fragment {
         profilePicture = rootView.findViewById(R.id.profile_picture);
         editButton = rootView.findViewById(R.id.edit_button);
         myAssetsButton = rootView.findViewById(R.id.my_assets_button);
+        createAssetButton = rootView.findViewById(R.id.create_asset_button);
 
         // Set the data to the views
         userName.setText(mUserName);
@@ -111,6 +112,8 @@ public class ProfileInfoFragment extends Fragment {
         // Handle button clicks as before
         editButton.setOnClickListener(v -> openProfileInfoEditFragment());
         myAssetsButton.setOnClickListener(v -> openOfferingsFragment());
+        createAssetButton.setOnClickListener(v -> openAssetCreateFragment());
+
 
         return rootView;
     }
@@ -131,6 +134,15 @@ public class ProfileInfoFragment extends Fragment {
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.profile_fragment_container, offeringsFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    private void openAssetCreateFragment() {
+        AssetCreateFragment assetCreateFragment = new AssetCreateFragment();
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.profile_fragment_container, assetCreateFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

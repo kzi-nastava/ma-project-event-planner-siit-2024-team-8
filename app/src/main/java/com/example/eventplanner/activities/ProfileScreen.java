@@ -58,9 +58,9 @@ public class ProfileScreen extends AppCompatActivity {
     }
 
     public void onClickNavbarButton(View view) {
-        if (view.getId() == R.id.profileButton) {
+        /*if (view.getId() == R.id.searchButton) {
             startActivity(new Intent(ProfileScreen.this, LoginScreen.class));
-        }
+        }*/
         if (view.getId() == R.id.homeButton) {
             startActivity(new Intent(ProfileScreen.this, HomeScreen.class));
         }

@@ -1,14 +1,8 @@
 package com.example.eventplanner.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.animation.TranslateAnimation;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.FrameLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,11 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.domain.OfferingType;
-import com.example.eventplanner.fragments.FilterFragment;
 import com.example.eventplanner.fragments.OfferingsFragment;
 import com.example.eventplanner.fragments.UserHomeFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.search.SearchBar;
 
 public class HomeScreen extends AppCompatActivity {
 

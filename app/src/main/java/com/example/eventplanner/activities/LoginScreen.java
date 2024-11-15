@@ -1,5 +1,4 @@
 package com.example.eventplanner.activities;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -32,5 +31,9 @@ public class LoginScreen extends AppCompatActivity {
 
     public void onClickRegisterButton(View view) {
         startActivity(new Intent(LoginScreen.this, RegisterScreen.class));
+    }
+
+    public void onClickKT1Button(View view) {
+        startActivity(new Intent(LoginScreen.this, ProfileScreen.class));
     }
 }

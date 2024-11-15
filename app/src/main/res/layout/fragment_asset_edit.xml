@@ -1,0 +1,169 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center_horizontal">
+
+    <Button
+        android:id="@+id/upload_picture_button"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:text="Upload Picture"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:drawableTop="@drawable/profile_placeholder" />
+
+    <EditText
+        android:id="@+id/asset_name_field"
+        android:layout_width="378dp"
+        android:layout_height="56dp"
+        android:layout_marginBottom="16dp"
+        android:hint="Asset Name"
+        android:inputType="text"
+        android:textSize="18sp" />
+
+    <RadioGroup
+        android:id="@+id/asset_type_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <RadioButton
+            android:id="@+id/product_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Product"
+            android:checked="false" />
+
+        <RadioButton
+            android:id="@+id/service_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Service"
+            android:checked="true" />
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/asset_new_category_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Suggest New Category (if no match)"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"
+        android:inputType="text"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/asset_description_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Asset Description"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"
+        android:inputType="textMultiLine"
+        android:lines="4" />
+
+    <EditText
+        android:id="@+id/price_field"
+        android:layout_width="387dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="16dp"
+        android:hint="Price"
+        android:inputType="numberDecimal"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/discount_field"
+        android:layout_width="378dp"
+        android:layout_height="54dp"
+        android:layout_marginBottom="16dp"
+        android:hint="Discount"
+        android:inputType="numberDecimal"
+        android:textSize="16sp" />
+
+    <Spinner
+        android:id="@+id/event_type_spinner"
+        android:layout_width="382dp"
+        android:layout_height="54dp"
+        android:layout_marginBottom="16dp" />
+
+    <Switch
+        android:id="@+id/availability_switch"
+        android:layout_width="206dp"
+        android:layout_height="66dp"
+        android:layout_marginBottom="16dp"
+        android:text="Available for Booking" />
+
+    <Switch
+        android:id="@+id/visibility_switch"
+        android:layout_width="147dp"
+        android:layout_height="59dp"
+        android:layout_marginBottom="16dp"
+        android:text="Visible to OD" />
+
+    <EditText
+        android:id="@+id/duration_field"
+        android:layout_width="402dp"
+        android:layout_height="65dp"
+        android:layout_marginBottom="16dp"
+        android:hint="Service Duration (e.g., 1h, 2h)"
+        android:inputType="text"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/reservation_deadline_field"
+        android:layout_width="402dp"
+        android:layout_height="59dp"
+        android:layout_marginBottom="16dp"
+        android:hint="Reservation Deadline (e.g., 24h before)"
+        android:inputType="text"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/cancellation_deadline_field"
+        android:layout_width="405dp"
+        android:layout_height="59dp"
+        android:layout_marginBottom="16dp"
+        android:hint="Cancellation Deadline (e.g., 12h before)"
+        android:inputType="text"
+        android:textSize="16sp" />
+
+    <RadioGroup
+        android:id="@+id/confirmation_type_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <RadioButton
+            android:id="@+id/auto_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Auto"
+            android:checked="false" />
+
+        <RadioButton
+            android:id="@+id/manual_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Manual"
+            android:checked="true" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/save_button"
+        android:layout_width="101dp"
+        android:layout_height="66dp"
+        android:layout_marginTop="16dp"
+        android:text="Save" />
+
+    <Button
+        android:id="@+id/cancel_button"
+        android:layout_width="103dp"
+        android:layout_height="67dp"
+        android:layout_marginTop="16dp"
+        android:text="Cancel" />
+
+</LinearLayout>

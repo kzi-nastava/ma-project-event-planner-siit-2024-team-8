@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,25 +19,25 @@ import java.util.ArrayList;
 public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.ViewHolder> {
 
     private ArrayList<AssetDTO> assets;
-
     private Context context;
+    private OnItemClickListener itemClickListener;
 
-    public ArrayList<AssetDTO> getAssets() {
-        return assets;
+    public AssetCardAdapter(Context context) {
+        this.context = context;
     }
 
     public void setAssets(ArrayList<AssetDTO> assets) {
         this.assets = assets;
     }
 
-    public AssetCardAdapter(Context context) {
-        this.context = context;
+    public void setItemClickListener(OnItemClickListener listener) {
+        this.itemClickListener = listener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.offering_card,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.offering_card, parent, false);
         return new ViewHolder(view);
     }
 
@@ -50,6 +49,12 @@ public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.View
                 .asBitmap()
                 .load(assets.get(position).getImageURL())
                 .into(holder.imageView);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (itemClickListener != null) {
+                itemClickListener.onItemClick(assets.get(position));
+            }
+        });
     }
 
     @Override
@@ -57,7 +62,11 @@ public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.View
         return assets.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public interface OnItemClickListener {
+        void onItemClick(AssetDTO asset);
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtName;
         private TextView txtAssetType;
         private ImageView imageView;
@@ -65,11 +74,8 @@ public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.View
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtName = itemView.findViewById(R.id.nameTextView);
-            //for type of asset
             txtAssetType = itemView.findViewById(R.id.secondTextView);
             imageView = itemView.findViewById(R.id.imageViewOffering);
         }
-
-
     }
 }

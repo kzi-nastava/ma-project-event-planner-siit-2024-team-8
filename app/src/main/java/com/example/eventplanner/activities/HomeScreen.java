@@ -1,8 +1,14 @@
 package com.example.eventplanner.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.animation.TranslateAnimation;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,9 +21,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.domain.OfferingType;
+import com.example.eventplanner.fragments.FilterFragment;
+import com.example.eventplanner.fragments.LoginFragment;
 import com.example.eventplanner.fragments.OfferingsFragment;
 import com.example.eventplanner.fragments.UserHomeFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.search.SearchBar;
 
 public class HomeScreen extends AppCompatActivity {
 
@@ -67,12 +76,16 @@ public class HomeScreen extends AppCompatActivity {
     public void onClickNavbarButton(View view) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (view.getId() == R.id.profileButton) {
-            startActivity(new Intent(HomeScreen.this, LoginScreen.class));
+            LoginFragment loginFragment = new LoginFragment();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_layout, loginFragment)
+                    .addToBackStack(null)
+                    .commit();
         }
-        if (view.getId() == R.id.homeButton && !isCurrent(fragmentManager,UserHomeFragment.class)) {
+        if (view.getId() == R.id.homeButton && !isCurrent(fragmentManager, UserHomeFragment.class)) {
             UserHomeFragment fragment = new UserHomeFragment();
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_layout,fragment)
+                    .replace(R.id.fragment_layout, fragment)
                     .addToBackStack(null)
                     .commit();
         }

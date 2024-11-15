@@ -71,7 +71,7 @@ public class AssetCreateFragment extends Fragment {
         ProfileInfoFragment profileInfoFragment = new ProfileInfoFragment();
 
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.profile_fragment_container, profileInfoFragment);
+        transaction.replace(R.id.fragment_layout, profileInfoFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

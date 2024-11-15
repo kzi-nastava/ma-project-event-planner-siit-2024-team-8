@@ -15,6 +15,8 @@
             android:layout_height="200dp"
             android:text="Upload Picture"
             android:layout_marginBottom="16dp"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/red"
             android:gravity="center" />
 
         <EditText
@@ -157,14 +159,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Save" />
+            android:text="Save"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/red"/>
 
         <Button
             android:id="@+id/cancel_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Cancel" />
+            android:text="Cancel"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/red"/>
 
     </LinearLayout>
 </ScrollView>

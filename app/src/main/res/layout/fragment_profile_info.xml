@@ -59,12 +59,16 @@
                 android:id="@+id/my_assets_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/red"
                 android:text="My Assets" />
 
             <Button
                 android:id="@+id/create_asset_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/red"
                 android:text="Create asset" />
 
         </LinearLayout>
@@ -171,6 +175,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Edit"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/red" />
 
 </LinearLayout>

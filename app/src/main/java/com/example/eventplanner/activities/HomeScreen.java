@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -72,11 +73,21 @@ public class HomeScreen extends AppCompatActivity {
     }
 
     public void onClickNavbarButton(View view) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
         if (view.getId() == R.id.profileButton) {
             startActivity(new Intent(HomeScreen.this, LoginScreen.class));
         }
-        if (view.getId() == R.id.homeButton) {
-            startActivity(new Intent(HomeScreen.this, HomeScreen.class));
+        if (view.getId() == R.id.homeButton && !isCurrent(fragmentManager,UserHomeFragment.class)) {
+            UserHomeFragment fragment = new UserHomeFragment();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_layout,fragment)
+                    .addToBackStack(null)
+                    .commit();
         }
+    }
+
+    public <T> boolean isCurrent(FragmentManager manager,Class<T> fragment){
+        Fragment current = manager.findFragmentById(R.id.fragment_layout);
+        return current.getClass().equals(fragment);
     }
 }

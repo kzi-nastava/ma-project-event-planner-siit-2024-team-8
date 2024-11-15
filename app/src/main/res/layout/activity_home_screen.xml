@@ -21,7 +21,7 @@
         android:layout_height="match_parent"
         android:layout_above="@id/navbar_bottom"
         android:layout_below="@+id/navbar_top"
-        android:layout_marginTop="30dp" />
+        android:background="@color/background" />
 
     <include
         android:id="@+id/navbar_bottom"

@@ -87,7 +87,7 @@ public class OfferingsFragment extends Fragment {
                         AssetFragment assetFragment = AssetFragment.newInstance(asset.getName(), asset.getType().toString());
                         if (getActivity() != null) {
                             getActivity().getSupportFragmentManager().beginTransaction()
-                                    .replace(R.id.profile_fragment_container, assetFragment)
+                                    .replace(R.id.fragment_layout, assetFragment)
                                     .addToBackStack(null)  // Add to backstack so you can go back
                                     .commit();
                         }

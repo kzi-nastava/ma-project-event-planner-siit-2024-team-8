@@ -92,14 +92,12 @@ public class UserHomeFragment extends Fragment{
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
         super.onViewCreated(view,savedInstanceState);
-        // Initialize the EventRecyclerView
         eventRecyclerView = view.findViewById(R.id.eventRecyclerView);
         EventCardAdapter eventCardAdapter = new EventCardAdapter(getContext());  // Use getContext() for context in fragments
         eventCardAdapter.set_eventCards(new ArrayList<EventDTO>(createEvents().stream().limit(5).collect(Collectors.toList())));
         eventRecyclerView.setAdapter(eventCardAdapter);
         eventRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(),LinearLayoutManager.HORIZONTAL,false));
 
-        //Initialize AssetRecyclerView
         assetRecyclerView = view.findViewById(R.id.topAssetRecyclerView);
         AssetCardAdapter adapter = new AssetCardAdapter(getContext());
         adapter.setAssets(new ArrayList<>(createAssets().stream().limit(5).collect(Collectors.toList())));

@@ -8,7 +8,8 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Base.Theme.EventPlanner.Dark" parent="Theme.Material3.Dark.NoActionBar">
+    <style name="primaryTheme" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:windowBackground">@color/background</item>
     </style>
 
     <style name="Theme.EventPlanner" parent="Base.Theme.EventPlanner" />

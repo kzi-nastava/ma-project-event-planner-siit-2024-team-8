@@ -4,23 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/red">
-
-    <ImageButton
-        android:id="@+id/searchButton"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:backgroundTint="#00FFFFFF"
-        android:onClick="onClickNavbarButton"
-        app:srcCompat="@drawable/baseline_search_24" />
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_weight="1"
-        app:srcCompat="@drawable/ic_launcher_foreground" />
+    android:background="@color/deep_purple">
 
     <ImageButton
         android:id="@+id/profileButton"
@@ -29,5 +13,23 @@
         android:layout_weight="1"
         android:backgroundTint="#00FFFFFF"
         android:onClick="onClickNavbarButton"
-        android:src="@drawable/baseline_account_circle_24"/>
+        android:src="@drawable/baseline_account_circle_24" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_weight="1"
+        android:background="@color/deep_purple"
+        app:srcCompat="@drawable/ic_launcher_foreground" />
+
+    <ImageButton
+        android:id="@+id/searchButton"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:backgroundTint="#00FFFFFF"
+        android:onClick="onClickNavbarButton"
+        app:srcCompat="@drawable/baseline_settings_24" />
+
 </LinearLayout>

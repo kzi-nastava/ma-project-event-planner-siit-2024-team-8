@@ -3,14 +3,13 @@
     <!-- Main Content Area -->
 
 <!-- Bottom Navbar -->
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navbar"
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:layout_alignParentBottom="true"
-    android:background="@color/red"
+    android:background="@color/deep_purple"
     android:gravity="bottom"
     android:orientation="horizontal">
 

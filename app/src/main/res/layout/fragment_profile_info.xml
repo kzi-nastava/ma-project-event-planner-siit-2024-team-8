@@ -60,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
-                android:backgroundTint="@color/red"
+                android:backgroundTint="@color/deep_purple"
                 android:text="My Assets" />
 
             <Button
@@ -68,7 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
-                android:backgroundTint="@color/red"
+                android:backgroundTint="@color/deep_purple"
                 android:text="Create asset" />
 
         </LinearLayout>
@@ -177,6 +177,6 @@
         android:text="Edit"
         android:layout_marginBottom="8dp"
         android:textColor="@color/white"
-        android:backgroundTint="@color/red" />
+        android:backgroundTint="@color/deep_purple" />
 
 </LinearLayout>

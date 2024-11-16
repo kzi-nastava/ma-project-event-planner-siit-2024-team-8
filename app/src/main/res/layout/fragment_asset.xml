@@ -121,7 +121,7 @@
             android:layout_height="wrap_content"
             android:text="Edit"
             android:textColor="@color/white"
-            android:backgroundTint="@color/red"
+            android:backgroundTint="@color/deep_purple"
             android:layout_marginTop="16dp" />
 
         <Button
@@ -130,7 +130,7 @@
             android:layout_height="wrap_content"
             android:text="Back"
             android:textColor="@color/white"
-            android:backgroundTint="@color/red"
+            android:backgroundTint="@color/deep_purple"
             android:layout_marginTop="16dp" />
 
     </LinearLayout>

@@ -99,7 +99,6 @@ public class ProfileInfoFragment extends Fragment {
         myAssetsButton = rootView.findViewById(R.id.my_assets_button);
         createAssetButton = rootView.findViewById(R.id.create_asset_button);
 
-        // Set the data to the views
         userName.setText(mUserName);
         userEmail.setText(mUserEmail);
         userFullName.setText(mUserFullName);

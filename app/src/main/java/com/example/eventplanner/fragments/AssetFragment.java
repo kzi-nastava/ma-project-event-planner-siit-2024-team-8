@@ -48,7 +48,6 @@ public class AssetFragment extends Fragment {
     }
 
     public AssetFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -63,13 +62,11 @@ public class AssetFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_asset, container, false);
 
         Button editButton = view.findViewById(R.id.edit_button);
         Button backButton = view.findViewById(R.id.back_button);
 
-        // Set click listeners for buttons
         editButton.setOnClickListener(v -> openAssetEditFragment());
         backButton.setOnClickListener(v -> openOfferingsFragment());
 

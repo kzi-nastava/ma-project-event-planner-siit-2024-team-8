@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto_black"
         android:text="TextView"
+        android:textColor="@color/white"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,13 +20,16 @@
 
     <com.google.android.material.search.SearchBar
         android:id="@+id/searchBar"
-        android:onClick="onClickSearchBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
+        android:onClick="onClickSearchBar"
+        app:backgroundTint="@color/black90"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textAssetHeader" />
+        app:layout_constraintTop_toBottomOf="@+id/textAssetHeader"
+        app:navigationIconTint="@color/deep_purple"
+        app:strokeColor="@color/deep_purple" />
 
     <LinearLayout
         android:id="@+id/filterLayout"
@@ -48,7 +52,7 @@
             android:fontFamily="@font/roboto_black"
             android:onClick="onClickFilterButton"
             android:text="FILTER"
-            android:textColor="@color/light_gray" />
+            android:textColor="@color/white" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/orderSwitch"
@@ -58,7 +62,9 @@
             android:fontFamily="@font/roboto_black"
             android:paddingStart="35dp"
             android:paddingEnd="10dp"
-            android:text="ASCENDING" />
+            android:text="ASCENDING"
+            android:textColor="@color/white"
+            android:textColorHighlight="@color/deep_purple" />
 
     </LinearLayout>
 

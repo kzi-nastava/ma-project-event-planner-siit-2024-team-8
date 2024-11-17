@@ -12,20 +12,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Base.Theme.EventPlanner.Dark"
+        android:theme="@style/primaryTheme"
         tools:targetApi="31">
-        <activity
-            android:name=".activities.ProfileScreen"
-            android:exported="true" />
-        <activity
-            android:name=".activities.ProviderRegisterScreen"
-            android:exported="true" />
-        <activity
-            android:name=".activities.RegisterScreen"
-            android:exported="false" />
-        <activity
-            android:name=".activities.LoginScreen"
-            android:exported="false" />
         <activity
             android:name=".activities.HomeScreen"
             android:exported="true">

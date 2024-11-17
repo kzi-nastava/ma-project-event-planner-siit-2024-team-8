@@ -108,7 +108,7 @@
         android:layout_marginBottom="222dp"
         android:text="Register"
         android:textColor="@color/white"
-        android:backgroundTint="@color/red"
+        android:backgroundTint="@color/deep_purple"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

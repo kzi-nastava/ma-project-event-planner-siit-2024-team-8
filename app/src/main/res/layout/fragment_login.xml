@@ -31,7 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:textColor="@color/white"
-        android:backgroundTint="@color/deep_purple"
+        android:backgroundTint="@color/olive"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <EditText
@@ -74,7 +74,7 @@
         android:layout_marginBottom="242dp"
         android:text="Sign in"
         android:textColor="@color/white"
-        android:backgroundTint="@color/deep_purple"
+        android:backgroundTint="@color/olive"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -87,7 +87,7 @@
         android:text="KT1"
         android:textSize="10sp"
         android:textColor="@color/white"
-        android:backgroundTint="@color/deep_purple"
+        android:backgroundTint="@color/olive"
         android:onClick="onClickKT1Button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

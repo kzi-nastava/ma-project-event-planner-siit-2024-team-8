@@ -9,7 +9,7 @@
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:layout_alignParentBottom="true"
-    android:background="@color/deep_purple"
+    android:background="@color/olive"
     android:gravity="bottom"
     android:orientation="horizontal">
 
@@ -30,7 +30,8 @@
         android:layout_weight="1"
         android:backgroundTint="#00FFFFFF"
         android:contentDescription="Calendar"
-        android:src="@drawable/baseline_calendar_month_24" />
+        android:src="@drawable/baseline_calendar_month_24"
+        android:onClick="onClickNavbarButton"/>
 
     <ImageButton
         android:id="@+id/chatButton"
@@ -39,7 +40,8 @@
         android:layout_weight="1"
         android:backgroundTint="#00FFFFFF"
         android:contentDescription="Chat"
-        android:src="@drawable/baseline_comment_24" />
+        android:src="@drawable/baseline_comment_24"
+        android:onClick="onClickNavbarButton"/>
 
     <ImageButton
         android:id="@+id/notificationsButton"
@@ -48,7 +50,8 @@
         android:layout_weight="1"
         android:backgroundTint="#00FFFFFF"
         android:contentDescription="Notifications"
-        android:src="@drawable/baseline_notifications_24" />
+        android:src="@drawable/baseline_notifications_24"
+        android:onClick="onClickNavbarButton"/>
 
 </LinearLayout>
 

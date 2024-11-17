@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.AssetCardAdapter;
 import com.example.eventplanner.adapters.EventCardAdapter;
+import com.example.eventplanner.domain.EventDTO;
 import com.example.eventplanner.domain.OfferingType;
 import com.example.eventplanner.domain.AssetDTO;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -72,6 +73,7 @@ public class OfferingsFragment extends Fragment {
         switch (type) {
             case EVENT:
                 EventCardAdapter eventAdapter = new EventCardAdapter(view.getContext());
+                eventAdapter.SetOnClick(getActivity(),getActivity().getSupportFragmentManager());
                 eventAdapter.set_eventCards(UserHomeFragment.createEvents());
                 assetRecyclerView.setAdapter(eventAdapter);
                 header.setText("Search Events");
@@ -79,20 +81,7 @@ public class OfferingsFragment extends Fragment {
             case ASSET:
                 AssetCardAdapter assetAdapter = new AssetCardAdapter(view.getContext());
                 assetAdapter.setAssets(UserHomeFragment.createAssets());
-
-                assetAdapter.setItemClickListener(new AssetCardAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AssetDTO asset) {
-                        Log.d("OfferingsFragment", "Clicked on asset: " + asset.getName());
-                        AssetFragment assetFragment = AssetFragment.newInstance(asset.getName(), asset.getType().toString());
-                        if (getActivity() != null) {
-                            getActivity().getSupportFragmentManager().beginTransaction()
-                                    .replace(R.id.fragment_layout, assetFragment)
-                                    .addToBackStack(null)  // Add to backstack so you can go back
-                                    .commit();
-                        }
-                    }
-                });
+                assetAdapter.SetOnClick(getActivity(),getActivity().getSupportFragmentManager());
 
                 assetRecyclerView.setAdapter(assetAdapter);
                 header.setText("Search Assets");

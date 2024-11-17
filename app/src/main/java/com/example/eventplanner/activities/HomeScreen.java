@@ -21,9 +21,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.domain.OfferingType;
+import com.example.eventplanner.fragments.EventInfoFragment;
 import com.example.eventplanner.fragments.FilterFragment;
 import com.example.eventplanner.fragments.LoginFragment;
 import com.example.eventplanner.fragments.OfferingsFragment;
+import com.example.eventplanner.fragments.SettingsFragment;
 import com.example.eventplanner.fragments.UserHomeFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.search.SearchBar;
@@ -75,17 +77,43 @@ public class HomeScreen extends AppCompatActivity {
 
     public void onClickNavbarButton(View view) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        if (view.getId() == R.id.profileButton) {
+        if (view.getId() == R.id.profileButton && !isCurrent(fragmentManager, LoginFragment.class)) {
             LoginFragment loginFragment = new LoginFragment();
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_layout, loginFragment)
                     .addToBackStack(null)
                     .commit();
         }
-        if (view.getId() == R.id.homeButton && !isCurrent(fragmentManager, UserHomeFragment.class)) {
+        else if (view.getId() == R.id.homeButton && !isCurrent(fragmentManager, UserHomeFragment.class)) {
             UserHomeFragment fragment = new UserHomeFragment();
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_layout, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
+        else if (view.getId() == R.id.settingsButton && !isCurrent(fragmentManager, SettingsFragment.class)) {
+            SettingsFragment fragment = new SettingsFragment();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_layout,fragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
+        else if (view.getId() == R.id.calendarButton && !isCurrent(fragmentManager, SettingsFragment.class)){
+            SettingsFragment fragment = new SettingsFragment();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_layout,fragment)
+                    .addToBackStack(null)
+                    .commit();
+        }else if (view.getId() == R.id.chatButton && !isCurrent(fragmentManager, SettingsFragment.class)){
+            SettingsFragment fragment = new SettingsFragment();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_layout,fragment)
+                    .addToBackStack(null)
+                    .commit();
+        }else if (view.getId() == R.id.notificationsButton && !isCurrent(fragmentManager, SettingsFragment.class)){
+            SettingsFragment fragment = new SettingsFragment();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_layout,fragment)
                     .addToBackStack(null)
                     .commit();
         }

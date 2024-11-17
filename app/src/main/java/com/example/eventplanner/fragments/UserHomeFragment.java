@@ -94,12 +94,14 @@ public class UserHomeFragment extends Fragment{
         super.onViewCreated(view,savedInstanceState);
         eventRecyclerView = view.findViewById(R.id.eventRecyclerView);
         EventCardAdapter eventCardAdapter = new EventCardAdapter(getContext());  // Use getContext() for context in fragments
+        eventCardAdapter.SetOnClick(getActivity(),getActivity().getSupportFragmentManager());
         eventCardAdapter.set_eventCards(new ArrayList<EventDTO>(createEvents().stream().limit(5).collect(Collectors.toList())));
         eventRecyclerView.setAdapter(eventCardAdapter);
         eventRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(),LinearLayoutManager.HORIZONTAL,false));
 
         assetRecyclerView = view.findViewById(R.id.topAssetRecyclerView);
         AssetCardAdapter adapter = new AssetCardAdapter(getContext());
+        adapter.SetOnClick(getActivity(),getActivity().getSupportFragmentManager());
         adapter.setAssets(new ArrayList<>(createAssets().stream().limit(5).collect(Collectors.toList())));
         assetRecyclerView.setAdapter(adapter);
         assetRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(),LinearLayoutManager.HORIZONTAL,false));

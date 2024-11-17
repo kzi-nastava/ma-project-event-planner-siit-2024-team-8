@@ -28,8 +28,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textAssetHeader"
-        app:navigationIconTint="@color/deep_purple"
-        app:strokeColor="@color/deep_purple" />
+        app:navigationIconTint="@color/olive"
+        app:strokeColor="@color/olive" />
 
     <LinearLayout
         android:id="@+id/filterLayout"
@@ -64,7 +64,7 @@
             android:paddingEnd="10dp"
             android:text="ASCENDING"
             android:textColor="@color/white"
-            android:textColorHighlight="@color/deep_purple" />
+            android:textColorHighlight="@color/olive" />
 
     </LinearLayout>
 

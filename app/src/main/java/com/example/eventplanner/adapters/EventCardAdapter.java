@@ -1,6 +1,8 @@
 package com.example.eventplanner.adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,11 +10,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
+import com.example.eventplanner.domain.AssetDTO;
 import com.example.eventplanner.domain.EventDTO;
+import com.example.eventplanner.fragments.AssetFragment;
+import com.example.eventplanner.fragments.EventInfoFragment;
 
 import java.util.ArrayList;
 
@@ -30,6 +36,11 @@ public class EventCardAdapter extends RecyclerView.Adapter<EventCardAdapter.View
         this.context = context;
     }
 
+    private EventCardAdapter.OnItemClickListener itemClickListener;
+
+    public void setItemClickListener(EventCardAdapter.OnItemClickListener listener) {
+        this.itemClickListener = listener;
+    }
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         private TextView txtName;
@@ -58,6 +69,11 @@ public class EventCardAdapter extends RecyclerView.Adapter<EventCardAdapter.View
                 .asBitmap()
                 .load(_eventCards.get(position).getImageURL())
                 .into(holder.imageViewEvent);
+        holder.itemView.setOnClickListener(v -> {
+            if (itemClickListener != null) {
+                itemClickListener.onItemClick(_eventCards.get(position));
+            }
+        });
     }
 
 
@@ -69,5 +85,22 @@ public class EventCardAdapter extends RecyclerView.Adapter<EventCardAdapter.View
     public void set_eventCards(ArrayList<EventDTO> _eventCards) {
         this._eventCards = _eventCards;
         notifyDataSetChanged();
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(EventDTO event);
+    }
+
+    public void SetOnClick(Activity activity, FragmentManager manager){
+        this.setItemClickListener(asset -> {
+            Log.d("OfferingsFragment", "Clicked on asset: " + asset.getName());
+            EventInfoFragment eventInfoFragment = new EventInfoFragment();
+            if (activity != null) {
+                manager.beginTransaction()
+                        .replace(R.id.fragment_layout, eventInfoFragment)
+                        .addToBackStack(null)  // Add to backstack so you can go back
+                        .commit();
+            }
+        });
     }
 }

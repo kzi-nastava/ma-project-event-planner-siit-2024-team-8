@@ -1,6 +1,8 @@
 package com.example.eventplanner.adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,11 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 import com.example.eventplanner.domain.AssetDTO;
+import com.example.eventplanner.fragments.AssetFragment;
 
 import java.util.ArrayList;
 
@@ -77,5 +81,18 @@ public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.View
             txtAssetType = itemView.findViewById(R.id.secondTextView);
             imageView = itemView.findViewById(R.id.imageViewOffering);
         }
+    }
+
+    public void SetOnClick(Activity activity,FragmentManager manager){
+        this.setItemClickListener(asset -> {
+            Log.d("OfferingsFragment", "Clicked on asset: " + asset.getName());
+            AssetFragment assetFragment = AssetFragment.newInstance(asset.getName(), asset.getType().toString());
+            if (activity != null) {
+                manager.beginTransaction()
+                        .replace(R.id.fragment_layout, assetFragment)
+                        .addToBackStack(null)  // Add to backstack so you can go back
+                        .commit();
+            }
+        });
     }
 }

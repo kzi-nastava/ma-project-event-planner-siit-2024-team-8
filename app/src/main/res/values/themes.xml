@@ -9,7 +9,9 @@
     </style>
 
     <style name="primaryTheme" parent="Theme.Material3.Dark.NoActionBar">
-        <item name="android:windowBackground">@color/background</item>
+        <item name="android:windowBackground">@color/light_gray</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:textColor">@color/text_color</item>
     </style>
 
     <style name="Theme.EventPlanner" parent="Base.Theme.EventPlanner" />

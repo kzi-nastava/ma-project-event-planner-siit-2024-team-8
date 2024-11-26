@@ -3,12 +3,12 @@ plugins {
 }
 
 android {
-    namespace 'com.example.eventplanner'
+    namespace 'com.example.myapplication'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.eventplanner"
-        minSdk 26
+        applicationId "com.example.myapplication"
+        minSdk 30
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -29,6 +29,7 @@ android {
 }
 
 dependencies {
+
     implementation libs.glide
     implementation libs.appcompat
     implementation libs.material
@@ -37,5 +38,4 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
-
 }

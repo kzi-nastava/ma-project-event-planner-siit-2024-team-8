@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#FFFFFF" /> <!-- Optional: Set background color for the border -->
+    <corners android:radius="150dp" /> <!-- Adjust the radius for rounded corners -->
+    <stroke
+        android:color="@color/top_card"  android:width="1dp" />   <!-- Border thickness -->
+</shape>

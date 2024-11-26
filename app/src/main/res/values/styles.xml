@@ -4,4 +4,8 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+    <style name="CustomBottomNavBarStyle">
+        <item name="android:background">@color/white</item>
+        <item name="itemBackground">@drawable/navbar_new</item>
+    </style>
 </resources>

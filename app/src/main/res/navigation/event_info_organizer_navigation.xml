@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/organizerEventInfoNavigation"
+    app:startDestination="@id/overviewFragment">
+
+    <fragment
+        android:id="@+id/overviewFragment"
+        android:name="com.example.myapplication.fragments.EventOverviewFragment"
+        android:label="Overview"
+        tools:layout="@layout/fragment_to_do" />
+
+    <fragment
+        android:id="@+id/LocationFragment"
+        android:name="com.example.myapplication.fragments.ToDoFragment"
+        android:label="Location"
+        tools:layout="@layout/fragment_to_do" />
+
+    <fragment
+        android:id="@+id/budgetFragment"
+        android:name="com.example.myapplication.fragments.ToDoFragment"
+        android:label="Budget"
+        tools:layout="@layout/fragment_to_do" />
+    <fragment
+        android:id="@+id/organizerInfoFragment"
+        android:name="com.example.myapplication.fragments.ToDoFragment"
+        android:label="Organizer"
+        tools:layout="@layout/fragment_to_do" />
+</navigation>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CircularShape">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10%</item>
+    </style>
+    <style name="CustomBottomNavBarStyle">
+        <item name="android:background">@color/light_gray</item>
+        <item name="itemBackground">@drawable/navbar_new</item>
+    </style>
+</resources>

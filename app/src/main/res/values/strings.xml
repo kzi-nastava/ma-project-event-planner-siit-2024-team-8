@@ -1,8 +1,0 @@
-<resources>
-    <string name="app_name">EventPlanner</string>
-    <string name="splash_screen_text">Welcome to BNC Event Planner</string>
-    <string name="event_name">Exit FEST</string>
-    <string name="event_date">10.7.2024 – 14.07.2024</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="seeAll">See All</string>
-</resources>

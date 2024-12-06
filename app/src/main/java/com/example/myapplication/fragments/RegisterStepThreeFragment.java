@@ -8,8 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.myapplication.R;
+import com.example.myapplication.domain.User;
+import com.example.myapplication.domain.UserType;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -71,18 +76,58 @@ public class RegisterStepThreeFragment extends Fragment {
     }
 
     private void onNextButtonClick() {
-        RegisterFinalStep finalStep = new RegisterFinalStep();
         RegisterFragment parentFragment = (RegisterFragment) getParentFragment();
-        assert parentFragment != null;
-        parentFragment.getChildFragmentManager().beginTransaction()
-                .setCustomAnimations( R.anim.enter_from_right,
-                        R.anim.exit_to_left,
-                        R.anim.enter_from_left,
-                        R.anim.exit_to_right )
-                .replace(R.id.registerLayout, finalStep)
-                .addToBackStack(null)
-                .commit();
-        parentFragment.changeTitle(4);
-        parentFragment.animateProgressBar(100);
+        //retrieve data and continue if everything ok:
+        if (!retrieveData(parentFragment.user)) {
+            Toast.makeText(getContext(), "All fields are required and must be properly filled.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (parentFragment.user.getUserType().equals(UserType.PROVIDER)) {
+            ProviderRegisterFragment providerRegister = new ProviderRegisterFragment();
+            assert parentFragment != null;
+            parentFragment.getChildFragmentManager().beginTransaction()
+                    .setCustomAnimations( R.anim.enter_from_right,
+                            R.anim.exit_to_left,
+                            R.anim.enter_from_left,
+                            R.anim.exit_to_right )
+                    .replace(R.id.registerLayout, providerRegister)
+                    .addToBackStack(null)
+                    .commit();
+            parentFragment.changeTitle(5);
+            parentFragment.animateProgressBar(85);
+        } else {
+            RegisterFinalStep finalStep = new RegisterFinalStep();
+            assert parentFragment != null;
+            parentFragment.getChildFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.enter_from_right,
+                            R.anim.exit_to_left,
+                            R.anim.enter_from_left,
+                            R.anim.exit_to_right)
+                    .replace(R.id.registerLayout, finalStep)
+                    .addToBackStack(null)
+                    .commit();
+            parentFragment.changeTitle(4);
+            parentFragment.animateProgressBar(100);
+        }
+    }
+
+    private boolean retrieveData(User user) {
+        String email = ((EditText)this.getView().findViewById(R.id.editTextEmail)).getText().toString();
+        String password = ((EditText)this.getView().findViewById(R.id.editTextPassword)).getText().toString();
+        String passwordConfirm = ((EditText)this.getView().findViewById(R.id.editTextPasswordConfirm)).getText().toString();
+        Spinner spinner = this.getView().findViewById(R.id.option_picker_spinner);
+        if (email.isBlank() || email.isEmpty() || password.isBlank() || password.isEmpty() || passwordConfirm.isEmpty() || passwordConfirm.isBlank() || !password.equals(passwordConfirm)) {
+            return false;
+        }
+        if (spinner.getSelectedItem().toString().equals("PROVIDER")) {
+            user.setUserType(UserType.PROVIDER);
+        } else if (spinner.getSelectedItem().toString().equals("ORGANIZER")) {
+            user.setUserType(UserType.ORGANIZER);
+        } else {
+            user.setUserType(UserType.USER);
+        }
+        user.setEmail(email);
+        user.setPassword(password);
+        return true;
     }
 }

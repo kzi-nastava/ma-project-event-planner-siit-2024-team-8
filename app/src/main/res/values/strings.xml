@@ -9,4 +9,11 @@
     <string name="overview">Overview</string>
     <string name="budget">Budget</string>
     <string name="organizer">Organizer</string>
+
+    <string-array name="option_picker_values">
+        <item>USER</item>
+        <item>PROVIDER</item>
+        <item>ORGANIZER</item>
+    </string-array>
 </resources>
+

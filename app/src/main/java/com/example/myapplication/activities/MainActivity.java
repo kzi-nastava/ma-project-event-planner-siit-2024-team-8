@@ -15,6 +15,7 @@ import com.example.myapplication.fragments.CreateEventAgendaFragment;
 import com.example.myapplication.fragments.CreateEventFragment;
 import com.example.myapplication.fragments.CreateEventStepTwoFragment;
 import com.example.myapplication.fragments.EventInfoFragment;
+import com.example.myapplication.fragments.RegisterFragment;
 import com.example.myapplication.fragments.StartupFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,9 +31,14 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        CreateEventFragment fragment = new CreateEventFragment();
+        /*CreateEventFragment fragment = new CreateEventFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main,fragment)
+                .addToBackStack(null)
+                .commit();*/
+        RegisterFragment fragment = new RegisterFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main, fragment)
                 .addToBackStack(null)
                 .commit();
     }

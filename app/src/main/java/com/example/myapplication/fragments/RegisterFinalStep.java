@@ -10,6 +10,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.myapplication.R;
+import com.example.myapplication.domain.User;
+import com.example.myapplication.services.UserService;
+
+import java.io.Console;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,6 +60,10 @@ public class RegisterFinalStep extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        //send user over http
+        RegisterFragment parentFragment = (RegisterFragment) getParentFragment();
+        UserService userService = new UserService();
+        userService.sendUserData(parentFragment.user);
     }
 
     @Override

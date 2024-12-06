@@ -4,27 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center_vertical"
     android:layout_marginTop="20dp"
     android:orientation="vertical"
-    app:layout_anchorGravity="center_vertical"
-    tools:context=".fragments.RegisterStepOneFragment">
+    tools:context=".fragments.ProviderRegisterFragment">
 
     <TextView
-        android:id="@+id/textView13"
+        android:id="@+id/textView22"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="40dp"
-        android:text="Name"
+        android:layout_marginTop="60dp"
+        android:text="*Enter Company Name:"
         android:textStyle="bold" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputFirstName"
+        android:id="@+id/textInputCompanyName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Enter name"
+        android:hint="Company name"
         android:inputType="text"
         android:textColorHint="@color/top_card"
         android:textSize="16sp"
@@ -38,7 +36,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextFirstName"
+            android:id="@+id/editTextCompanyName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
@@ -46,56 +44,21 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
-        android:id="@+id/textView18"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="25dp"
-        android:text="Last Name"
-        android:textStyle="bold" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLastName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Enter last name"
-        android:inputType="text"
-        android:textColorHint="@color/top_card"
-        android:textSize="16sp"
-        app:boxCornerRadiusBottomEnd="10dp"
-        app:boxCornerRadiusBottomStart="10dp"
-        app:boxCornerRadiusTopEnd="10dp"
-        app:boxCornerRadiusTopStart="10dp"
-        app:boxStrokeWidth="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/textInputLayout2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextLastName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <TextView
-        android:id="@+id/textView20"
+        android:id="@+id/textView23"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="25dp"
-        android:text="Address"
+        android:text="Enter Company Description:"
         android:textStyle="bold" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputAddress"
+        android:id="@+id/textInputCompanyDesc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Enter address"
-        android:inputType="text"
+        android:hint="Company Description"
+        android:inputType="text|textEmailAddress"
         android:textColorHint="@color/top_card"
         android:textSize="16sp"
         app:boxCornerRadiusBottomEnd="10dp"
@@ -108,7 +71,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextAddress"
+            android:id="@+id/editTextCompanyDesc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
@@ -116,50 +79,45 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
-        android:id="@+id/textViewPhone"
+        android:id="@+id/textView24"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="25dp"
-        android:text="Phone number"
+        android:text="Enter Initial Company Photo:"
         android:textStyle="bold" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputPhone"
+    <TextView
+        android:id="@+id/textView25"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Enter phone number"
-        android:inputType="text"
-        android:textColorHint="@color/top_card"
-        android:textSize="16sp"
-        app:boxCornerRadiusBottomEnd="10dp"
-        app:boxCornerRadiusBottomStart="10dp"
-        app:boxCornerRadiusTopEnd="10dp"
-        app:boxCornerRadiusTopStart="10dp"
-        app:boxStrokeWidth="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/textInputLayout2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="2dp"
+        android:text="(you can always add more photos from your profile later):"
+        android:textAlignment="viewStart"
+        android:textColor="#454545"
+        android:textSize="8sp"
+        android:textStyle="bold" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextNumber"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp" />
-    </com.google.android.material.textfield.TextInputLayout>
-
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/rounded_border"
+        app:srcCompat="@drawable/transparent_ripple" />
 
     <Button
-        android:id="@+id/registerNextButton3"
-        android:layout_width="match_parent"
+        android:id="@+id/insertImageButton"
+        android:layout_width="wrap_content"
         android:layout_height="60dp"
+        android:layout_gravity="center_horizontal"
         android:layout_marginStart="40dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="40dp"
         android:backgroundTint="@color/olive"
-        android:text="Next"
+        android:text="Insert Image"
         android:textColor="@color/white"
         android:textSize="14sp"
         app:cornerRadius="10dp"
@@ -167,5 +125,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
+
+    <Button
+        android:id="@+id/registerFinishButton"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="40dp"
+        android:backgroundTint="@color/olive"
+        android:text="Finish"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:cornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
 </LinearLayout>

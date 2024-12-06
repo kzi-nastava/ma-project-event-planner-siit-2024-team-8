@@ -8,8 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.myapplication.R;
+import com.example.myapplication.domain.User;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,8 +76,14 @@ public class RegisterStepOneFragment extends Fragment {
 
 
     private void nextButtonClicked() {
-        RegisterStepTwoFragment stepTwoFragment = new RegisterStepTwoFragment();
         RegisterFragment parentFragment = (RegisterFragment) getParentFragment();
+        //begin user creation
+        if (!retrieveData(parentFragment.user)) {
+            Toast.makeText(getContext(), "First and last name are required.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        //next step if everything ok
+        RegisterStepTwoFragment stepTwoFragment = new RegisterStepTwoFragment();
         assert parentFragment != null;
         parentFragment.getChildFragmentManager().beginTransaction()
                 .setCustomAnimations( R.anim.enter_from_right,
@@ -86,5 +95,21 @@ public class RegisterStepOneFragment extends Fragment {
                 .commit();
         parentFragment.changeTitle(2);
         parentFragment.animateProgressBar(33);
+    }
+
+    //persforms automatic verification as well
+    private boolean retrieveData(User user) {
+        String firstName = ((EditText)this.getView().findViewById(R.id.editTextFirstName)).getText().toString();
+        String lastName = ((EditText)this.getView().findViewById(R.id.editTextLastName)).getText().toString();
+        String address = ((EditText)this.getView().findViewById(R.id.editTextAddress)).getText().toString();
+        String number = ((EditText)this.getView().findViewById(R.id.editTextNumber)).getText().toString();
+        if (firstName.isBlank() || firstName.isEmpty() || lastName.isEmpty() || lastName.isBlank()) {
+            return false;
+        }
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setAddress(address);
+        user.setNumber(number);
+        return true;
     }
 }

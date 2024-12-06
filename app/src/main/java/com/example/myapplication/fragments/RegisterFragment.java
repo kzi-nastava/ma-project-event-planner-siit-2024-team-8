@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.domain.User;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,6 +31,8 @@ public class RegisterFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    protected User user = new User();
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -116,6 +119,8 @@ public class RegisterFragment extends Fragment {
             title.setText("2 of 3 : Profile Picture");
         }else if(step == 3){
             title.setText("3 of 3 : Login Info");
+        }else if (step==5) {
+            title.setText("Provider Register");
         }else if (step==4){
             title.setText("Finished");
             ImageButton back = getView().findViewById(R.id.backButton);

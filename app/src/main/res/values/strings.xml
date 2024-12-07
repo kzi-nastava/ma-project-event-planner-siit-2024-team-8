@@ -9,6 +9,14 @@
     <string name="overview">Overview</string>
     <string name="budget">Budget</string>
     <string name="organizer">Organizer</string>
+    <string name="provider">Provider</string>
+    <string name="buy">Buy</string>
+
+    <string-array name="asset_categories">
+        <item>Proba</item>
+        <item>123</item>
+        <item>None of the Above</item>
+    </string-array>
 
     <string-array name="option_picker_values">
         <item>USER</item>

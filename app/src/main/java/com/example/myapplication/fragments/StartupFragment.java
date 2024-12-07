@@ -74,6 +74,9 @@ public class StartupFragment extends Fragment {
 
         TextView guestTextView = view.findViewById(R.id.guestTextView);
         guestTextView.setOnClickListener(v -> onGuestTextViewClicked());
+
+        Button kt1 = view.findViewById(R.id.buttonKT1);
+        kt1.setOnClickListener(v -> openProfileFragment());
         return view;
     }
 
@@ -95,6 +98,14 @@ public class StartupFragment extends Fragment {
 
     private void openRegisterFragment() {
         RegisterFragment fragment = new RegisterFragment();
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.main,fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void openProfileFragment() {
+        ProfileInfoFragment fragment = new ProfileInfoFragment();
         getParentFragmentManager().beginTransaction()
                 .replace(R.id.main,fragment)
                 .addToBackStack(null)

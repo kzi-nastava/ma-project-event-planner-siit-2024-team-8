@@ -3,6 +3,7 @@ package com.example.myapplication.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +14,10 @@ import com.example.myapplication.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
+ * Use the {@link AssetOverviewFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LoginFragment extends Fragment {
+public class AssetDetailsFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,7 +28,9 @@ public class LoginFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public LoginFragment() {
+    private Button editButton;
+
+    public AssetDetailsFragment() {
         // Required empty public constructor
     }
 
@@ -37,11 +40,11 @@ public class LoginFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment LoginFragment.
+     * @return A new instance of fragment AssetOverviewFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static LoginFragment newInstance(String param1, String param2) {
-        LoginFragment fragment = new LoginFragment();
+    public static AssetDetailsFragment newInstance(String param1, String param2) {
+        AssetDetailsFragment fragment = new AssetDetailsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,32 +64,17 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_asset_details, container, false);
 
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
-
-        Button registerRedirect = view.findViewById(R.id.registerRedirectButton3);
-        registerRedirect.setOnClickListener(v -> onClickRegister());
-
-        Button kt1button = view.findViewById(R.id.buttonKT1);
-        kt1button.setOnClickListener(v -> openProfileFragment());
+        editButton = view.findViewById(R.id.editButton);
+        editButton.setOnClickListener(v -> {
+            EditAssetFragment fragment = EditAssetFragment.newInstance(mParam1, mParam2);
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.main, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        });
 
         return view;
-    }
-
-    public void onClickRegister() {
-        RegisterFragment fragment = new RegisterFragment();
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main, fragment)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    private void openProfileFragment() {
-        ProfileInfoFragment fragment = new ProfileInfoFragment();
-        getParentFragmentManager().beginTransaction()
-                .replace(R.id.main,fragment)
-                .addToBackStack(null)
-                .commit();
     }
 }

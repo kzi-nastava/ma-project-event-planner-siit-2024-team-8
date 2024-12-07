@@ -1,0 +1,177 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Asset Name -->
+        <EditText
+            android:id="@+id/assetNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Asset Name"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <!-- Asset Type -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Asset Type"
+            android:textSize="18sp"
+            android:textColor="#000000"
+            android:layout_marginTop="16dp" />
+
+        <RadioGroup
+            android:id="@+id/assetTypeGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/assetTypeProduct"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Product"
+                android:textSize="18sp"
+                android:textColor="#000000" />
+
+            <RadioButton
+                android:id="@+id/assetTypeService"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Service"
+                android:textSize="18sp"
+                android:textColor="#000000"
+                android:layout_marginStart="16dp" />
+        </RadioGroup>
+
+        <!-- Asset Category -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Category"
+            android:textSize="18sp"
+            android:textColor="#000000"
+            android:layout_marginTop="16dp" />
+
+        <Spinner
+            android:id="@+id/assetCategorySpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/light_gray"
+            android:textColor="@color/black" />
+
+        <!-- Common Fields -->
+        <EditText
+            android:id="@+id/assetDescriptionEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Description"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/assetPriceEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Price"
+            android:inputType="number"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/assetDiscountEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Discount"
+            android:inputType="number"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <!-- Service-Specific Fields -->
+        <LinearLayout
+            android:id="@+id/serviceSpecificFieldsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Confirmation Method"
+                android:textSize="18sp"
+                android:textColor="#000000"
+                android:layout_marginTop="16dp" />
+
+            <RadioGroup
+                android:id="@+id/confirmationMethodGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <RadioButton
+                    android:id="@+id/confirmationMethodManual"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Manual"
+                    android:textSize="18sp"
+                    android:textColor="#000000" />
+                <RadioButton
+                    android:id="@+id/confirmationMethodAutomatic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Automatic"
+                    android:textSize="18sp"
+                    android:textColor="#000000" />
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/bookingDateTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Booking Date"
+                android:textSize="18sp"
+                android:padding="12dp"
+                android:textColor="#000000"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginTop="16dp" />
+
+            <TextView
+                android:id="@+id/cancellationDateTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Cancellation Date"
+                android:textSize="18sp"
+                android:padding="12dp"
+                android:textColor="#000000"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginTop="16dp" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/saveButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create Asset"
+            android:textSize="18sp"
+            android:layout_marginTop="16dp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/olive" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/cancelButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:textSize="18sp"
+            android:layout_marginTop="16dp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/olive" />
+    </LinearLayout>
+</ScrollView>

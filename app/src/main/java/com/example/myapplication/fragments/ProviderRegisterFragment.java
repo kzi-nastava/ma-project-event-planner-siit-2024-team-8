@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
+import com.example.myapplication.activities.MainActivity;
 import com.example.myapplication.domain.User;
 
 import java.util.ArrayList;
@@ -71,6 +72,11 @@ public class ProviderRegisterFragment extends Fragment {
         Button nextButton = view.findViewById(R.id.registerFinishButton);
         nextButton.setOnClickListener(v -> onFinishButtonClick());
 
+        ((MainActivity)getActivity()).imageView = view.findViewById(R.id.imageView4);
+        Button button = view.findViewById(R.id.insertImageButton2);
+
+        button.setOnClickListener(v -> pickImage());
+
         return view;
     }
 
@@ -95,6 +101,15 @@ public class ProviderRegisterFragment extends Fragment {
         parentFragment.animateProgressBar(100);
     }
 
+    public void pickImage() {
+        if (((MainActivity)getActivity()).checkPermission()) {
+            //Toast.makeText(getContext(), "Permission already granted!", Toast.LENGTH_SHORT).show();
+            ((MainActivity)getActivity()).openGallery();
+        } else {
+            ((MainActivity)getActivity()).requestPermission();
+        }
+    }
+
     private boolean retrieveData(User user) {
         String companyName = ((EditText)this.getView().findViewById(R.id.editTextCompanyName)).getText().toString();
         String companyDesc = ((EditText)this.getView().findViewById(R.id.editTextCompanyDesc)).getText().toString();
@@ -104,9 +119,13 @@ public class ProviderRegisterFragment extends Fragment {
         }
         user.setCompanyName(companyName);
         user.setCompanyDescription(companyDesc);
-        /*ArrayList<String> imgs = user.getCompanyImagesURL();
-        imgs.add(initialImage);
-        user.setCompanyImagesURL(imgs);*/
+        try {
+            ArrayList<String> imgs = user.getCompanyImagesURL();
+            imgs.add(((MainActivity) getActivity()).imageUri.toString());
+            user.setCompanyImagesURL(imgs);
+        } catch (Exception e) {
+            return false;
+        }
         return true;
     }
 }

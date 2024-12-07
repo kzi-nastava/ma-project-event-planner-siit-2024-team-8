@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.AssetCardAdapter;
@@ -44,6 +45,8 @@ public class HomePageFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private Boolean loggedIn; //defines whether the user is logged in.
 
     private RecyclerView eventRecyclerView;
     private RecyclerView assetRecyclerView;
@@ -87,11 +90,25 @@ public class HomePageFragment extends Fragment {
 
         Button seeAllEvents = view.findViewById(R.id.seeAllEventsButton);
         Button seeAllAssets = view.findViewById(R.id.seeAllAssetsButton);
+        ImageButton loginButton = view.findViewById(R.id.imageButton);
 
         seeAllEvents.setOnClickListener(v -> onSeeAllClick(OfferingType.EVENT));
         seeAllAssets.setOnClickListener(v -> onSeeAllClick(OfferingType.ASSET));
+        //HARDCODED TO FALSE UNTIL LOGIN REALIZED
+        loginButton.setOnClickListener(v -> onProfileClick(false));
 
         return view;
+    }
+
+    public void onProfileClick(boolean loggedIn) {
+        LoginFragment loginFragment = new LoginFragment();
+        //UserProfileFragment userProfileFragment = new UserProfileFragment();
+        if (!loggedIn) {
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.main, loginFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 
     private void onSeeAllClick(OfferingType type) {

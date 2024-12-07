@@ -5,6 +5,9 @@ import static android.app.Activity.RESULT_OK;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -14,6 +17,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
@@ -85,11 +91,29 @@ public class RegisterStepTwoFragment extends Fragment {
         Button nextButton = view.findViewById(R.id.registerNextButton2);
         nextButton.setOnClickListener(v -> onNextButtonClick());
 
+        ((MainActivity)getActivity()).imageView = view.findViewById(R.id.imageView3);
+        Button button = view.findViewById(R.id.insertImageButton);
+
+        button.setOnClickListener(v -> pickImage());
+
         return view;
+    }
+
+    public void pickImage() {
+        if (((MainActivity)getActivity()).checkPermission()) {
+            //Toast.makeText(getContext(), "Permission already granted!", Toast.LENGTH_SHORT).show();
+            ((MainActivity)getActivity()).openGallery();
+        } else {
+            ((MainActivity)getActivity()).requestPermission();
+        }
     }
 
     private void onNextButtonClick() {
         RegisterFragment parentFragment = (RegisterFragment) getParentFragment();
+        if (!retrieveData(parentFragment.user)) {
+            Toast.makeText(getContext(), "Something went cataclysmically wrong.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         //continue if everythink ok
         RegisterStepThreeFragment registerStepThree = new RegisterStepThreeFragment();
         assert parentFragment != null;
@@ -110,7 +134,12 @@ public class RegisterStepTwoFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    /*public boolean retrieveData(User user) {
-        return false;
-    }*/
+    public boolean retrieveData(User user) {
+        try {
+            user.setProfileImageURL(((MainActivity) getActivity()).imageUri.toString());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

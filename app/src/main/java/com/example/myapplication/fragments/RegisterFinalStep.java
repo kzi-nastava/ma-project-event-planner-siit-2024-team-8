@@ -78,8 +78,14 @@ public class RegisterFinalStep extends Fragment {
     }
 
     private void onActivationButtonClicked() {
+
         Fragment register = (RegisterFragment) getParentFragment();
         assert register != null;
         register.getParentFragmentManager().popBackStack();
+        HomePageFragment fragment = new HomePageFragment();
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

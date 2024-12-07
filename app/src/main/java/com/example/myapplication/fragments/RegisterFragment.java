@@ -82,8 +82,12 @@ public class RegisterFragment extends Fragment {
 
     private void onBackButtonClick() {
         Fragment current = getChildFragmentManager().findFragmentById(R.id.registerLayout);
+        LoginFragment loginFragment = new LoginFragment();
         if (current instanceof RegisterStepOneFragment){
             getParentFragmentManager().popBackStack();
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.main, loginFragment)
+                    .commit();
         }else if (current instanceof RegisterStepTwoFragment){
             RegisterStepOneFragment stepOneFragment = new RegisterStepOneFragment();
             getChildFragmentManager().beginTransaction()

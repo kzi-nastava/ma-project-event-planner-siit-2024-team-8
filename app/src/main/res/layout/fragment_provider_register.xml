@@ -109,7 +109,7 @@
         app:srcCompat="@drawable/transparent_ripple" />
 
     <Button
-        android:id="@+id/insertImageButton"
+        android:id="@+id/insertImageButton2"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:layout_gravity="center_horizontal"

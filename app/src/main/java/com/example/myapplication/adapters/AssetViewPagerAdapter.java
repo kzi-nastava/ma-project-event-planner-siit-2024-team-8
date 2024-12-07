@@ -1,14 +1,17 @@
 package com.example.myapplication.adapters;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
-import com.example.myapplication.fragments.EventOverviewFragment;
+
+import com.example.myapplication.fragments.AssetDetailsFragment;
+import com.example.myapplication.fragments.AssetOverviewFragment;
 import com.example.myapplication.fragments.ToDoFragment;
 
-public class ViewPagerAdapter extends FragmentStateAdapter {
+public class AssetViewPagerAdapter extends FragmentStateAdapter {
 
-    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
+    public AssetViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
 
@@ -17,13 +20,11 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                return new EventOverviewFragment();
+                return new AssetOverviewFragment();
             case 1:
                 return new ToDoFragment();
             case 2:
-                return new ToDoFragment();
-            case 3:
-                return new ToDoFragment();
+                return new AssetDetailsFragment();
             default:
                 throw new IllegalArgumentException("Invalid position");
         }
@@ -32,6 +33,6 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 4; // Total number of fragments
+        return 3; // Total number of fragments
     }
 }

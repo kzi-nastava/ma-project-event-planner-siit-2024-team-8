@@ -12,7 +12,6 @@
     android:onClick="onCardClicked">
 
 
-
     <ImageView
         android:id="@+id/imageViewOffering"
         android:layout_width="match_parent"

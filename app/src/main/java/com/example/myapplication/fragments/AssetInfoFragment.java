@@ -10,15 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.myapplication.R;
+import com.example.myapplication.adapters.AssetViewPagerAdapter;
 import com.example.myapplication.adapters.EventViewPagerAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link EventInfoFragment#newInstance} factory method to
+ * Use the {@link AssetInfoFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EventInfoFragment extends Fragment {
+public class AssetInfoFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,7 +30,7 @@ public class EventInfoFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public EventInfoFragment() {
+    public AssetInfoFragment() {
         // Required empty public constructor
     }
 
@@ -39,11 +40,11 @@ public class EventInfoFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment EventInfoFragment.
+     * @return A new instance of fragment AssetInfoFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static EventInfoFragment newInstance(String param1, String param2) {
-        EventInfoFragment fragment = new EventInfoFragment();
+    public static AssetInfoFragment newInstance(String param1, String param2) {
+        AssetInfoFragment fragment = new AssetInfoFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -65,26 +66,24 @@ public class EventInfoFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        View view =  inflater.inflate(R.layout.fragment_event_info, container, false);
+        View view =  inflater.inflate(R.layout.fragment_asset_info, container, false);
 
         ViewPager2 viewPager = view.findViewById(R.id.viewPager);
-        EventViewPagerAdapter adapter = new EventViewPagerAdapter(requireActivity());
+        AssetViewPagerAdapter adapter = new AssetViewPagerAdapter(requireActivity());
         viewPager.setAdapter(adapter);
         viewPager.setUserInputEnabled(true);
 
         BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottomNavigationView2);
-        //NavHostFragment navHostFragment = (NavHostFragment) getChildFragmentManager().findFragmentById(R.id.eventInfoFragmentLayout);
+        //NavHostFragment navHostFragment = (NavHostFragment) getChildFragmentManager().findFragmentById(R.id.assetInfoFragmentLayout);
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.overviewFragment) {
                 viewPager.setCurrentItem(0, true);
-            } else if (itemId == R.id.LocationFragment) {
-                viewPager.setCurrentItem(1, true);
             } else if (itemId == R.id.budgetFragment) {
+                viewPager.setCurrentItem(1, true);
+            } else if (itemId == R.id.providerInfoFragment) {
                 viewPager.setCurrentItem(2, true);
-            } else if (itemId == R.id.organizerInfoFragment) {
-                viewPager.setCurrentItem(3, true);
             }
             return true;
         });
@@ -96,12 +95,9 @@ public class EventInfoFragment extends Fragment {
                         bottomNavigationView.setSelectedItemId(R.id.overviewFragment);
                         break;
                     case 1:
-                        bottomNavigationView.setSelectedItemId(R.id.LocationFragment);
+                        bottomNavigationView.setSelectedItemId(R.id.buyFragment);
                         break;
                     case 2:
-                        bottomNavigationView.setSelectedItemId(R.id.budgetFragment);
-                        break;
-                    case 3:
                         bottomNavigationView.setSelectedItemId(R.id.organizerInfoFragment);
                         break;
                 }

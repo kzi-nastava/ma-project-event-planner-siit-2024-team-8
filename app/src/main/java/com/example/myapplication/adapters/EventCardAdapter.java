@@ -42,8 +42,8 @@ public class EventCardAdapter extends RecyclerView.Adapter<EventCardAdapter.View
     }
 
     public void SetOnClick(Activity activity, FragmentManager manager){
-        this.setItemClickListener(asset -> {
-            Log.d("OfferingsFragment", "Clicked on asset: " + asset.getName());
+        this.setItemClickListener(event -> {
+            Log.d("OfferingsFragment", "Clicked on asset: " + event.getName());
             EventInfoFragment eventInfoFragment = new EventInfoFragment();
             if (activity != null) {
                 manager.beginTransaction()

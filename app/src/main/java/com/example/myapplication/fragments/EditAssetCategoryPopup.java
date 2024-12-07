@@ -1,66 +1,107 @@
 package com.example.myapplication.fragments;
 
+import android.app.Dialog;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Button;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+
 import com.example.myapplication.R;
+import com.example.myapplication.domain.AssetCategory;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link EditAssetCategoryPopup#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class EditAssetCategoryPopup extends Fragment {
+public class EditAssetCategoryPopup extends DialogFragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private EditText nameEditText;
+    private EditText descriptionEditText;
+    private Button saveButton;
+    private Button cancelButton;
+    private Button deleteButton;
+    private AssetCategory category;
+    private EditAssetCategoryListener listener;
+    private boolean isAddMode;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public EditAssetCategoryPopup() {
-        // Required empty public constructor
+    public interface EditAssetCategoryListener {
+        void onSaveCategory(AssetCategory category);
+        void onDeleteCategory(AssetCategory category);
+        void onCancel();
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EditAssetCategoryPopup.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static EditAssetCategoryPopup newInstance(String param1, String param2) {
+    public static EditAssetCategoryPopup newInstance(AssetCategory category, boolean isAddMode) {
         EditAssetCategoryPopup fragment = new EditAssetCategoryPopup();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putSerializable("category", category);
+        args.putBoolean("isAddMode", isAddMode);
         fragment.setArguments(args);
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public void setListener(EditAssetCategoryListener listener) {
+        this.listener = listener;
     }
 
+    @NonNull
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_edit_asset_category_popup, container, false);
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        super.onCreateDialog(savedInstanceState);
+
+        if (getArguments() != null) {
+            category = (AssetCategory) getArguments().getSerializable("category");
+            isAddMode = getArguments().getBoolean("isAddMode", false);
+        }
+
+        View view = getLayoutInflater().inflate(R.layout.fragment_edit_asset_category_popup, null);
+
+        nameEditText = view.findViewById(R.id.editCategoryName);
+        descriptionEditText = view.findViewById(R.id.editCategoryDescription);
+        saveButton = view.findViewById(R.id.saveButton);
+        cancelButton = view.findViewById(R.id.cancelButton);
+        deleteButton = view.findViewById(R.id.deleteButton);
+
+        if (isAddMode) {
+            deleteButton.setVisibility(View.GONE);
+            saveButton.setText("Add");
+        } else {
+            // In Edit mode, show delete button
+            deleteButton.setVisibility(View.VISIBLE);
+            saveButton.setText("Save");
+            nameEditText.setText(category.getName());
+            descriptionEditText.setText(category.getDescription());
+        }
+
+        saveButton.setOnClickListener(v -> {
+            category.setName(nameEditText.getText().toString());
+            category.setDescription(descriptionEditText.getText().toString());
+            if (listener != null) {
+                listener.onSaveCategory(category);
+            }
+            dismiss();
+        });
+
+        cancelButton.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onCancel();
+            }
+            dismiss();
+        });
+
+        deleteButton.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onDeleteCategory(category);
+            }
+            dismiss();
+        });
+
+        Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(view);
+        dialog.setCancelable(true);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        return dialog;
     }
 }
+

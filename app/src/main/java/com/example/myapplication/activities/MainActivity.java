@@ -15,6 +15,7 @@ import com.example.myapplication.fragments.CreateEventAgendaFragment;
 import com.example.myapplication.fragments.CreateEventFragment;
 import com.example.myapplication.fragments.CreateEventStepTwoFragment;
 import com.example.myapplication.fragments.EventInfoFragment;
+import com.example.myapplication.fragments.HomePageFragment;
 import com.example.myapplication.fragments.RegisterFragment;
 import com.example.myapplication.fragments.StartupFragment;
 
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.main,fragment)
                 .addToBackStack(null)
                 .commit();*/
-        RegisterFragment fragment = new RegisterFragment();
+        StartupFragment fragment = new StartupFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main, fragment)
                 .addToBackStack(null)

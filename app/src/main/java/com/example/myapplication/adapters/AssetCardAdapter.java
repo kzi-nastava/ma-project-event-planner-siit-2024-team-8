@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
 import com.example.myapplication.domain.AssetDTO;
+import com.example.myapplication.fragments.AssetInfoFragment;
 
 import java.util.ArrayList;
 
@@ -82,19 +83,16 @@ public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.View
         }
     }
 
-    public void SetOnClick(Activity activity,FragmentManager manager){
+    public void SetOnClick(Activity activity, FragmentManager manager){
         this.setItemClickListener(asset -> {
             Log.d("OfferingsFragment", "Clicked on asset: " + asset.getName());
-            /*
-            AssetFragment assetFragment = AssetFragment.newInstance(asset.getName(), asset.getType().toString());
+            AssetInfoFragment fragment = new AssetInfoFragment();
             if (activity != null) {
                 manager.beginTransaction()
-                        .replace(R.id.fragment_layout, assetFragment)
+                        .replace(R.id.main, fragment)
                         .addToBackStack(null)  // Add to backstack so you can go back
                         .commit();
             }
-
-             */
         });
     }
 

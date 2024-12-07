@@ -7,24 +7,17 @@
 
     <fragment
         android:id="@+id/overviewFragment"
-        android:name="com.example.myapplication.fragments.EventOverviewFragment"
+        android:name="com.example.myapplication.fragments.AssetOverviewFragment"
         android:label="Overview"
-        tools:layout="@layout/fragment_to_do" />
-
+        tools:layout="@layout/fragment_asset_overview" />
     <fragment
-        android:id="@+id/LocationFragment"
+        android:id="@+id/buyFragment"
         android:name="com.example.myapplication.fragments.ToDoFragment"
-        android:label="Location"
-        tools:layout="@layout/fragment_to_do" />
-
-    <fragment
-        android:id="@+id/budgetFragment"
-        android:name="com.example.myapplication.fragments.ToDoFragment"
-        android:label="Budget"
+        android:label="Buy"
         tools:layout="@layout/fragment_to_do" />
     <fragment
-        android:id="@+id/organizerInfoFragment"
-        android:name="com.example.myapplication.fragments.ToDoFragment"
-        android:label="Organizer"
-        tools:layout="@layout/fragment_to_do" />
+        android:id="@+id/providerInfoFragment"
+        android:name="com.example.myapplication.fragments.AssetDetailsFragment"
+        android:label="Provider"
+        tools:layout="@layout/fragment_asset_details" />
 </navigation>

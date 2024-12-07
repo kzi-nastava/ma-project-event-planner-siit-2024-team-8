@@ -7,10 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -22,7 +20,7 @@ import com.example.myapplication.R;
 
 import java.util.Calendar;
 
-public class AssetEditFragment extends Fragment {
+public class EditAssetFragment extends Fragment {
 
     private EditText assetNameEditText, descriptionEditText, priceEditText, discountEditText, durationEditText;
     private Spinner categorySpinner;
@@ -31,8 +29,8 @@ public class AssetEditFragment extends Fragment {
     private TextView bookingDeadlineTextView, cancellationDeadlineTextView;
     private LinearLayout categorySuggestionLayout;
 
-    public static AssetEditFragment newInstance(String param1, String param2) {
-        AssetEditFragment fragment = new AssetEditFragment();
+    public static EditAssetFragment newInstance(String param1, String param2) {
+        EditAssetFragment fragment = new EditAssetFragment();
         Bundle args = new Bundle();
         args.putString("param1", param1);
         args.putString("param2", param2);
@@ -44,7 +42,6 @@ public class AssetEditFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_asset_edit, container, false);
 
-        // Initialize Views
         assetNameEditText = view.findViewById(R.id.assetNameEditText);
         descriptionEditText = view.findViewById(R.id.assetDescriptionEditText);
         priceEditText = view.findViewById(R.id.assetPriceEditText);
@@ -65,7 +62,7 @@ public class AssetEditFragment extends Fragment {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.asset_categories, android.R.layout.simple_spinner_item);
 
-        adapter.setDropDownViewResource(R.layout.spinner_item);  // Use the custom layout for the drop-down view
+        adapter.setDropDownViewResource(R.layout.spinner_item);
 
         categorySpinner.setAdapter(adapter);
 
@@ -81,7 +78,6 @@ public class AssetEditFragment extends Fragment {
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // Do nothing
             }
         });
 
@@ -92,20 +88,16 @@ public class AssetEditFragment extends Fragment {
     }
 
     private void showDatePickerDialog(final TextView textView) {
-        // Get current date
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        // Create DatePickerDialog
         DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
                 (view, selectedYear, selectedMonth, selectedDay) -> {
-                    // Set selected date to the text view
                     textView.setText(selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear);
                 }, year, month, day);
 
-        // Show DatePickerDialog
         datePickerDialog.show();
     }
 }

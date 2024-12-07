@@ -5,18 +5,13 @@
         android:icon="@drawable/outline_info_24"
         android:title="@string/overview" />
     <item
-        android:id="@+id/LocationFragment"
-        android:checkable="true"
-        android:icon="@drawable/outline_location_on_24"
-        android:title="@string/location" />
-    <item
-        android:id="@+id/budgetFragment"
+        android:id="@+id/buyFragment"
         android:checkable="true"
         android:icon="@drawable/outline_monetization_on_24"
-        android:title="@string/budget" />
+        android:title="@string/buy" />
     <item
-        android:id="@+id/organizerInfoFragment"
+        android:id="@+id/providerInfoFragment"
         android:checkable="true"
         android:icon="@drawable/account_circle_35dp_000000_fill0_wght600_grad0_opsz40"
-        android:title="@string/organizer" />
+        android:title="@string/provider" />
 </menu>

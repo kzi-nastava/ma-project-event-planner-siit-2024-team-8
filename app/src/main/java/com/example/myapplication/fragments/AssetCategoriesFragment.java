@@ -1,66 +1,103 @@
 package com.example.myapplication.fragments;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.myapplication.R;
+import com.example.myapplication.adapters.AssetCategoryAdapter;
+import com.example.myapplication.domain.AssetCategory;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AssetCategoriesFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class AssetCategoriesFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.List;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class AssetCategoriesFragment extends Fragment implements AssetCategoryAdapter.OnItemClickListener {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public AssetCategoriesFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AssetCategoriesFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AssetCategoriesFragment newInstance(String param1, String param2) {
-        AssetCategoriesFragment fragment = new AssetCategoriesFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private RecyclerView recyclerView;
+    private AssetCategoryAdapter adapter;
+    private List<AssetCategory> categories;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_asset_categories, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        recyclerView = view.findViewById(R.id.assetCategoriesRecyclerView);
+        FloatingActionButton fab = view.findViewById(R.id.fabAddCategory);
+
+        categories = new ArrayList<>();
+        categories.add(new AssetCategory("Category 1", "Description for Category 1"));
+        categories.add(new AssetCategory("Category 2", "Description for Category 2"));
+        categories.add(new AssetCategory("Category 3", "Description for Category 3"));
+        categories.add(new AssetCategory("Category 4", "Description for Category 4"));
+        categories.add(new AssetCategory("Category 5", "Description for Category 5"));
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        adapter = new AssetCategoryAdapter(categories, requireContext(), this);
+        recyclerView.setAdapter(adapter);
+
+        fab.setOnClickListener(v -> {
+            EditAssetCategoryPopup dialog = EditAssetCategoryPopup.newInstance(null, true);
+            dialog.setListener(new EditAssetCategoryPopup.EditAssetCategoryListener() {
+                @Override
+                public void onSaveCategory(AssetCategory updatedCategory) {
+                    categories.add(updatedCategory);
+                    adapter.notifyItemInserted(categories.size() - 1);
+                }
+
+                @Override
+                public void onDeleteCategory(AssetCategory categoryToDelete) {
+                }
+
+                @Override
+                public void onCancel() {
+                }
+            });
+            dialog.show(getChildFragmentManager(), "AddCategoryDialog");
+        });
+
+    }
+
+    @Override
+    public void onItemClick(AssetCategory category) {
+        EditAssetCategoryPopup dialog = EditAssetCategoryPopup.newInstance(category, false);
+        dialog.setListener(new EditAssetCategoryPopup.EditAssetCategoryListener() {
+            @Override
+            public void onSaveCategory(AssetCategory updatedCategory) {
+                int index = getCategoryIndex(updatedCategory);
+                categories.set(index, updatedCategory);
+                adapter.notifyItemChanged(index);
+            }
+
+            @Override
+            public void onDeleteCategory(AssetCategory categoryToDelete) {
+                categories.remove(categoryToDelete);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancel() {
+            }
+        });
+        dialog.show(getChildFragmentManager(), "EditCategoryDialog");
+    }
+
+    private int getCategoryIndex(AssetCategory category) {
+        for (int i = 0; i < categories.size(); i++) {
+            if (categories.get(i).equals(category)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

@@ -1,30 +1,17 @@
 package com.example.myapplication.fragments;
 
-import android.graphics.Paint;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.NavigationUI;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.text.SpannableString;
-import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.adapters.ViewPagerAdapter;
+import com.example.myapplication.adapters.EventViewPagerAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -81,7 +68,7 @@ public class EventInfoFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_event_info, container, false);
 
         ViewPager2 viewPager = view.findViewById(R.id.viewPager);
-        ViewPagerAdapter adapter = new ViewPagerAdapter(requireActivity());
+        EventViewPagerAdapter adapter = new EventViewPagerAdapter(requireActivity());
         viewPager.setAdapter(adapter);
         viewPager.setUserInputEnabled(true);
 

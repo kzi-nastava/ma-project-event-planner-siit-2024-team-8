@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -61,7 +60,7 @@ public class CreateEventFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        CreateEventFirstStepFragment fragment = new CreateEventFirstStepFragment();
+        CreateEventBasicInfoFragment fragment = new CreateEventBasicInfoFragment();
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.createEventLayout, fragment)
                 .commit();
@@ -84,17 +83,17 @@ public class CreateEventFragment extends Fragment {
 
     private void onBackButtonClick() {
         Fragment current = getChildFragmentManager().findFragmentById(R.id.createEventLayout);
-        if (current instanceof CreateEventFirstStepFragment){
+        if (current instanceof CreateEventBasicInfoFragment){
             getParentFragmentManager().popBackStack();
-        }else if (current instanceof CreateEventStepTwoFragment){
-            CreateEventFirstStepFragment stepOneFragment = new CreateEventFirstStepFragment();
+        }else if (current instanceof CreateEventLocationFragment){
+            CreateEventBasicInfoFragment stepOneFragment = new CreateEventBasicInfoFragment();
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.createEventLayout, stepOneFragment)
                     .commit();
             animateProgressBar(0);
             changeTitle(1);
         }else if (current instanceof CreateEventAgendaFragment){
-            CreateEventStepTwoFragment stepTwoFragment = new CreateEventStepTwoFragment();
+            CreateEventLocationFragment stepTwoFragment = new CreateEventLocationFragment();
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.createEventLayout, stepTwoFragment)
                     .commit();

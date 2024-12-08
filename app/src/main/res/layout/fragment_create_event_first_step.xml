@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_margin="20dp"
     android:orientation="vertical"
-    tools:context=".fragments.CreateEventFirstStepFragment">
+    tools:context=".fragments.CreateEventBasicInfoFragment">
 
     <TextView
         android:id="@+id/textView16"
@@ -105,7 +105,7 @@
         android:textStyle="bold" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputEventName"
+        android:id="@+id/textInputMaxAttendants"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -123,7 +123,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextEventName"
+            android:id="@+id/editTextMaxAttendants"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"

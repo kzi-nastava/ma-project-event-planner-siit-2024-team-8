@@ -63,7 +63,6 @@ public class RegisterFinalStep extends Fragment {
         //send user over http
         RegisterFragment parentFragment = (RegisterFragment) getParentFragment();
         UserService userService = new UserService();
-        userService.sendUserData(parentFragment.user);
     }
 
     @Override
@@ -78,7 +77,6 @@ public class RegisterFinalStep extends Fragment {
     }
 
     private void onActivationButtonClicked() {
-
         Fragment register = (RegisterFragment) getParentFragment();
         assert register != null;
         register.getParentFragmentManager().popBackStack();

@@ -13,10 +13,10 @@ import com.example.myapplication.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link CreateEventFirstStepFragment#newInstance} factory method to
+ * Use the {@link CreateEventBasicInfoFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CreateEventFirstStepFragment extends Fragment {
+public class CreateEventBasicInfoFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,7 +27,7 @@ public class CreateEventFirstStepFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public CreateEventFirstStepFragment() {
+    public CreateEventBasicInfoFragment() {
         // Required empty public constructor
     }
 
@@ -40,8 +40,8 @@ public class CreateEventFirstStepFragment extends Fragment {
      * @return A new instance of fragment CreateEventFirstStepFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CreateEventFirstStepFragment newInstance(String param1, String param2) {
-        CreateEventFirstStepFragment fragment = new CreateEventFirstStepFragment();
+    public static CreateEventBasicInfoFragment newInstance(String param1, String param2) {
+        CreateEventBasicInfoFragment fragment = new CreateEventBasicInfoFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -73,7 +73,7 @@ public class CreateEventFirstStepFragment extends Fragment {
         return view;
     }
     private void nextButtonClicked() {
-        CreateEventStepTwoFragment stepTwoFragment = new CreateEventStepTwoFragment();
+        CreateEventLocationFragment stepTwoFragment = new CreateEventLocationFragment();
         CreateEventFragment parentFragment = (CreateEventFragment) getParentFragment();
         assert parentFragment != null;
         parentFragment.getChildFragmentManager().beginTransaction()

@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="userVM"
+            type="com.example.myapplication.viewmodels.UserViewModel" />
+    </data>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -40,7 +46,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp" />
+            android:layout_marginEnd="30dp"
+            android:text="@={userVM.user.email}"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
@@ -76,7 +83,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
-            android:inputType="text|textPassword" />
+            android:inputType="text|textPassword"
+            android:text="@={userVM.user.password}"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
@@ -112,7 +120,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
-            android:inputType="text|textPassword" />
+            android:inputType="text|textPassword"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
@@ -131,10 +139,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:entries="@array/option_picker_values"
         android:popupBackground="@color/white"
-        android:spinnerMode="dropdown" />
-
+        android:spinnerMode="dropdown"
+        app:userType="@={userVM.user.userType}"
+        app:userTypeAttrChanged="@{userVM::onUserTypeChanged}"/>
     <Button
         android:id="@+id/registerNextButton3"
         android:layout_width="match_parent"
@@ -153,3 +161,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 </LinearLayout>
+</layout>

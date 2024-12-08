@@ -8,8 +8,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -18,19 +16,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.myapplication.R;
-import com.example.myapplication.fragments.CreateEventAgendaFragment;
-import com.example.myapplication.fragments.CreateEventFragment;
-import com.example.myapplication.fragments.CreateEventStepTwoFragment;
-import com.example.myapplication.fragments.EventInfoFragment;
 import com.example.myapplication.fragments.HomePageFragment;
-import com.example.myapplication.fragments.RegisterFragment;
-import com.example.myapplication.fragments.StartupFragment;
 
 public class MainActivity extends AppCompatActivity {
 

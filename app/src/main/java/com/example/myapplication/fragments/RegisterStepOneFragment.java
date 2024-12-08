@@ -3,6 +3,7 @@ package com.example.myapplication.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
+import com.example.myapplication.databinding.FragmentRegisterStepOneBinding;
 import com.example.myapplication.domain.User;
+import com.example.myapplication.viewmodels.UserViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +32,9 @@ public class RegisterStepOneFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private UserViewModel userViewModel;
+    private FragmentRegisterStepOneBinding binding;
 
     public RegisterStepOneFragment() {
         // Required empty public constructor
@@ -65,13 +71,18 @@ public class RegisterStepOneFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_register_step_one, container, false);
+        binding = FragmentRegisterStepOneBinding.inflate(inflater,container,false);
 
-        Button nextButton = view.findViewById(R.id.registerNextButton3);
+
+        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+
+        binding.setUserVM(userViewModel);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
+
+        Button nextButton = binding.registerNextButton3;
         nextButton.setOnClickListener(v -> nextButtonClicked());
 
-        return view;
+        return binding.getRoot();
     }
 
 
@@ -106,10 +117,6 @@ public class RegisterStepOneFragment extends Fragment {
         if (firstName.isBlank() || firstName.isEmpty() || lastName.isEmpty() || lastName.isBlank()) {
             return false;
         }
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setAddress(address);
-        user.setNumber(number);
         return true;
     }
 }

@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,10 +28,10 @@ import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link CreateEventStepTwoFragment#newInstance} factory method to
+ * Use the {@link CreateEventLocationFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CreateEventStepTwoFragment extends Fragment {
+public class CreateEventLocationFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -47,7 +46,7 @@ public class CreateEventStepTwoFragment extends Fragment {
 
     private Marker marker;
 
-    public CreateEventStepTwoFragment() {
+    public CreateEventLocationFragment() {
         // Required empty public constructor
     }
 
@@ -60,8 +59,8 @@ public class CreateEventStepTwoFragment extends Fragment {
      * @return A new instance of fragment CreateEventStepTwoFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CreateEventStepTwoFragment newInstance(String param1, String param2) {
-        CreateEventStepTwoFragment fragment = new CreateEventStepTwoFragment();
+    public static CreateEventLocationFragment newInstance(String param1, String param2) {
+        CreateEventLocationFragment fragment = new CreateEventLocationFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

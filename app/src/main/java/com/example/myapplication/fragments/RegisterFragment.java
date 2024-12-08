@@ -3,7 +3,9 @@ package com.example.myapplication.fragments;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +16,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.databinding.FragmentRegisterBinding;
 import com.example.myapplication.domain.User;
+import com.example.myapplication.viewmodels.UserViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,6 +37,8 @@ public class RegisterFragment extends Fragment {
     private String mParam2;
 
     protected User user = new User();
+
+    private UserViewModel userViewModel;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -72,12 +78,12 @@ public class RegisterFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_register, container, false);
-
-        ImageButton button = view.findViewById(R.id.backButton);
+        FragmentRegisterBinding binding = DataBindingUtil.inflate(
+                inflater, R.layout.fragment_register, container, false);
+        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        ImageButton button = binding.backButton;
         button.setOnClickListener(v -> onBackButtonClick());
-        return view;
+        return binding.getRoot();
     }
 
     private void onBackButtonClick() {
@@ -118,11 +124,11 @@ public class RegisterFragment extends Fragment {
     public void changeTitle(int step){
         TextView title = getView().findViewById(R.id.stepTitleTextView);
         if (step == 1){
-            title.setText("1 of 3 : Basic Info");
+            title.setText("Basic Info");
         }else if (step == 2){
-            title.setText("2 of 3 : Profile Picture");
+            title.setText("Profile Picture");
         }else if(step == 3){
-            title.setText("3 of 3 : Login Info");
+            title.setText("Login Info");
         }else if (step==5) {
             title.setText("Provider Register");
         }else if (step==4){

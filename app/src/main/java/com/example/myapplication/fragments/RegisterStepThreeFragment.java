@@ -3,6 +3,7 @@ package com.example.myapplication.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +14,11 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
+import com.example.myapplication.databinding.FragmentRegisterStepOneBinding;
+import com.example.myapplication.databinding.FragmentRegisterStepThreeBinding;
 import com.example.myapplication.domain.User;
 import com.example.myapplication.domain.UserType;
+import com.example.myapplication.viewmodels.UserViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,6 +35,10 @@ public class RegisterStepThreeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private FragmentRegisterStepThreeBinding binding;
+
+    private UserViewModel userViewModel;
 
     public RegisterStepThreeFragment() {
         // Required empty public constructor
@@ -67,12 +75,19 @@ public class RegisterStepThreeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_register_step_three, container, false);
+        binding = FragmentRegisterStepThreeBinding.inflate(inflater,container,false);
 
-        Button nextButton = view.findViewById(R.id.registerNextButton3);
+
+        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+
+
+        binding.setUserVM(userViewModel);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
+
+        Button nextButton = binding.registerNextButton3;
         nextButton.setOnClickListener(v -> onNextButtonClick());
 
-        return view;
+        return binding.getRoot();
     }
 
     private void onNextButtonClick() {
@@ -109,6 +124,7 @@ public class RegisterStepThreeFragment extends Fragment {
             parentFragment.changeTitle(4);
             parentFragment.animateProgressBar(100);
         }
+        userViewModel.saveUserData();
     }
 
     private boolean retrieveData(User user) {
@@ -119,15 +135,6 @@ public class RegisterStepThreeFragment extends Fragment {
         if (email.isBlank() || email.isEmpty() || password.isBlank() || password.isEmpty() || passwordConfirm.isEmpty() || passwordConfirm.isBlank() || !password.equals(passwordConfirm)) {
             return false;
         }
-        if (spinner.getSelectedItem().toString().equals("PROVIDER")) {
-            user.setUserType(UserType.PROVIDER);
-        } else if (spinner.getSelectedItem().toString().equals("ORGANIZER")) {
-            user.setUserType(UserType.ORGANIZER);
-        } else {
-            user.setUserType(UserType.USER);
-        }
-        user.setEmail(email);
-        user.setPassword(password);
         return true;
     }
 }

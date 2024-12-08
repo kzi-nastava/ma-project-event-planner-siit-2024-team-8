@@ -1,19 +1,37 @@
 package com.example.myapplication.domain;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 
 public class User {
+    @SerializedName("firstName")
     private String firstName;
+    @SerializedName("lastName")
     private String lastName;
+    @SerializedName("email")
     private String email;
+
+    @SerializedName("password")
     private String password;
+
+    @SerializedName("number")
     private String number;
+
+    @SerializedName("profileImageURL")
     private String profileImageURL;
+    @SerializedName("address")
     private String address;
+
+    @SerializedName("userType")
     private UserType userType;
+    @SerializedName("companyName")
     private String companyName;
+    @SerializedName("companyDescription")
     private String companyDescription;
+    @SerializedName("companyImagesURL")
     private ArrayList<String> companyImagesURL;
+    @SerializedName("isActive")
     private Boolean isActive;
 
     public User() {
@@ -131,5 +149,13 @@ public class User {
 
     public void setCompanyImagesURL(ArrayList<String> companyImagesURL) {
         this.companyImagesURL = companyImagesURL;
+    }
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
     }
 }

@@ -53,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
 
     private LoginFragment loginFragment;
 
+    private HomePageFragment homePageFragment;
+
     public boolean checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             // For Android 13+ (API 33+)

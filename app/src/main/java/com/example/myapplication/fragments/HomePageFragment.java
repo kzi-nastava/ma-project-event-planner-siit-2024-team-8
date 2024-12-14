@@ -1,5 +1,6 @@
 package com.example.myapplication.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,12 +10,14 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.auth0.android.jwt.JWT;
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.AssetCardAdapter;
 import com.example.myapplication.adapters.EventCardAdapter;
@@ -22,7 +25,10 @@ import com.example.myapplication.domain.AssetDTO;
 import com.example.myapplication.domain.AssetType;
 import com.example.myapplication.domain.Event;
 import com.example.myapplication.domain.OfferingType;
+import com.example.myapplication.utilities.JwtTokenUtil;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -42,8 +48,6 @@ public class HomePageFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-    private Boolean loggedIn; //defines whether the user is logged in.
 
     private RecyclerView eventRecyclerView;
     private RecyclerView assetRecyclerView;
@@ -91,20 +95,47 @@ public class HomePageFragment extends Fragment {
 
         seeAllEvents.setOnClickListener(v -> onSeeAllClick(OfferingType.EVENT));
         seeAllAssets.setOnClickListener(v -> onSeeAllClick(OfferingType.ASSET));
-        //HARDCODED TO FALSE UNTIL LOGIN REALIZED
-        loginButton.setOnClickListener(v -> onProfileClick(false));
+
+        loginButton.setOnClickListener(v -> onProfileClick(view));
 
         return view;
     }
 
-    public void onProfileClick(boolean loggedIn) {
-        LoginFragment loginFragment = new LoginFragment();
-        //UserProfileFragment userProfileFragment = new UserProfileFragment();
-        if (!loggedIn) {
-            getActivity().getSupportFragmentManager().beginTransaction()
+    public void onProfileClick(View view) {
+        if (isUserLoggedIn(view.getContext())) {
+            // Navigate to the ProfileInfoFragment
+            ProfileInfoFragment userProfileFragment = new ProfileInfoFragment();
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.main, userProfileFragment)
+                    .addToBackStack(null)
+                    .commit();
+        } else {
+            // Navigate to the LoginFragment
+            LoginFragment loginFragment = new LoginFragment();
+            requireActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.main, loginFragment)
                     .addToBackStack(null)
                     .commit();
+        }
+    }
+
+    private boolean isUserLoggedIn(Context context) {
+        try {
+            // Ensure sharedPreferences is initialized
+            if (JwtTokenUtil.getToken() == null) {
+                return false;
+            }
+
+            String jwtToken = JwtTokenUtil.getToken();
+            if (jwtToken != null) {
+                JWT token = new JWT(jwtToken);
+                // Check token expiry
+                return !token.isExpired(10); // Adjust the leeway (e.g., 10 seconds)
+            }
+            return false;
+        } catch (Exception e) {
+            Log.e("JwtTokenUtil", "Error checking login state", e);
+            return false; // Consider any exceptions as "not logged in"
         }
     }
 

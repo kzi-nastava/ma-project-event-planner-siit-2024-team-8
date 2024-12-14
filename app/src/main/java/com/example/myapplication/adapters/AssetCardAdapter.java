@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
 import com.example.myapplication.domain.AssetDTO;
-import com.example.myapplication.fragments.AssetInfoFragment;
+import com.example.myapplication.fragments.asset.AssetInfoFragment;
 
 import java.util.ArrayList;
 

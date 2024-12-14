@@ -24,7 +24,7 @@ public class User {
     private String address;
 
     @SerializedName("userType")
-    private UserType userType;
+    private Role role;
     @SerializedName("companyName")
     private String companyName;
     @SerializedName("companyDescription")
@@ -42,13 +42,13 @@ public class User {
         this.number = "";
         this.profileImageURL = "";
         this.address = "";
-        this.userType = UserType.USER;
+        this.role = Role.USER;
         this.companyName = "";
         this.companyDescription = "";
         this.companyImagesURL = new ArrayList<String>();
         this.isActive = false;
     }
-    public User(String firstName, String lastName, String email, String password, String number, String profileImageURL, String address, UserType userType, String companyName, String companyDescription, ArrayList<String> companyImagesURL) {
+    public User(String firstName, String lastName, String email, String password, String number, String profileImageURL, String address, Role role, String companyName, String companyDescription, ArrayList<String> companyImagesURL) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -56,7 +56,7 @@ public class User {
         this.number = number;
         this.profileImageURL = profileImageURL;
         this.address = address;
-        this.userType = userType;
+        this.role = role;
         this.companyName = companyName;
         this.companyDescription = companyDescription;
         this.companyImagesURL = companyImagesURL;
@@ -119,12 +119,12 @@ public class User {
         this.address = address;
     }
 
-    public UserType getUserType() {
-        return userType;
+    public Role getUserType() {
+        return role;
     }
 
-    public void setUserType(UserType userType) {
-        this.userType = userType;
+    public void setUserType(Role role) {
+        this.role = role;
     }
 
     public String getCompanyName() {

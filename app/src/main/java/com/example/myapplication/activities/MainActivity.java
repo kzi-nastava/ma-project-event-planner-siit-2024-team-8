@@ -8,25 +8,50 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.transition.Visibility;
+import android.view.Menu;
+import android.view.View;
+import android.view.WindowInsets;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.NavGraph;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 
 import com.example.myapplication.R;
+import com.example.myapplication.domain.Role;
 import com.example.myapplication.fragments.HomePageFragment;
+import com.example.myapplication.fragments.LoginFragment;
+import com.example.myapplication.fragments.event.create_event.CreateEventFragment;
+import com.example.myapplication.viewmodels.UserViewModel;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoginFragment.OnRoleChangeListener {
 
     public static final int PICK_IMAGE_REQUEST = 1;
     public static final int PERMISSION_REQUEST_CODE = 100;
 
     public ImageView imageView;
     public Uri imageUri = Uri.parse("");
+
+    private BottomNavigationView bottomNavigationView;
+
+    private NavHostFragment navHostFragment;
+
+    private NavController navController;
+
+    private FragmentTransaction loginTransaction;
+
+    private LoginFragment loginFragment;
 
     public boolean checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -92,17 +117,50 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+        View rootView = findViewById(android.R.id.content);
+        rootView.setOnApplyWindowInsetsListener((v, insets) -> {
+            // Get the heights of status and navigation bars
+            int statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top;
+            int navBarHeight = insets.getInsets(WindowInsets.Type.navigationBars()).bottom;
+            v.setPadding(0, statusBarHeight, 0, navBarHeight);
+            return insets.consumeSystemWindowInsets();
+        });
+        navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.main);
+        bottomNavigationView = findViewById(R.id.bottomNavigationViewHomePage);
+        navController = navHostFragment.getNavController();
 
 
-        HomePageFragment fragment = new HomePageFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main, fragment)
-                .addToBackStack(null)
+        loginFragment = new LoginFragment();
+        FragmentTransaction loginTransaction = getSupportFragmentManager().beginTransaction();
+        loginTransaction.replace(R.id.mainLayout,loginFragment)
                 .commit();
+
+
+    }
+
+    @Override
+    public void onRoleChanged(Role role) {
+        getSupportFragmentManager().beginTransaction()
+                        .detach(loginFragment)
+                        .commit();
+        bottomNavigationView.setVisibility(View.VISIBLE);
+        Menu menu = bottomNavigationView.getMenu();
+        if (role == Role.ORGANIZER) {
+            bottomNavigationView.inflateMenu(R.menu.home_menu);
+            NavGraph organizerGraph = navController.getNavInflater()
+                    .inflate(R.navigation.home_user_navigation);
+            navController.setGraph(organizerGraph);
+        } else if (role == Role.USER) {
+            bottomNavigationView.inflateMenu(R.menu.home_menu);
+            bottomNavigationView.getMenu().findItem(R.id.createEventFragment).setVisible(false);
+            NavGraph organizerGraph = navController.getNavInflater()
+                    .inflate(R.navigation.home_user_navigation);
+            navController.setGraph(organizerGraph);
+        }
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
     }
 }

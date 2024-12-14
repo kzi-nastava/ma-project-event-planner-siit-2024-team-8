@@ -6,8 +6,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.myapplication.domain.Role;
 import com.example.myapplication.domain.User;
-import com.example.myapplication.domain.UserType;
 import com.example.myapplication.services.ClientUtils;
 
 import java.io.IOException;
@@ -35,8 +35,8 @@ public class UserViewModel extends ViewModel {
     // Method to save the user data (you can add logic to handle validation here)
     public void saveUserData() {
         User user = userLiveData.getValue();
-        if (user.getUserType() == UserType.USER || user.getUserType() == UserType.ORGANIZER) {
-
+        userLiveData.setValue(new User());
+        if (user.getUserType() == Role.USER || user.getUserType() == Role.ORGANIZER) {
             ClientUtils.userService.registerUser(user).enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {

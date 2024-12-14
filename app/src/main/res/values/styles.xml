@@ -4,6 +4,19 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">10%</item>
     </style>
+    <style name="Widget.Custom.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/white</item>
+        <item name="boxStrokeColor">@color/olive</item>
+        <item name="android:editTextColor">@color/black</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="hintTextColor">@color/olive</item>
+    </style>
+    <style name="CustomEditTextStyle">
+        <item name="android:textColor">#FF0000</item> <!-- Red text color -->
+        <item name="android:textColorHint">#808080</item> <!-- Gray hint text color -->
+        <item name="android:textSize">18sp</item> <!-- Set text size -->
+        <item name="android:padding">16dp</item> <!-- Optional padding -->
+    </style>
     <style name="CustomBottomNavBarStyle">
         <item name="android:background">@color/light_gray</item>
         <item name="itemBackground">@drawable/navbar_new</item>

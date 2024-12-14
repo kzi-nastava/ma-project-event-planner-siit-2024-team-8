@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.fragments.register.RegisterFragment;
 
 /**
  * A simple {@link Fragment} subclass.

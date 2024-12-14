@@ -5,8 +5,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.myapplication.fragments.AssetDetailsFragment;
-import com.example.myapplication.fragments.AssetOverviewFragment;
+import com.example.myapplication.fragments.asset.AssetDetailsFragment;
+import com.example.myapplication.fragments.asset.AssetOverviewFragment;
 import com.example.myapplication.fragments.ToDoFragment;
 
 public class AssetViewPagerAdapter extends FragmentStateAdapter {

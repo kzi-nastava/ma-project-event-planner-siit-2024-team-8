@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/overviewFragment"
-        android:name="com.example.myapplication.fragments.EventOverviewFragment"
+        android:name="com.example.myapplication.fragments.event.event_info.EventOverviewFragment"
         android:label="Overview"
         tools:layout="@layout/fragment_to_do" />
 

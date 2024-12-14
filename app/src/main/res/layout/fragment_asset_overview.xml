@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp"
-    tools:context=".fragments.AssetOverviewFragment">
+    tools:context=".fragments.asset.AssetOverviewFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.AssetCategoriesFragment">
+    tools:context=".fragments.asset.AssetCategoriesFragment">
 
     <!-- RecyclerView takes the full available space but leaves room for the FAB -->
     <androidx.recyclerview.widget.RecyclerView

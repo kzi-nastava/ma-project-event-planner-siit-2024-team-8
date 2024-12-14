@@ -1,20 +1,17 @@
 package com.example.myapplication.services;
 
-import com.example.myapplication.BuildConfig;
-import com.example.myapplication.retrofits.RetrofitClient;
+import com.example.myapplication.utilities.HttpInterceptor;
+import com.example.myapplication.utilities.RetrofitClient;
 
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ClientUtils {
 
     public static OkHttpClient test(){
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        HttpInterceptor interceptor = new HttpInterceptor();
 
         return new OkHttpClient.Builder()
                 .connectTimeout(120, TimeUnit.SECONDS)
@@ -23,4 +20,5 @@ public class ClientUtils {
                 .addInterceptor(interceptor).build();
     }
     public static UserAPIService userService = RetrofitClient.getRetrofitInstance().create(UserAPIService.class);
+    public static LoginService loginService = RetrofitClient.getRetrofitInstance().create(LoginService.class);
 }

@@ -10,20 +10,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
-import com.example.myapplication.domain.EventDTO;
-import com.example.myapplication.fragments.EventInfoFragment;
+import com.example.myapplication.domain.Event;
+import com.example.myapplication.fragments.event.event_info.EventInfoFragment;
 
 import java.util.ArrayList;
 
 public class EventCardAdapter extends RecyclerView.Adapter<EventCardAdapter.ViewHolder> {
 
-    private ArrayList<EventDTO> _eventCards;
+    private ArrayList<Event> _eventCards;
 
     private Context context;
 
@@ -95,12 +94,12 @@ public class EventCardAdapter extends RecyclerView.Adapter<EventCardAdapter.View
         return _eventCards.size();
     }
 
-    public void set_eventCards(ArrayList<EventDTO> _eventCards) {
+    public void set_eventCards(ArrayList<Event> _eventCards) {
         this._eventCards = _eventCards;
     }
 
     public interface OnItemClickListener {
-        void onItemClick(EventDTO event);
+        void onItemClick(Event event);
     }
 
     /*

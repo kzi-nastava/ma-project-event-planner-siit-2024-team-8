@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.myapplication.R;
+import com.example.myapplication.fragments.asset.AssetCategoriesFragment;
+import com.example.myapplication.fragments.asset.CreateAssetFragment;
 import com.google.android.material.button.MaterialButton;
 
 public class ProfileInfoFragment extends Fragment {

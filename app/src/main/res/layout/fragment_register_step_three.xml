@@ -12,7 +12,7 @@
     android:layout_height="match_parent"
     android:layout_marginTop="20dp"
     android:orientation="vertical"
-    tools:context=".fragments.RegisterStepThreeFragment">
+    tools:context=".fragments.register.RegisterStepThreeFragment">
 
     <TextView
         android:id="@+id/textView13"

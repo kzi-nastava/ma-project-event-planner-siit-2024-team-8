@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".fragments.RegisterStepTwoFragment">
+    tools:context=".fragments.register.RegisterStepTwoFragment">
 
     <ImageView
         android:id="@+id/imageView3"

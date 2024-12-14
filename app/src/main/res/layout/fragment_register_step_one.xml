@@ -14,7 +14,7 @@
             android:layout_marginTop="20dp"
             android:orientation="vertical"
             app:layout_anchorGravity="center_vertical"
-            tools:context=".fragments.RegisterStepOneFragment">
+            tools:context=".fragments.register.RegisterStepOneFragment">
 
             <TextView
                 android:id="@+id/textView13"

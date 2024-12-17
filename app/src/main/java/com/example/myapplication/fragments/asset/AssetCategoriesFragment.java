@@ -8,14 +8,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.AssetCategoryAdapter;
 import com.example.myapplication.domain.AssetCategory;
-import com.example.myapplication.services.AssetCategoryService;
-import com.example.myapplication.utilities.JwtTokenUtil;
+import com.example.myapplication.viewmodels.AssetCategoryViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -31,10 +32,7 @@ public class AssetCategoriesFragment extends Fragment implements AssetCategoryAd
     private RecyclerView pendingRecyclerView;
     private AssetCategoryAdapter activeAdapter;
     private AssetCategoryAdapter pendingAdapter;
-    private List<AssetCategory> activeCategories;
-    private List<AssetCategory> pendingCategories;
-
-    private AssetCategoryService assetCategoryService;
+    private AssetCategoryViewModel assetCategoryViewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -49,154 +47,111 @@ public class AssetCategoriesFragment extends Fragment implements AssetCategoryAd
         pendingRecyclerView = view.findViewById(R.id.pendingCategoriesRecyclerView);
         FloatingActionButton fab = view.findViewById(R.id.fabAddCategory);
 
-        activeCategories = new ArrayList<>();
-        pendingCategories = new ArrayList<>();
-
-        // Temporary static categories
-        addStaticCategories();
+        // Initialize ViewModel
+        assetCategoryViewModel = new ViewModelProvider(this).get(AssetCategoryViewModel.class);
 
         activeRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        activeAdapter = new AssetCategoryAdapter(activeCategories, requireContext(), this);
+        activeAdapter = new AssetCategoryAdapter(new ArrayList<>(), requireContext(), this);
         activeRecyclerView.setAdapter(activeAdapter);
 
         pendingRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        pendingAdapter = new AssetCategoryAdapter(pendingCategories, requireContext(), this);
+        pendingAdapter = new AssetCategoryAdapter(new ArrayList<>(), requireContext(), this);
         pendingRecyclerView.setAdapter(pendingAdapter);
 
-        fab.setOnClickListener(v -> {
-            EditAssetCategoryPopup dialog = EditAssetCategoryPopup.newInstance(null, true);
-            dialog.setListener(new EditAssetCategoryPopup.EditAssetCategoryListener() {
-                @Override
-                public void onSaveCategory(AssetCategory updatedCategory) {
-                    pendingCategories.add(updatedCategory);
-                    pendingAdapter.notifyItemInserted(pendingCategories.size() - 1);
-                }
+        fab.setOnClickListener(v -> showEditCategoryDialog(null, true)); // Add new category
 
-                @Override
-                public void onDeleteCategory(AssetCategory categoryToDelete) {
-                }
-
-                @Override
-                public void onCancel() {
-                }
-
-                @Override
-                public void onApproveCategory(AssetCategory category) {
-                    category.setActive(true);
-                    pendingCategories.remove(category);
-                    activeCategories.add(category);
-                    activeAdapter.notifyItemInserted(activeCategories.size() - 1);
-                }
-            });
-            dialog.show(getChildFragmentManager(), "AddCategoryDialog");
+        // Observing the live data for categories
+        assetCategoryViewModel.getActiveCategories().observe(getViewLifecycleOwner(), new Observer<List<AssetCategory>>() {
+            @Override
+            public void onChanged(List<AssetCategory> activeCategories) {
+                activeAdapter.updateCategories(activeCategories);
+            }
         });
 
-        // Uncomment this line when dynamic loading is required:
-        // loadCategories();
-    }
+        assetCategoryViewModel.getPendingCategories().observe(getViewLifecycleOwner(), new Observer<List<AssetCategory>>() {
+            @Override
+            public void onChanged(List<AssetCategory> pendingCategories) {
+                pendingAdapter.updateCategories(pendingCategories);
+            }
+        });
 
-    private void addStaticCategories() {
-        activeCategories.add(new AssetCategory("0", "Active Category 1", "Description for active category 1", "Utility", true));
-        activeCategories.add(new AssetCategory("0", "Active Category 2", "Description for active category 2", "Product", true));
+        assetCategoryViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+        });
 
-        pendingCategories.add(new AssetCategory("0", "Pending Category 1", "Description for pending category 1", "Utility", false));
-        pendingCategories.add(new AssetCategory("0", "Pending Category 2", "Description for pending category 2", "Product", false));
+        assetCategoryViewModel.getErrorMessage().observe(getViewLifecycleOwner(), errorMessage -> {
+            if (errorMessage != null) {
+            }
+        });
 
-//        activeAdapter.notifyDataSetChanged();
-//        pendingAdapter.notifyDataSetChanged();
-    }
-
-    private void loadCategories() {
-        String token = JwtTokenUtil.getToken();
-
-        if (token != null && !token.isEmpty()) {
-            String authHeader = "Bearer " + token;
-
-            assetCategoryService.getActiveCategories(authHeader, new Callback<List<AssetCategory>>() {
-                @Override
-                public void onResponse(Call<List<AssetCategory>> call, Response<List<AssetCategory>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        activeCategories.clear();
-                        activeCategories.addAll(response.body());
-                        //activeAdapter.notifyDataSetChanged();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<AssetCategory>> call, Throwable t) {
-                }
-            });
-
-            assetCategoryService.getPendingCategories(authHeader, new Callback<List<AssetCategory>>() {
-                @Override
-                public void onResponse(Call<List<AssetCategory>> call, Response<List<AssetCategory>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        pendingCategories.clear();
-                        pendingCategories.addAll(response.body());
-//                        pendingAdapter.notifyDataSetChanged();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<AssetCategory>> call, Throwable t) {
-                }
-
-
-            });
-        }
+        assetCategoryViewModel.loadCategories();
     }
 
     @Override
     public void onItemClick(AssetCategory category) {
-        EditAssetCategoryPopup dialog = EditAssetCategoryPopup.newInstance(category, false);
+        showEditCategoryDialog(category, false);
+    }
+
+    private void showEditCategoryDialog(AssetCategory category, boolean isCreateMode) {
+        EditAssetCategoryPopup dialog = EditAssetCategoryPopup.newInstance(category, isCreateMode);
         dialog.setListener(new EditAssetCategoryPopup.EditAssetCategoryListener() {
             @Override
             public void onSaveCategory(AssetCategory updatedCategory) {
-                int index = getCategoryIndex(updatedCategory);
-                if (index != -1) {
-                    if (activeCategories.contains(updatedCategory)) {
-                        activeCategories.set(index, updatedCategory);
-                        activeAdapter.notifyItemChanged(index);
-                    } else {
-                        pendingCategories.set(index, updatedCategory);
-                        pendingAdapter.notifyItemChanged(index);
+                assetCategoryViewModel.saveCategory(updatedCategory, isCreateMode, new Callback<AssetCategory>() {
+                    @Override
+                    public void onResponse(Call<AssetCategory> call, Response<AssetCategory> response) {
+                        // Handle success
+                        assetCategoryViewModel.loadCategories(); // Refresh categories
                     }
-                }
+
+                    @Override
+                    public void onFailure(Call<AssetCategory> call, Throwable t) {
+                        // Handle failure
+                    }
+                });
             }
 
             @Override
             public void onDeleteCategory(AssetCategory categoryToDelete) {
-                if (activeCategories.contains(categoryToDelete)) {
-                    activeCategories.remove(categoryToDelete);
-//                    activeAdapter.notifyDataSetChanged();
-                } else if (pendingCategories.contains(categoryToDelete)) {
-                    pendingCategories.remove(categoryToDelete);
-//                    pendingAdapter.notifyDataSetChanged();
-                }
+                assetCategoryViewModel.deleteCategory(categoryToDelete, new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        // Handle success
+                        assetCategoryViewModel.loadCategories(); // Refresh categories
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        // Handle failure
+                    }
+                });
             }
 
             @Override
             public void onCancel() {
+                // Handle cancel
             }
 
             @Override
             public void onApproveCategory(AssetCategory category) {
-                category.setActive(true);
-                pendingCategories.remove(category);
-                activeCategories.add(category);
-                activeAdapter.notifyItemInserted(activeCategories.size() - 1);
+                assetCategoryViewModel.approveCategory(category, new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        // Handle success
+                        assetCategoryViewModel.loadCategories(); // Refresh categories
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        // Handle failure
+                    }
+                });
+            }
+
+            @Override
+            public void onCategoryUpdated() {
+                assetCategoryViewModel.loadCategories(); // Refresh categories after update
             }
         });
         dialog.show(getChildFragmentManager(), "EditCategoryDialog");
-    }
-
-    private int getCategoryIndex(AssetCategory category) {
-        int index = -1;
-        if (activeCategories.contains(category)) {
-            index = activeCategories.indexOf(category);
-        } else if (pendingCategories.contains(category)) {
-            index = pendingCategories.indexOf(category);
-        }
-        return index;
     }
 }

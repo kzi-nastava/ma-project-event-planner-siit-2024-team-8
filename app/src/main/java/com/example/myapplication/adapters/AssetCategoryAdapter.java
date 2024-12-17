@@ -1,5 +1,6 @@
 package com.example.myapplication.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,6 +61,13 @@ public class AssetCategoryAdapter extends RecyclerView.Adapter<AssetCategoryAdap
 
     public interface OnItemClickListener {
         void onItemClick(AssetCategory category);
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void updateCategories(List<AssetCategory> newCategories) {
+        this.categories.clear();
+        this.categories.addAll(newCategories);
+        notifyDataSetChanged();
     }
 }
 

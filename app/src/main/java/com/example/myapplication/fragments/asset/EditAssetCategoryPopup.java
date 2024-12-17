@@ -37,6 +37,7 @@ public class EditAssetCategoryPopup extends DialogFragment {
         void onDeleteCategory(AssetCategory category);
         void onCancel();
         void onApproveCategory(AssetCategory category);
+        void onCategoryUpdated();
     }
 
     public static EditAssetCategoryPopup newInstance(AssetCategory category, boolean isAddMode) {
@@ -52,7 +53,6 @@ public class EditAssetCategoryPopup extends DialogFragment {
         this.listener = listener;
     }
 
-    @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         super.onCreateDialog(savedInstanceState);
@@ -105,7 +105,8 @@ public class EditAssetCategoryPopup extends DialogFragment {
                 } else {
                     approveButton.setVisibility(View.VISIBLE);
                     deleteButton.setVisibility(View.VISIBLE);
-                    saveButton.setVisibility(View.GONE); // Hide the Save button
+                    saveButton.setVisibility(View.GONE);
+
                     nameEditText.setEnabled(false);
                     descriptionEditText.setEnabled(false);
                     productRadioButton.setEnabled(false);
@@ -127,12 +128,62 @@ public class EditAssetCategoryPopup extends DialogFragment {
         dialog.setCancelable(true);
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
+        // Cancel Button
         cancelButton.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onCancel();
             }
             dismiss();
         });
+
+        // Delete Button
+        deleteButton.setOnClickListener(v -> {
+            if (category != null && listener != null) {
+                listener.onDeleteCategory(category);
+            }
+            dismiss();
+        });
+
+        // Approve Button (only visible when in edit mode for pending categories)
+        approveButton.setOnClickListener(v -> {
+            if (category != null && listener != null) {
+                listener.onApproveCategory(category);
+            }
+            dismiss();
+        });
+
+        // Save Button (Add or Update based on mode)
+        // Inside the saveButton click listener in EditAssetCategoryPopup
+        saveButton.setOnClickListener(v -> {
+            if (nameEditText.getText().toString().isEmpty() || descriptionEditText.getText().toString().isEmpty()) {
+                // Handle empty fields if needed
+                return;
+            }
+
+            String name = nameEditText.getText().toString();
+            String description = descriptionEditText.getText().toString();
+            String type = productRadioButton.isChecked() ? "Product" : "Utility";
+
+            AssetCategory updatedCategory = new AssetCategory(category.getId(), name, description, type, category.getActive());
+
+            if (isAddMode) {
+                if (listener != null) {
+                    listener.onSaveCategory(updatedCategory);  // Save new category
+                }
+            } else {
+                if (listener != null) {
+                    listener.onSaveCategory(updatedCategory);  // Update existing category
+                }
+            }
+
+            // Notify the parent fragment to refresh the categories after saving
+            if (listener != null) {
+                listener.onCategoryUpdated();
+            }
+
+            dismiss();
+        });
+
 
         return dialog;
     }

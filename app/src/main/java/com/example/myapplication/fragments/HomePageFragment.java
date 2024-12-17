@@ -25,7 +25,9 @@ import com.example.myapplication.domain.AssetDTO;
 import com.example.myapplication.domain.AssetType;
 import com.example.myapplication.domain.Event;
 import com.example.myapplication.domain.OfferingType;
+import com.example.myapplication.fragments.asset.AssetCategoriesFragment;
 import com.example.myapplication.utilities.JwtTokenUtil;
+import com.google.android.material.button.MaterialButton;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -92,9 +94,18 @@ public class HomePageFragment extends Fragment {
         Button seeAllEvents = view.findViewById(R.id.seeAllEventsButton);
         Button seeAllAssets = view.findViewById(R.id.seeAllAssetsButton);
         ImageButton loginButton = view.findViewById(R.id.imageButton);
+        MaterialButton categoryButton = view.findViewById(R.id.CategoryButton);
 
         seeAllEvents.setOnClickListener(v -> onSeeAllClick(OfferingType.EVENT));
         seeAllAssets.setOnClickListener(v -> onSeeAllClick(OfferingType.ASSET));
+        categoryButton.setOnClickListener(v -> {
+            AssetCategoriesFragment assetCategoriesFragment = new AssetCategoriesFragment();
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.main, assetCategoriesFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
 
         loginButton.setOnClickListener(v -> onProfileClick(view));
 

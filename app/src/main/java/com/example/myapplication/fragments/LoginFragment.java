@@ -164,7 +164,7 @@ public class LoginFragment extends Fragment {
         requireActivity().getSupportFragmentManager().beginTransaction()
                 .detach(this)
                 .commit();
-        ProfileInfoFragment fragment = new ProfileInfoFragment();
+        HomePageFragment fragment = new HomePageFragment();
         getParentFragmentManager().beginTransaction()
                 .replace(R.id.main,fragment)
                 .addToBackStack(null)

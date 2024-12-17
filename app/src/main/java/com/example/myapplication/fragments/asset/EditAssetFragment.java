@@ -51,35 +51,10 @@ public class EditAssetFragment extends Fragment {
         visibilitySwitch = view.findViewById(R.id.visibilitySwitch);
         availabilitySwitch = view.findViewById(R.id.availabilitySwitch);
 
-        categorySpinner = view.findViewById(R.id.assetCategorySpinner);
         confirmationMethodGroup = view.findViewById(R.id.confirmationMethodGroup);
 
         bookingDeadlineTextView = view.findViewById(R.id.bookingDateTextView);
         cancellationDeadlineTextView = view.findViewById(R.id.cancellationDateTextView);
-
-        categorySuggestionLayout = view.findViewById(R.id.categorySuggestionLayout);
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.asset_categories, android.R.layout.simple_spinner_item);
-
-        adapter.setDropDownViewResource(R.layout.spinner_item);
-
-        categorySpinner.setAdapter(adapter);
-
-        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (categorySpinner.getSelectedItem().toString().equals("None of the Above")) {
-                    categorySuggestionLayout.setVisibility(View.VISIBLE);
-                } else {
-                    categorySuggestionLayout.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
-        });
 
         bookingDeadlineTextView.setOnClickListener(v -> showDatePickerDialog(bookingDeadlineTextView));
         cancellationDeadlineTextView.setOnClickListener(v -> showDatePickerDialog(cancellationDeadlineTextView));

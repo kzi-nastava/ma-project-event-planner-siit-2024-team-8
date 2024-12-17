@@ -6,25 +6,59 @@
     android:layout_height="match_parent"
     tools:context=".fragments.asset.AssetCategoriesFragment">
 
-    <!-- RecyclerView takes the full available space but leaves room for the FAB -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/assetCategoriesRecyclerView"
+    <android.widget.ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/fabAddCategory"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent">
 
-    <!-- Floating Action Button at the bottom center, with a small margin from the bottom -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <!-- Pending Categories Header -->
+            <TextView
+                android:id="@+id/pendingCategoriesHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pending Categories"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:padding="16dp" />
+
+            <!-- Pending Categories List -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/pendingCategoriesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!-- Active Categories Header -->
+            <TextView
+                android:id="@+id/activeCategoriesHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Active Categories"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:padding="16dp" />
+
+            <!-- Active Categories List -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/activeCategoriesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </android.widget.ScrollView>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddCategory"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:contentDescription="Add Category"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:backgroundTint="@color/olive"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

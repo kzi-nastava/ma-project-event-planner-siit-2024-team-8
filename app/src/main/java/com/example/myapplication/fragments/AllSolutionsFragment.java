@@ -20,13 +20,18 @@ import com.example.myapplication.R;
 import com.example.myapplication.adapters.AssetCardAdapter;
 import com.example.myapplication.adapters.EventCardAdapter;
 import com.example.myapplication.domain.OfferingType;
+import com.example.myapplication.services.AssetCategoryService;
+import com.example.myapplication.utilities.JwtTokenUtil;
+import com.example.myapplication.viewmodels.AssetViewModel;
 import com.example.myapplication.viewmodels.EventViewModel;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
+import java.util.ArrayList;
+
 public class AllSolutionsFragment extends Fragment {
 
-    private EventViewModel mViewModel;
-
+    private EventViewModel eventViewModel;
+    private AssetViewModel assetViewModel;
     private OfferingType type;
 
     public void setType(OfferingType type) {
@@ -49,30 +54,44 @@ public class AllSolutionsFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Initialize your ViewModel
+        assetViewModel = new ViewModelProvider(this).get(AssetViewModel.class);
         RecyclerView assetRecyclerView = view.findViewById(R.id.soultionsRecyclerView);
         TextView header = view.findViewById(R.id.titleSolution);
+
         assetRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
+
+        AssetCardAdapter assetAdapter = new AssetCardAdapter(view.getContext());
+        assetRecyclerView.setAdapter(assetAdapter);
+
+        assetViewModel.getAssetsLiveData().observe(getViewLifecycleOwner(), assets -> {
+            if (assets != null) {
+                assetAdapter.setAssets(new ArrayList<>(assets)); // Set all assets
+            }
+        });
 
         switch (type) {
             case EVENT:
                 EventCardAdapter eventAdapter = new EventCardAdapter(view.getContext());
-                eventAdapter.SetOnClick(getActivity(),getActivity().getSupportFragmentManager());
+                eventAdapter.SetOnClick(getActivity(), getActivity().getSupportFragmentManager());
                 eventAdapter.set_eventCards(HomePageFragment.createEvents());
                 assetRecyclerView.setAdapter(eventAdapter);
                 header.setText("Events");
                 break;
             case ASSET:
-                AssetCardAdapter assetAdapter = new AssetCardAdapter(view.getContext());
-                assetAdapter.setAssets(HomePageFragment.createAssets());
-                assetAdapter.SetOnClick(getActivity(),getActivity().getSupportFragmentManager());
-
-                assetRecyclerView.setAdapter(assetAdapter);
+                String token = JwtTokenUtil.getToken();
+                if (token != null) {
+                    assetViewModel.fetchAssets("Bearer " + token);
+                }
+                assetAdapter.SetOnClick(getActivity(), getActivity().getSupportFragmentManager());
                 header.setText("Assets");
                 break;
             default:
                 break;
+
         }
+
     }
-
-
 }

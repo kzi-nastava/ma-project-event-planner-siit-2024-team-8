@@ -47,7 +47,6 @@ public class AssetCategoriesFragment extends Fragment implements AssetCategoryAd
         pendingRecyclerView = view.findViewById(R.id.pendingCategoriesRecyclerView);
         FloatingActionButton fab = view.findViewById(R.id.fabAddCategory);
 
-        // Initialize ViewModel
         assetCategoryViewModel = new ViewModelProvider(this).get(AssetCategoryViewModel.class);
 
         activeRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -60,7 +59,6 @@ public class AssetCategoriesFragment extends Fragment implements AssetCategoryAd
 
         fab.setOnClickListener(v -> showEditCategoryDialog(null, true)); // Add new category
 
-        // Observing the live data for categories
         assetCategoryViewModel.getActiveCategories().observe(getViewLifecycleOwner(), new Observer<List<AssetCategory>>() {
             @Override
             public void onChanged(List<AssetCategory> activeCategories) {
@@ -149,7 +147,7 @@ public class AssetCategoriesFragment extends Fragment implements AssetCategoryAd
 
             @Override
             public void onCategoryUpdated() {
-                assetCategoryViewModel.loadCategories(); // Refresh categories after update
+                assetCategoryViewModel.loadCategories();
             }
         });
         dialog.show(getChildFragmentManager(), "EditCategoryDialog");

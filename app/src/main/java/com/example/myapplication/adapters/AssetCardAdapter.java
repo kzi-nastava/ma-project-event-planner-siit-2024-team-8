@@ -2,7 +2,7 @@ package com.example.myapplication.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +12,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
-import com.example.myapplication.domain.AssetDTO;
+import com.example.myapplication.domain.Asset;
 import com.example.myapplication.fragments.asset.AssetInfoFragment;
 
 import java.util.ArrayList;
+import java.util.List;
+
 
 public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.ViewHolder> {
-
-    private ArrayList<AssetDTO> assets;
+    private List<Asset> assets = new ArrayList<>();
     private Context context;
     private OnItemClickListener itemClickListener;
 
@@ -30,12 +30,29 @@ public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.View
         this.context = context;
     }
 
-    public void setAssets(ArrayList<AssetDTO> assets) {
+    public void setAssets(List<Asset> assets) {
         this.assets = assets;
+        notifyDataSetChanged();
     }
 
     public void setItemClickListener(OnItemClickListener listener) {
         this.itemClickListener = listener;
+    }
+
+    public void SetOnClick(Activity activity, FragmentManager manager){
+        this.setItemClickListener(asset -> {
+            AssetInfoFragment assetInfoFragment = new AssetInfoFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("asset_id", asset.getId());
+            bundle.putString("asset_type", asset.getType());
+            assetInfoFragment.setArguments(bundle);
+            if (activity != null) {
+                manager.beginTransaction()
+                        .replace(R.id.main, assetInfoFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
     }
 
     @NonNull
@@ -47,16 +64,24 @@ public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.txtName.setText(assets.get(position).getName());
-        holder.txtAssetType.setText(assets.get(position).getType().toString());
-        Glide.with(context)
-                .asBitmap()
-                .load(assets.get(position).getImageURL())
-                .into(holder.imageView);
+        Asset asset = assets.get(position);
+
+        holder.txtName.setText(asset.getName());
+        holder.txtAssetType.setText(asset.getType() != null ? asset.getType() : "Unknown");
+
+        String imageUrl = !asset.getImages().isEmpty() ? asset.getImages().get(0) : null;
+        if (imageUrl != null) {
+            Glide.with(context)
+                    .asBitmap()
+                    .load(imageUrl)
+                    .into(holder.imageView);
+        } else {
+            holder.imageView.setImageResource(R.drawable.profile_placeholder);
+        }
 
         holder.itemView.setOnClickListener(v -> {
             if (itemClickListener != null) {
-                itemClickListener.onItemClick(assets.get(position));
+                itemClickListener.onItemClick(asset);
             }
         });
     }
@@ -67,7 +92,7 @@ public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.View
     }
 
     public interface OnItemClickListener {
-        void onItemClick(AssetDTO asset);
+        void onItemClick(Asset asset);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -82,32 +107,5 @@ public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.View
             imageView = itemView.findViewById(R.id.imageViewOffering);
         }
     }
-
-    public void SetOnClick(Activity activity, FragmentManager manager){
-        this.setItemClickListener(asset -> {
-            Log.d("OfferingsFragment", "Clicked on asset: " + asset.getName());
-            AssetInfoFragment fragment = new AssetInfoFragment();
-            if (activity != null) {
-                manager.beginTransaction()
-                        .replace(R.id.main, fragment)
-                        .addToBackStack(null)  // Add to backstack so you can go back
-                        .commit();
-            }
-        });
-    }
-
-    /*
-    public void SetOnClick(Activity activity,FragmentManager manager){
-        this.setItemClickListener(asset -> {
-            Log.d("OfferingsFragment", "Clicked on asset: " + asset.getName());
-            AssetFragment assetFragment = AssetFragment.newInstance(asset.getName(), asset.getType().toString());
-            if (activity != null) {
-                manager.beginTransaction()
-                        .replace(R.id.fragment_layout, assetFragment)
-                        .addToBackStack(null)  // Add to backstack so you can go back
-                        .commit();
-            }
-        });
-    }
-     */
 }
+

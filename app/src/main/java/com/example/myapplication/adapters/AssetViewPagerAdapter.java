@@ -11,8 +11,13 @@ import com.example.myapplication.fragments.ToDoFragment;
 
 public class AssetViewPagerAdapter extends FragmentStateAdapter {
 
-    public AssetViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
+    private String assetId;
+    private String assetType;
+
+    public AssetViewPagerAdapter(@NonNull FragmentActivity fragmentActivity, String assetId, String assetType) {
         super(fragmentActivity);
+        this.assetId = assetId;
+        this.assetType = assetType;
     }
 
     @NonNull
@@ -20,7 +25,7 @@ public class AssetViewPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                return new AssetOverviewFragment();
+                return AssetOverviewFragment.newInstance(assetId, assetType); // Pass assetId and assetType to the OverviewFragment
             case 1:
                 return new ToDoFragment();
             case 2:
@@ -29,7 +34,6 @@ public class AssetViewPagerAdapter extends FragmentStateAdapter {
                 throw new IllegalArgumentException("Invalid position");
         }
     }
-
 
     @Override
     public int getItemCount() {

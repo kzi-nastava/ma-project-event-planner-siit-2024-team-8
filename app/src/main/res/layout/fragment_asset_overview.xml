@@ -104,7 +104,7 @@
             android:textSize="16sp" />
 
         <LinearLayout
-            android:id="@+id/serviceDetailsLayout"
+            android:id="@+id/utilityDetailsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"

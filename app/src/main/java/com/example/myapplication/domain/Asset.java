@@ -18,6 +18,7 @@ public class Asset {
     private String status;
     private boolean deleted;
     private String providerId;
+    private String type;
 
     public String getId() {
         return id;
@@ -130,4 +131,13 @@ public class Asset {
     public void setProviderId(String providerId) {
         this.providerId = providerId;
     }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+
 }

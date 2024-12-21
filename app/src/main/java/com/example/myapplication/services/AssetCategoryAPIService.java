@@ -30,4 +30,10 @@ public interface AssetCategoryAPIService {
 
     @PUT("asset-categories/pending/{id}")
     Call<Void> approveCategory(@Header("Authorization") String token, @Path("id") String categoryId);
+
+    @GET("asset-categories/{id}")
+    Call<AssetCategory> getCategoryById(
+            @Header("Authorization") String token,
+            @Path("id") String categoryId
+    );
 }

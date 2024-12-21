@@ -1,5 +1,7 @@
 package com.example.myapplication.services;
 
+import android.util.Log;
+
 import com.example.myapplication.domain.AssetCategory;
 import com.example.myapplication.utilities.RetrofitClient;
 import java.util.List;
@@ -95,5 +97,10 @@ public class AssetCategoryService {
         return categories.stream()
                 .filter(category -> "PRODUCT".equals(category.getType()))
                 .collect(Collectors.toList());
+    }
+
+    public void getCategoryById(String token, String categoryId, Callback<AssetCategory> callback) {
+        Call<AssetCategory> call = apiService.getCategoryById(token, categoryId);
+        call.enqueue(callback);
     }
 }

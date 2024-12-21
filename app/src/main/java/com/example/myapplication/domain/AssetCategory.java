@@ -25,6 +25,10 @@ public class AssetCategory implements Serializable {
         this.active = active;
     }
 
+    public AssetCategory() {
+
+    }
+
     public String getName() {
         return name;
     }

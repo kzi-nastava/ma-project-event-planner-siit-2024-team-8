@@ -165,6 +165,8 @@ public class HomePageFragment extends Fragment {
                 .commit();
     }
 
+
+
     public static ArrayList<Event> createEvents() {
         ArrayList<Event> eventCards = new ArrayList<>();
         eventCards.add(new Event("Exit", LocalDate.of(2024, 7, 10), LocalDate.of(2024, 7, 14), "https://media.istockphoto.com/id/974238866/photo/audience-listens-to-the-lecturer-at-the-conference.jpg?s=612x612&w=0&k=20&c=p_BQCJWRQQtZYnQlOtZMzTjeB_csic8OofTCAKLwT0M="));

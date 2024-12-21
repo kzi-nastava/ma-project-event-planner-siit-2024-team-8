@@ -8,16 +8,20 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Asset Name -->
-        <EditText
-            android:id="@+id/assetNameEditText"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/assetNameInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Asset Name"
-            android:textColor="#000000"
-            android:textSize="18sp" />
+            android:layout_marginTop="16dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/assetNameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Asset Name"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Asset Type -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,7 +35,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
             <RadioButton
                 android:id="@+id/assetTypeProduct"
                 android:layout_width="wrap_content"
@@ -39,18 +42,26 @@
                 android:text="Product"
                 android:textSize="18sp"
                 android:textColor="#000000" />
-
             <RadioButton
                 android:id="@+id/assetTypeService"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Service"
+                android:text="Utility"
                 android:textSize="18sp"
                 android:textColor="#000000"
                 android:layout_marginStart="16dp" />
         </RadioGroup>
 
-        <!-- Asset Category -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/uploadImagesButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Upload images"
+            android:textSize="18sp"
+            android:layout_marginTop="16dp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/olive" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -63,43 +74,116 @@
             android:id="@+id/assetCategorySpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/light_gray"
+            android:background="@android:color/white"
             android:textColor="@color/black" />
 
-        <!-- Common Fields -->
-        <EditText
-            android:id="@+id/assetDescriptionEditText"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/categoryNameInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Description"
-            android:textColor="#000000"
-            android:textSize="18sp" />
+            android:layout_marginTop="16dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/categoryNameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Suggested category name"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/assetPriceEditText"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/categoryDescInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Price"
-            android:inputType="number"
-            android:textColor="#000000"
-            android:textSize="18sp" />
+            android:layout_marginTop="16dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/categoryDescEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Suggested category description"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/assetDiscountEditText"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/assetDescriptionInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Discount"
-            android:inputType="number"
-            android:textColor="#000000"
-            android:textSize="18sp" />
+            android:layout_marginTop="16dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/assetDescriptionEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Description"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Service-Specific Fields -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/assetPriceInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/assetPriceEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Price"
+                android:inputType="number"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/assetDiscountInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/assetDiscountEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Discount"
+                android:inputType="number"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Switch
+            android:id="@+id/visibilitySwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Visibility"
+            android:textColor="#000000" />
+
+        <Switch
+            android:id="@+id/availabilitySwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Availability"
+            android:textColor="#000000" />
+
         <LinearLayout
-            android:id="@+id/serviceSpecificFieldsLayout"
+            android:id="@+id/utilitySpecificFieldsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="gone">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/assetDurationInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/assetDurationEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Duration (hours)"
+                    android:inputType="number"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:layout_width="match_parent"

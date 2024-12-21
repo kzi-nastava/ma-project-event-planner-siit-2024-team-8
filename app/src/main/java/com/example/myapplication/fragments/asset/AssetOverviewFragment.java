@@ -70,7 +70,6 @@ public class AssetOverviewFragment extends Fragment {
             assetType = getArguments().getString("asset_type");
         }
 
-        // Initialize services
         utilityService = new UtilityService();
         productService = new ProductService();
     }
@@ -89,6 +88,9 @@ public class AssetOverviewFragment extends Fragment {
         assetDiscountTextView = view.findViewById(R.id.assetDiscountTextView);
         assetActualPriceTextView = view.findViewById(R.id.assetActualPriceTextView);
         utilityDetailsLayout = view.findViewById(R.id.utilityDetailsLayout);
+        assetDurationTextView = view.findViewById(R.id.assetDurationTextView);
+        assetBookingDeadlineTextView = view.findViewById(R.id.assetBookingDeadlineTextView);
+        assetCancellationDeadlineTextView = view.findViewById(R.id.assetCancellationDeadlineTextView);
 
         String authHeader = "Bearer " + JwtTokenUtil.getToken();
         Log.e("debug", assetId + " i ovo je type " + assetType);
@@ -151,7 +153,6 @@ public class AssetOverviewFragment extends Fragment {
         assetNameTextView.setText(utility.getName());
         assetTypeTextView.setText("Utility");
 
-        // Fetch the category name using AssetCategoryService
         String categoryId = utility.getCategory();
         String authHeader = "Bearer " + JwtTokenUtil.getToken();
         AssetCategoryService categoryService = new AssetCategoryService();
@@ -160,7 +161,7 @@ public class AssetOverviewFragment extends Fragment {
             public void onResponse(Call<AssetCategory> call, Response<AssetCategory> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     AssetCategory category = response.body();
-                    assetCategoryTextView.setText("Category " + category.getName());  // Set category name
+                    assetCategoryTextView.setText("Category: " + category.getName());  // Set category name
                 } else {
                     Log.e("AssetOverviewFragment", "Failed to fetch category for utility");
                 }

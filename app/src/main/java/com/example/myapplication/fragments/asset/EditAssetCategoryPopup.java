@@ -128,7 +128,6 @@ public class EditAssetCategoryPopup extends DialogFragment {
         dialog.setCancelable(true);
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        // Cancel Button
         cancelButton.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onCancel();
@@ -136,7 +135,6 @@ public class EditAssetCategoryPopup extends DialogFragment {
             dismiss();
         });
 
-        // Delete Button
         deleteButton.setOnClickListener(v -> {
             if (category != null && listener != null) {
                 listener.onDeleteCategory(category);
@@ -144,7 +142,6 @@ public class EditAssetCategoryPopup extends DialogFragment {
             dismiss();
         });
 
-        // Approve Button (only visible when in edit mode for pending categories)
         approveButton.setOnClickListener(v -> {
             if (category != null && listener != null) {
                 listener.onApproveCategory(category);
@@ -152,11 +149,9 @@ public class EditAssetCategoryPopup extends DialogFragment {
             dismiss();
         });
 
-        // Save Button (Add or Update based on mode)
-        // Inside the saveButton click listener in EditAssetCategoryPopup
+
         saveButton.setOnClickListener(v -> {
             if (nameEditText.getText().toString().isEmpty() || descriptionEditText.getText().toString().isEmpty()) {
-                // Handle empty fields if needed
                 return;
             }
 
@@ -168,15 +163,14 @@ public class EditAssetCategoryPopup extends DialogFragment {
 
             if (isAddMode) {
                 if (listener != null) {
-                    listener.onSaveCategory(updatedCategory);  // Save new category
+                    listener.onSaveCategory(updatedCategory);
                 }
             } else {
                 if (listener != null) {
-                    listener.onSaveCategory(updatedCategory);  // Update existing category
+                    listener.onSaveCategory(updatedCategory);
                 }
             }
 
-            // Notify the parent fragment to refresh the categories after saving
             if (listener != null) {
                 listener.onCategoryUpdated();
             }

@@ -8,39 +8,63 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/assetNameEditText"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/assetNameInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Asset Name"
-            android:textColor="#000000"
-            android:textSize="18sp" />
+            android:layout_marginTop="16dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/assetNameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Asset Name"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/assetDescriptionEditText"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/assetDescriptionInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Description"
-            android:textColor="#000000"
-            android:textSize="18sp" />
+            android:layout_marginTop="16dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/assetDescriptionEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Description"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/assetPriceEditText"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/assetPriceInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Price"
-            android:inputType="number"
-            android:textColor="#000000"
-            android:textSize="18sp" />
+            android:layout_marginTop="16dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/assetPriceEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Price"
+                android:inputType="number"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/assetDiscountEditText"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/assetDiscountInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Discount"
-            android:inputType="number"
-            android:textColor="#000000"
-            android:textSize="18sp" />
+            android:layout_marginTop="16dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/assetDiscountEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Discount"
+                android:inputType="number"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Switch
             android:id="@+id/visibilitySwitch"
@@ -56,67 +80,82 @@
             android:text="Availability"
             android:textColor="#000000" />
 
-        <EditText
-            android:id="@+id/assetDurationEditText"
+        <LinearLayout
+            android:id="@+id/utilityDetailsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Duration (hours)"
-            android:inputType="number"
-            android:textColor="#000000"
-            android:textSize="18sp" />
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_marginTop="10dp">
 
-        <TextView
-            android:id="@+id/confirmationMethodText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Confirmation Method"
-            android:textSize="18sp"
-            android:textColor="#000000"
-            android:layout_marginTop="16dp" />
-
-        <RadioGroup
-            android:id="@+id/confirmationMethodGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <RadioButton
-                android:id="@+id/confirmationMethodManual"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/assetDurationInputLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Manual"
-                android:textColor="#000000"
-                android:textSize="18sp" />
-            <RadioButton
-                android:id="@+id/confirmationMethodAutomatic"
-                android:layout_width="wrap_content"
+                android:layout_marginTop="16dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/assetDurationEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Duration (hours)"
+                    android:inputType="number"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/confirmationMethodText"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Automatic"
+                android:text="Confirmation Method"
+                android:textSize="18sp"
                 android:textColor="#000000"
-                android:textSize="18sp" />
-        </RadioGroup>
+                android:layout_marginTop="16dp" />
 
-        <TextView
-            android:id="@+id/bookingDateTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Select Booking Date"
-            android:textSize="18sp"
-            android:padding="12dp"
-            android:textColor="#000000"
-            android:clickable="true"
-            android:focusable="true"
-            android:layout_marginTop="16dp" />
+            <RadioGroup
+                android:id="@+id/confirmationMethodGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <RadioButton
+                    android:id="@+id/confirmationMethodManual"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Manual"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+                <RadioButton
+                    android:id="@+id/confirmationMethodAutomatic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Automatic"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+            </RadioGroup>
 
-        <TextView
-            android:id="@+id/cancellationDateTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Select Cancellation Date"
-            android:textSize="18sp"
-            android:padding="12dp"
-            android:textColor="#000000"
-            android:clickable="true"
-            android:focusable="true"
-            android:layout_marginTop="16dp" />
+            <TextView
+                android:id="@+id/bookingDateTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Booking Date"
+                android:textSize="18sp"
+                android:padding="12dp"
+                android:textColor="#000000"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginTop="16dp" />
+
+            <TextView
+                android:id="@+id/cancellationDateTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Cancellation Date"
+                android:textSize="18sp"
+                android:padding="12dp"
+                android:textColor="#000000"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginTop="16dp" />
+        </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/saveButton"

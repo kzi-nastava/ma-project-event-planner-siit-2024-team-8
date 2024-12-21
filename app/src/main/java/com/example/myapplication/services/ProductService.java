@@ -27,8 +27,8 @@ public class ProductService {
         call.enqueue(callback);
     }
 
-    public void createProduct(String token, String name, String description, double price, double discount,
-                              boolean visible, boolean available, List<MultipartBody.Part> images, Callback<Object> callback) {
+    public void createProduct(String token, String name, String description, String category, String providerId, double price, double discount,
+                              boolean visible, boolean available, List<MultipartBody.Part> images, String suggestedCategoryName, String suggestedCategoryDesc, Callback<Product> callback) {
 
         RequestBody namePart = RequestBody.create(MultipartBody.FORM, name);
         RequestBody descriptionPart = RequestBody.create(MultipartBody.FORM, description);
@@ -36,9 +36,17 @@ public class ProductService {
         RequestBody discountPart = RequestBody.create(MultipartBody.FORM, String.valueOf(discount));
         RequestBody visiblePart = RequestBody.create(MultipartBody.FORM, String.valueOf(visible));
         RequestBody availablePart = RequestBody.create(MultipartBody.FORM, String.valueOf(available));
-
-        Call<Object> call = apiService.createProduct(token, namePart, descriptionPart, pricePart, discountPart,
-                visiblePart, availablePart, images);
+        RequestBody suggestedCategoryNamePart = RequestBody.create(MultipartBody.FORM,
+                suggestedCategoryName != null ? suggestedCategoryName : "");
+        RequestBody suggestedCategoryDescPart = RequestBody.create(MultipartBody.FORM,
+                suggestedCategoryDesc != null ? suggestedCategoryDesc : "");
+        RequestBody categoryPart = RequestBody.create(MultipartBody.FORM, category);
+        RequestBody providerIdPart = null;
+        if (providerId != null) {
+            providerIdPart = RequestBody.create(MultipartBody.FORM, providerId);
+        }
+        Call<Product> call = apiService.createProduct(token, namePart, descriptionPart, pricePart, discountPart,
+                visiblePart, availablePart, images, suggestedCategoryNamePart, suggestedCategoryDescPart, categoryPart, providerIdPart);
         call.enqueue(callback);
     }
 

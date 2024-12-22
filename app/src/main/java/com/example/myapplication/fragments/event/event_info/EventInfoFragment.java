@@ -7,11 +7,16 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.fragments.event.edit_event.EventEditFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
@@ -52,6 +57,14 @@ public class EventInfoFragment extends Fragment {
         return fragment;
     }
 
+    private void replaceFragment(Fragment fragment) {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,15 +81,32 @@ public class EventInfoFragment extends Fragment {
 
         View view =  inflater.inflate(R.layout.fragment_event_info, container, false);
 
+        /*
+
+        THE FOLLOWING CAUSES TROUBLE, IDK WHY:
+
         NavHostFragment navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottomNavigationView2);
 
         if (navHostFragment != null && bottomNavigationView!=null) {
             NavController navController = navHostFragment.getNavController();
             NavigationUI.setupWithNavController(bottomNavigationView, navController);
-        }
+        }*/
+
+        Button bttn = view.findViewById(R.id.agendaButton);
+        SpannableString content = new SpannableString("Content");
+        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+        bttn.setText(content);
+
+        Button edit = view.findViewById(R.id.editEventButton);
+        edit.setOnClickListener(v -> onClickEdit());
 
         return view;
+    }
+
+    public void onClickEdit() {
+        Fragment edit = new EventEditFragment();
+        replaceFragment(edit);
     }
 
 }

@@ -32,6 +32,7 @@ import com.example.myapplication.domain.Role;
 import com.example.myapplication.fragments.HomePageFragment;
 import com.example.myapplication.fragments.LoginFragment;
 import com.example.myapplication.fragments.event.create_event.CreateEventFragment;
+import com.example.myapplication.fragments.event.event_info.EventInfoFragment;
 import com.example.myapplication.viewmodels.UserViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -135,11 +136,16 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
         bottomNavigationView = findViewById(R.id.bottomNavigationViewHomePage);
         navController = navHostFragment.getNavController();
 
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main, new EventInfoFragment())
+                .addToBackStack(null)
+                .commit();
 
-        loginFragment = new LoginFragment();
+        /*loginFragment = new LoginFragment();
         FragmentTransaction loginTransaction = getSupportFragmentManager().beginTransaction();
         loginTransaction.replace(R.id.mainLayout,loginFragment)
-                .commit();
+                .commit();*/
 
 
     }

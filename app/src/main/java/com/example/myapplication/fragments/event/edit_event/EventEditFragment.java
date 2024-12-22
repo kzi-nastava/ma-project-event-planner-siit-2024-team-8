@@ -1,4 +1,4 @@
-package com.example.myapplication.fragments.event.event_info;
+package com.example.myapplication.fragments.event.edit_event;
 
 import android.os.Bundle;
 
@@ -9,7 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.myapplication.R;
-public class EventOverviewFragment extends Fragment {
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link EventEditFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class EventEditFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -20,7 +26,7 @@ public class EventOverviewFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public EventOverviewFragment() {
+    public EventEditFragment() {
         // Required empty public constructor
     }
 
@@ -30,11 +36,11 @@ public class EventOverviewFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment EventOverviewFragment.
+     * @return A new instance of fragment EventEditFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static EventOverviewFragment newInstance(String param1, String param2) {
-        EventOverviewFragment fragment = new EventOverviewFragment();
+    public static EventEditFragment newInstance(String param1, String param2) {
+        EventEditFragment fragment = new EventEditFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -55,6 +61,6 @@ public class EventOverviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_event_overview, container, false);
+        return inflater.inflate(R.layout.fragment_event_edit, container, false);
     }
 }

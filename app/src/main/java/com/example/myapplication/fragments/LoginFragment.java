@@ -105,10 +105,6 @@ public class LoginFragment extends Fragment {
         Button registerRedirect = view.findViewById(R.id.registerRedirectButton3);
         registerRedirect.setOnClickListener(v -> onClickRegister());
 
-        Button kt1button = view.findViewById(R.id.buttonKT1);
-        kt1button.setOnClickListener(v -> openProfileFragment());
-
-
         Button loginButton = view.findViewById(R.id.signInButton);
         loginButton.setOnClickListener( v -> onClickLogin(view));
 
@@ -159,17 +155,4 @@ public class LoginFragment extends Fragment {
                 .addToBackStack(null)
                 .commit();
     }
-
-    private void openProfileFragment() {
-        requireActivity().getSupportFragmentManager().beginTransaction()
-                .detach(this)
-                .commit();
-        HomePageFragment fragment = new HomePageFragment();
-        getParentFragmentManager().beginTransaction()
-                .replace(R.id.main,fragment)
-                .addToBackStack(null)
-                .commit();
-    }
-
-
 }

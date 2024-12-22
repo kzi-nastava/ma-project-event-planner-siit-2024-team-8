@@ -17,16 +17,24 @@ public interface ProductAPIService {
     @GET("products/{id}")
     Call<Product> getProductById(@Header("Authorization") String token, @Path("id") String id);
 
+    @Multipart
     @POST("products")
-    Call<Object> createProduct(@Header("Authorization") String token,
-                               @Part("name") RequestBody name,
-                               @Part("description") RequestBody description,
-                               @Part("price") RequestBody price,
-                               @Part("discount") RequestBody discount,
-                               @Part("visible") RequestBody visible,
-                               @Part("available") RequestBody available,
-                               @Part List<MultipartBody.Part> images);  // changed to accept multiple images
+    Call<Product> createProduct(
+            @Header("Authorization") String token,
+            @Part("name") RequestBody name,
+            @Part("description") RequestBody description,
+            @Part("price") RequestBody price,
+            @Part("discount") RequestBody discount,
+            @Part("visible") RequestBody visible,
+            @Part("available") RequestBody available,
+            @Part List<MultipartBody.Part> images,
+            @Part("suggestedCategoryName") RequestBody suggestedCategoryName,
+            @Part("suggestedCategoryDesc") RequestBody suggestedCategoryDesc,
+            @Part("category") RequestBody category,
+            @Part("provider") RequestBody providerId
+    );
 
+    @Multipart
     @PUT("products/{id}")
     Call<Object> updateProduct(@Header("Authorization") String token, @Path("id") String id,
                                @Part("name") RequestBody name,

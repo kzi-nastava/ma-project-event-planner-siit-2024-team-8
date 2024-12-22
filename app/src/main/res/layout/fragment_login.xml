@@ -93,15 +93,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <Button
-        android:id="@+id/buttonKT1"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:backgroundTint="@color/olive"
-        android:text="KT1"
-        android:textColor="@color/white"
-        android:textSize="10sp"
-        app:layout_constraintTop_toBottomOf="@+id/signInButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

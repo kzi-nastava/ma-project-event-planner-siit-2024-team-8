@@ -64,14 +64,6 @@
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/assetCategoryTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Category: Electronics"
-            android:textSize="16sp" />
-
-        <TextView
             android:id="@+id/assetDescriptionTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -119,22 +111,21 @@
             android:text="Available: True"
             android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/assetConfirmationTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Confirmation Method: Manual"
-            android:textSize="16sp" />
-
         <LinearLayout
-            android:id="@+id/serviceDetailsLayout"
+            android:id="@+id/utilityDetailsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="gone"
             android:layout_marginTop="10dp">
 
+            <TextView
+                android:id="@+id/assetConfirmationTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Confirmation Method: Manual"
+                android:textSize="16sp" />
             <TextView
                 android:id="@+id/assetDurationTextView"
                 android:layout_width="wrap_content"
@@ -159,8 +150,6 @@
                 android:text="Cancellation Deadline: 1 day before event"
                 android:textSize="16sp"
                 />
-
-
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton

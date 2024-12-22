@@ -139,5 +139,4 @@ public class Asset {
     public String getType() {
         return type;
     }
-
 }

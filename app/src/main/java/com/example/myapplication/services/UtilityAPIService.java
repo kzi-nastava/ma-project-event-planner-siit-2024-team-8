@@ -28,7 +28,11 @@ public interface UtilityAPIService {
                                 @Part("reservationTerm") RequestBody reservationTerm,
                                 @Part("cancellationTerm") RequestBody cancellationTerm,
                                 @Part("manuelConfirmation") RequestBody manuelConfirmation,
-                                @Part MultipartBody.Part image);
+                                @Part List<MultipartBody.Part> images,
+                                @Part("suggestedCategoryName") RequestBody suggestedCategoryName,
+                                @Part("suggestedCategoryDesc") RequestBody suggestedCategoryDesc,
+                                @Part("category") RequestBody category,
+                                @Part("provider") RequestBody providerId);
 
     @PUT("utilities/{id}")
     Call<Utility> updateUtility(@Header("Authorization") String token, @Path("id") String id,
@@ -42,7 +46,7 @@ public interface UtilityAPIService {
                                 @Part("reservationTerm") RequestBody reservationTerm,
                                 @Part("cancellationTerm") RequestBody cancellationTerm,
                                 @Part("manuelConfirmation") RequestBody manuelConfirmation,
-                                @Part MultipartBody.Part image);
+                                @Part List<MultipartBody.Part> images);
 
     @DELETE("utilities/{id}")
     Call<Void> deleteUtility(@Header("Authorization") String token, @Path("id") String id);

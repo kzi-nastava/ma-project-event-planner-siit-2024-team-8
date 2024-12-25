@@ -10,7 +10,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 public class ClientUtils {
 
-    public static OkHttpClient test(){
+    public static OkHttpClient getClient(){
         HttpInterceptor interceptor = new HttpInterceptor();
 
         return new OkHttpClient.Builder()
@@ -20,5 +20,6 @@ public class ClientUtils {
                 .addInterceptor(interceptor).build();
     }
     public static UserAPIService userService = RetrofitClient.getRetrofitInstance().create(UserAPIService.class);
+    public static EventTypeAPIService eventTypeService = RetrofitClient.getRetrofitInstance().create(EventTypeAPIService.class);
     public static LoginService loginService = RetrofitClient.getRetrofitInstance().create(LoginService.class);
 }

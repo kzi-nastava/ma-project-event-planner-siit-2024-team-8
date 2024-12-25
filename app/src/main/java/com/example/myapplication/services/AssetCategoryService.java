@@ -3,6 +3,7 @@ package com.example.myapplication.services;
 import android.util.Log;
 
 import com.example.myapplication.domain.AssetCategory;
+import com.example.myapplication.utilities.JwtTokenUtil;
 import com.example.myapplication.utilities.RetrofitClient;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +28,25 @@ public class AssetCategoryService {
     public void getPendingCategories(String token, Callback<List<AssetCategory>> callback) {
         Call<List<AssetCategory>> call = apiService.getPendingCategories(token);
         call.enqueue(callback);
+    }
+
+    public void getAllActiveCategories(String token, Callback<List<AssetCategory>> callback){
+        getActiveCategories(JwtTokenUtil.getToken(), new Callback<List<AssetCategory>>() {
+            @Override
+            public void onResponse(Call<List<AssetCategory>> call, Response<List<AssetCategory>> response) {
+                if (response.isSuccessful()){
+                    callback.onResponse(call,Response.success(response.body()));
+                }
+                else {
+                    callback.onFailure(call, new Throwable("Failed to fetch categories" + response.message()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<AssetCategory>> call, Throwable t) {
+
+            }
+        });
     }
 
     public void getActiveUtilityCategories(String token, Callback<List<AssetCategory>> callback) {

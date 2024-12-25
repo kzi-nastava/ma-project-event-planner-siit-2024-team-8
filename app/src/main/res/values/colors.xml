@@ -11,4 +11,5 @@
     <color name="olive">#A1C084</color>
     <color name="background">#181818</color>
     <color name="olive_navbar_highlight">#80800080</color>
+    <color name="deactivate_color">#FF4444</color>
 </resources>

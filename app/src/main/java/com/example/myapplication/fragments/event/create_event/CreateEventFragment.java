@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import com.example.myapplication.databinding.FragmentCreateEventBinding;
 import com.example.myapplication.databinding.FragmentRegisterBinding;
 import com.example.myapplication.domain.Event;
 import com.example.myapplication.viewmodels.EventViewModel;
+import com.google.android.material.tabs.TabLayout;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +38,7 @@ public class CreateEventFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
 
     private EventViewModel eventViewModel;
 
@@ -85,7 +88,6 @@ public class CreateEventFragment extends Fragment {
         FragmentCreateEventBinding binding = DataBindingUtil.inflate(inflater,R.layout.fragment_create_event, container, false);
 
         eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
-
         binding.setEventVM(eventViewModel);
         binding.setLifecycleOwner(getViewLifecycleOwner());
         ImageButton back = binding.backCreateEventButton;

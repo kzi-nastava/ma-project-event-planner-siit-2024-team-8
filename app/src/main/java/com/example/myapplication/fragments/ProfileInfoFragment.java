@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
 import com.example.myapplication.domain.Role;
 import com.example.myapplication.domain.dto.UserInfoResponse;
@@ -112,7 +113,11 @@ public class ProfileInfoFragment extends Fragment {
     private void displayUserProfile(UserInfoResponse userInfo) {
         Log.d("ProfileImage", userInfo.profileImage);
         ImageView profileImage = getView().findViewById(R.id.profile_picture);
-        profileImage.setImageURI(Uri.parse(userInfo.profileImage));
+        Glide.with(this)
+                .load(userInfo.profileImage)
+                .placeholder(R.drawable.profile_placeholder) // Optional placeholder while loading// Optional error image
+                .into(profileImage);
+
         TextView emailTextView = getView().findViewById(R.id.user_email);
         emailTextView.setText(userInfo.email);
         TextView fullNameView = getView().findViewById(R.id.user_fullname);

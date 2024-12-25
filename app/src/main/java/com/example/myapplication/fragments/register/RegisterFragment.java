@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.databinding.FragmentRegisterBinding;
-import com.example.myapplication.domain.User;
+import com.example.myapplication.domain.dto.UserCreateRequest;
 import com.example.myapplication.fragments.LoginFragment;
 import com.example.myapplication.viewmodels.UserViewModel;
 
@@ -36,7 +36,7 @@ public class RegisterFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    protected User user = new User();
+    protected UserCreateRequest userCreateRequest = new UserCreateRequest();
 
     private UserViewModel userViewModel;
 

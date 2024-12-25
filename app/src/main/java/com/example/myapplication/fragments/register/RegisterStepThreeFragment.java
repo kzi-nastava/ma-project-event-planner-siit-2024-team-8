@@ -14,9 +14,10 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
+import com.example.myapplication.activities.MainActivity;
 import com.example.myapplication.databinding.FragmentRegisterStepThreeBinding;
 import com.example.myapplication.domain.Role;
-import com.example.myapplication.domain.User;
+import com.example.myapplication.domain.dto.UserCreateRequest;
 import com.example.myapplication.viewmodels.UserViewModel;
 
 /**
@@ -92,11 +93,11 @@ public class RegisterStepThreeFragment extends Fragment {
     private void onNextButtonClick() {
         RegisterFragment parentFragment = (RegisterFragment) getParentFragment();
         //retrieve data and continue if everything ok:
-        if (!retrieveData(parentFragment.user)) {
+        if (!retrieveData(parentFragment.userCreateRequest)) {
             Toast.makeText(getContext(), "All fields are required and must be properly filled.", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (parentFragment.user.getUserType().equals(Role.PROVIDER)) {
+        if (parentFragment.userCreateRequest.getUserType().equals(Role.PROVIDER)) {
             ProviderRegisterFragment providerRegister = new ProviderRegisterFragment();
             assert parentFragment != null;
             parentFragment.getChildFragmentManager().beginTransaction()
@@ -123,10 +124,10 @@ public class RegisterStepThreeFragment extends Fragment {
             parentFragment.changeTitle(4);
             parentFragment.animateProgressBar(100);
         }
-        userViewModel.saveUserData();
+        userViewModel.saveUserData(((MainActivity) getActivity()).imageFile);
     }
 
-    private boolean retrieveData(User user) {
+    private boolean retrieveData(UserCreateRequest userCreateRequest) {
         String email = ((EditText)this.getView().findViewById(R.id.editTextEmail)).getText().toString();
         String password = ((EditText)this.getView().findViewById(R.id.editTextPassword)).getText().toString();
         String passwordConfirm = ((EditText)this.getView().findViewById(R.id.editTextPasswordConfirm)).getText().toString();

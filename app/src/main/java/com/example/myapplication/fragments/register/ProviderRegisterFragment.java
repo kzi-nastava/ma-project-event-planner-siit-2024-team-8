@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.example.myapplication.R;
 import com.example.myapplication.activities.MainActivity;
-import com.example.myapplication.domain.User;
+import com.example.myapplication.domain.dto.UserCreateRequest;
 
 import java.util.ArrayList;
 
@@ -83,7 +83,7 @@ public class ProviderRegisterFragment extends Fragment {
     public void onFinishButtonClick() {
         RegisterFragment parentFragment = (RegisterFragment) getParentFragment();
         //retrieve data and continue if all is ok
-        if (!retrieveData(parentFragment.user)) {
+        if (!retrieveData(parentFragment.userCreateRequest)) {
             Toast.makeText(getContext(), "Company name is required.", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -110,19 +110,19 @@ public class ProviderRegisterFragment extends Fragment {
         }
     }
 
-    private boolean retrieveData(User user) {
+    private boolean retrieveData(UserCreateRequest userCreateRequest) {
         String companyName = ((EditText)this.getView().findViewById(R.id.editTextCompanyName)).getText().toString();
         String companyDesc = ((EditText)this.getView().findViewById(R.id.editTextCompanyDesc)).getText().toString();
         //String initialImage = ((EditText)this.getView().findViewById(R.id.editTextAddress)).getText().toString();
         if (companyName.isBlank() || companyName.isEmpty()) {
             return false;
         }
-        user.setCompanyName(companyName);
-        user.setCompanyDescription(companyDesc);
+        userCreateRequest.setCompanyName(companyName);
+        userCreateRequest.setCompanyDescription(companyDesc);
         try {
-            ArrayList<String> imgs = user.getCompanyImagesURL();
+            ArrayList<String> imgs = userCreateRequest.getCompanyImagesURL();
             imgs.add(((MainActivity) getActivity()).imageUri.toString());
-            user.setCompanyImagesURL(imgs);
+            userCreateRequest.setCompanyImagesURL(imgs);
         } catch (Exception e) {
             return false;
         }

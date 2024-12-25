@@ -1,10 +1,15 @@
-package com.example.myapplication.domain;
+package com.example.myapplication.domain.dto;
 
+import com.example.myapplication.domain.Role;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.File;
 import java.util.ArrayList;
 
-public class User {
+import okhttp3.MultipartBody;
+import retrofit2.http.Multipart;
+
+public class UserCreateRequest {
     @SerializedName("firstName")
     private String firstName;
     @SerializedName("lastName")
@@ -17,12 +22,11 @@ public class User {
 
     @SerializedName("number")
     private String number;
-
-    @SerializedName("profileImageURL")
-    private String profileImageURL;
     @SerializedName("address")
     private String address;
 
+    @SerializedName("profileImageURL")
+    private String profileImageURL;
     @SerializedName("userType")
     private Role role;
     @SerializedName("companyName")
@@ -34,21 +38,21 @@ public class User {
     @SerializedName("isActive")
     private Boolean isActive;
 
-    public User() {
+    public UserCreateRequest() {
         this.firstName = "";
         this.lastName = "";
         this.email = "";
         this.password = "";
         this.number = "";
-        this.profileImageURL = "";
         this.address = "";
+        profileImageURL = "";
         this.role = Role.USER;
         this.companyName = "";
         this.companyDescription = "";
         this.companyImagesURL = new ArrayList<String>();
         this.isActive = false;
     }
-    public User(String firstName, String lastName, String email, String password, String number, String profileImageURL, String address, Role role, String companyName, String companyDescription, ArrayList<String> companyImagesURL) {
+    public UserCreateRequest(String firstName, String lastName, String email, String password, String number, String profileImageURL, String address, Role role, String companyName, String companyDescription, ArrayList<String> companyImagesURL) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -103,14 +107,6 @@ public class User {
         this.number = number;
     }
 
-    public String getProfileImageURL() {
-        return profileImageURL;
-    }
-
-    public void setProfileImageURL(String profileImageURL) {
-        this.profileImageURL = profileImageURL;
-    }
-
     public String getAddress() {
         return address;
     }
@@ -157,5 +153,21 @@ public class User {
 
     public void setActive(Boolean active) {
         isActive = active;
+    }
+
+    public String getProfileImageURL() {
+        return profileImageURL;
+    }
+
+    public void setProfileImageURL(String profileImageURL) {
+        this.profileImageURL = profileImageURL;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

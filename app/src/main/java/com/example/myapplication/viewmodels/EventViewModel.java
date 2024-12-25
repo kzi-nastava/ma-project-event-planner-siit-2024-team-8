@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.myapplication.domain.Activity;
 import com.example.myapplication.domain.Event;
-import com.example.myapplication.domain.User;
 
 import java.util.List;
 

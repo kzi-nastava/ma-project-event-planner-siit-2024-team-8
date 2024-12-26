@@ -1,6 +1,5 @@
 package com.example.myapplication.adapters;
 
-import android.opengl.Visibility;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.domain.Activity;
+import com.example.myapplication.domain.BudgetItem;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -56,7 +55,7 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         switch (viewType) {
             case VIEW_TYPE_CREATE_NEW:
                 View createNewView = LayoutInflater.from(parent.getContext()).inflate(R.layout.new_activity_card, parent, false);
-                return new CreateNewActivityViewHolder(createNewView);
+                return new CreateNewBudgetItemViewHolder(createNewView);
 
             case VIEW_TYPE_INPUT:
                 View inputView = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_activity_extended, parent, false);
@@ -71,8 +70,8 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof CreateNewActivityViewHolder) {
-            ((CreateNewActivityViewHolder) holder).bind();
+        if (holder instanceof CreateNewBudgetItemViewHolder) {
+            ((CreateNewBudgetItemViewHolder) holder).bind();
         } else if (holder instanceof InputActivityViewHolder) {
             ((InputActivityViewHolder) holder).bind(activitiesList.get(position));
         } else if (holder instanceof ActivityViewHolder) {
@@ -87,9 +86,9 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     // ViewHolder for "Create New Activity" card
-    public class CreateNewActivityViewHolder extends RecyclerView.ViewHolder {
+    public class CreateNewBudgetItemViewHolder extends RecyclerView.ViewHolder {
 
-        public CreateNewActivityViewHolder(View itemView) {
+        public CreateNewBudgetItemViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(v -> {
                 newActivityListener.onCreateNewActivity();

@@ -1,9 +1,12 @@
 package com.example.myapplication.fragments.register;
 
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +15,9 @@ import android.widget.Toast;
 
 import com.example.myapplication.R;
 import com.example.myapplication.activities.MainActivity;
-import com.example.myapplication.domain.User;
+import com.example.myapplication.domain.dto.UserCreateRequest;
+
+import java.io.File;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,7 +94,7 @@ public class RegisterStepTwoFragment extends Fragment {
 
     private void onNextButtonClick() {
         RegisterFragment parentFragment = (RegisterFragment) getParentFragment();
-        if (!retrieveData(parentFragment.user)) {
+        if (!retrieveData(parentFragment.userCreateRequest)) {
             Toast.makeText(getContext(), "Something went cataclysmically wrong.", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -113,12 +118,26 @@ public class RegisterStepTwoFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    public boolean retrieveData(User user) {
+    public boolean retrieveData(UserCreateRequest userCreateRequest) {
         try {
-            user.setProfileImageURL(((MainActivity) getActivity()).imageUri.toString());
+            String filePath = getRealPathFromURI(((MainActivity) getActivity()).imageUri);
+            ((MainActivity) getActivity()).imageFile = new File(filePath);
             return true;
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public String getRealPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = requireActivity().getContentResolver().query(contentUri, proj, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            String filePath = cursor.getString(columnIndex);
+            cursor.close();
+            return filePath;
+        }
+        return null;
     }
 }

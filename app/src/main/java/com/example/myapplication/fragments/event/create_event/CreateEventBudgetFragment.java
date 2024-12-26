@@ -1,20 +1,21 @@
-package com.example.myapplication.fragments.event.event_info;
+package com.example.myapplication.fragments.event.create_event;
 
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.text.SpannableString;
-import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.example.myapplication.R;
-import com.example.myapplication.fragments.event.edit_event.EventEditFragment;
 
-public class EventOverviewFragment extends Fragment {
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link CreateEventBudgetFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class CreateEventBudgetFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -25,7 +26,7 @@ public class EventOverviewFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public EventOverviewFragment() {
+    public CreateEventBudgetFragment() {
         // Required empty public constructor
     }
 
@@ -35,11 +36,11 @@ public class EventOverviewFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment EventOverviewFragment.
+     * @return A new instance of fragment CreateEventBudgetFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static EventOverviewFragment newInstance(String param1, String param2) {
-        EventOverviewFragment fragment = new EventOverviewFragment();
+    public static CreateEventBudgetFragment newInstance(String param1, String param2) {
+        CreateEventBudgetFragment fragment = new CreateEventBudgetFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -60,29 +61,6 @@ public class EventOverviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_event_overview, container, false);
-
-        Button bttn = view.findViewById(R.id.agendaButton);
-        SpannableString content = new SpannableString("Content");
-        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-        bttn.setText(content);
-
-        Button edit = view.findViewById(R.id.editEventButton);
-        edit.setOnClickListener(v -> onClickEdit());
-
-        return view;
-    }
-
-    private void replaceFragment(Fragment fragment) {
-        requireActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.main, fragment)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    public void onClickEdit() {
-        Fragment edit = new EventEditFragment();
-        replaceFragment(edit);
+        return inflater.inflate(R.layout.fragment_create_event_budget, container, false);
     }
 }

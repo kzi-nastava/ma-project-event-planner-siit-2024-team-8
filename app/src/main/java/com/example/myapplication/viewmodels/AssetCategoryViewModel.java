@@ -22,6 +22,8 @@ public class AssetCategoryViewModel extends ViewModel {
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>(null);
 
+    private final MutableLiveData<AssetCategory> selectedCategory = new MutableLiveData<>(null);
+
     public AssetCategoryViewModel() {
         this.assetCategoryService = new AssetCategoryService();
     }
@@ -40,6 +42,12 @@ public class AssetCategoryViewModel extends ViewModel {
 
     public LiveData<String> getErrorMessage() {
         return errorMessage;
+    }
+
+    public LiveData<AssetCategory> getSelecetedAssetCategory(){return selectedCategory;}
+
+    public void onCategoryChanged(){
+
     }
 
     public void loadCategories() {

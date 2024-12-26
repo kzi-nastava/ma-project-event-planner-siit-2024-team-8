@@ -93,13 +93,14 @@ public class AssetCategoriesFragment extends Fragment implements AssetCategoryAd
         EditAssetCategoryPopup dialog = EditAssetCategoryPopup.newInstance(category, isCreateMode);
         dialog.setListener(new EditAssetCategoryPopup.EditAssetCategoryListener() {
             @Override
+
             public void onSaveCategory(AssetCategory updatedCategory) {
                 assetCategoryViewModel.saveCategory(updatedCategory, isCreateMode, new Callback<AssetCategory>() {
                     @Override
                     public void onResponse(Call<AssetCategory> call, Response<AssetCategory> response) {
                         // Handle success
                         assetCategoryViewModel.loadCategories(); // Refresh categories
-                    }
+                   }
 
                     @Override
                     public void onFailure(Call<AssetCategory> call, Throwable t) {
@@ -115,6 +116,7 @@ public class AssetCategoriesFragment extends Fragment implements AssetCategoryAd
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         // Handle success
                         assetCategoryViewModel.loadCategories(); // Refresh categories
+
                     }
 
                     @Override

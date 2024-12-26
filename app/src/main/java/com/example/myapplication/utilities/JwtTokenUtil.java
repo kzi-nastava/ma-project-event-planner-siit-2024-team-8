@@ -34,7 +34,11 @@ public class JwtTokenUtil {
     }
 
     public static String getToken(){
-        return sharedPreferences.getString("JWT_TOKEN", null);
+        if (sharedPreferences != null){
+            return sharedPreferences.getString("JWT_TOKEN", null);
+        }else{
+            return null;
+        }
     }
 
     public static void removeToken(){

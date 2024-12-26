@@ -1,7 +1,8 @@
 package com.example.myapplication.services;
 
-import com.example.myapplication.domain.User;
+import com.example.myapplication.domain.ApiResponse;
 import com.example.myapplication.domain.dto.UpdateUserRequest;
+import com.example.myapplication.domain.dto.UserCreateRequest;
 import com.example.myapplication.domain.dto.UserInfoResponse;
 
 import java.util.Optional;
@@ -18,8 +19,11 @@ import retrofit2.http.PUT;
 import retrofit2.http.Part;
 
 public interface UserAPIService {
-    @POST("users/register")
-    Call<User> registerUser(@Body User user);
+    @Multipart
+    @POST("users/register/mobile")
+    Call<ApiResponse> registerUser(
+            @Part("user") RequestBody user,
+            @Part MultipartBody.Part image);
 
     @GET("users/user")
     Call<UserInfoResponse> getUserInfo(

@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.example.myapplication.R;
 import com.example.myapplication.databinding.FragmentRegisterStepOneBinding;
-import com.example.myapplication.domain.User;
+import com.example.myapplication.domain.dto.UserCreateRequest;
 import com.example.myapplication.viewmodels.UserViewModel;
 
 /**
@@ -89,7 +89,7 @@ public class RegisterStepOneFragment extends Fragment {
     private void nextButtonClicked() {
         RegisterFragment parentFragment = (RegisterFragment) getParentFragment();
         //begin user creation
-        if (!retrieveData(parentFragment.user)) {
+        if (!retrieveData(parentFragment.userCreateRequest)) {
             Toast.makeText(getContext(), "First and last name are required.", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -109,7 +109,7 @@ public class RegisterStepOneFragment extends Fragment {
     }
 
     //persforms automatic verification as well
-    private boolean retrieveData(User user) {
+    private boolean retrieveData(UserCreateRequest userCreateRequest) {
         String firstName = ((EditText)this.getView().findViewById(R.id.editTextFirstName)).getText().toString();
         String lastName = ((EditText)this.getView().findViewById(R.id.editTextLastName)).getText().toString();
         String address = ((EditText)this.getView().findViewById(R.id.editTextAddress)).getText().toString();

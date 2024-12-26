@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,12 +30,16 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.myapplication.R;
 import com.example.myapplication.domain.Role;
+import com.example.myapplication.fragments.CreateEventTypeFragment;
 import com.example.myapplication.fragments.HomePageFragment;
 import com.example.myapplication.fragments.LoginFragment;
+import com.example.myapplication.fragments.StartupFragment;
 import com.example.myapplication.fragments.event.create_event.CreateEventFragment;
 import com.example.myapplication.fragments.event.event_info.EventInfoFragment;
 import com.example.myapplication.viewmodels.UserViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.OnRoleChangeListener {
 
@@ -43,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
 
     public ImageView imageView;
     public Uri imageUri = Uri.parse("");
+
+    public File imageFile;
 
     private BottomNavigationView bottomNavigationView;
 
@@ -118,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
         }
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.main, new EventInfoFragment())
+                .replace(R.id.main, new CreateEventTypeFragment())
                 .addToBackStack(null)
                 .commit();
 
@@ -152,9 +160,12 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
 
     @Override
     public void onRoleChanged(Role role) {
+        /*
         getSupportFragmentManager().beginTransaction()
                         .detach(loginFragment)
                         .commit();
+
+         */
         bottomNavigationView.setVisibility(View.VISIBLE);
         Menu menu = bottomNavigationView.getMenu();
         if (role == Role.ORGANIZER) {
@@ -170,5 +181,18 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
             navController.setGraph(organizerGraph);
         }
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
+    }
+
+    public String getRealPathFromURI(Uri contentUri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(contentUri, projection, null, null, null);
+        if (cursor != null) {
+            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            String filePath = cursor.getString(columnIndex);
+            cursor.close();
+            return filePath;
+        }
+        return null;
     }
 }

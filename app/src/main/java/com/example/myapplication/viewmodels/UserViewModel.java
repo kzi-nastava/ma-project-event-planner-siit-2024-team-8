@@ -6,77 +6,52 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.myapplication.activities.MainActivity;
+import com.example.myapplication.domain.ApiResponse;
 import com.example.myapplication.domain.Role;
-import com.example.myapplication.domain.User;
+import com.example.myapplication.domain.dto.UserCreateRequest;
 import com.example.myapplication.services.ClientUtils;
+import com.example.myapplication.services.UserService;
 
+import java.io.File;
 import java.io.IOException;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class UserViewModel extends ViewModel {
 
-    private final MutableLiveData<User> userLiveData = new MutableLiveData<>();
+    private final MutableLiveData<UserCreateRequest> userLiveData = new MutableLiveData<>();
+
+    private UserService userService;
 
     public UserViewModel() {
         // Initialize with an empty user
-        userLiveData.setValue(new User());
+        userLiveData.setValue(new UserCreateRequest());
+        userService = new UserService();
     }
 
-    public LiveData<User> getUser() {
+    public LiveData<UserCreateRequest> getUser() {
         return userLiveData;
     }
 
     public void onUserTypeChanged(){
     }
 
-    // Method to save the user data (you can add logic to handle validation here)
-    public void saveUserData() {
-        User user = userLiveData.getValue();
-        userLiveData.setValue(new User());
-        if (user.getUserType() == Role.USER || user.getUserType() == Role.ORGANIZER) {
-            ClientUtils.userService.registerUser(user).enqueue(new Callback<User>() {
-                @Override
-                public void onResponse(Call<User> call, Response<User> response) {
-                    if (response.isSuccessful()) {
-                        // Success
-                        User registeredUser = response.body();
-                        Log.d("RegisterUser", "User registered successfully: " + registeredUser);
-                    } else {
-                        // Handle server error
-                        try {
-                            // Log the response code and error body
-                            String errorMessage = response.errorBody().string(); // Get the error body as a string
-                            Log.e("RegisterUser", "Server error: " + response.code() + " - " + errorMessage);
-                        } catch (IOException e) {
-                            Log.e("RegisterUser", "Error while reading the error body", e);
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<User> call, Throwable t) {
-                    // Handle network failure
-                    Log.e("RegisterUser", "Network error: ", t);
-                }
-            });
-
-        }else{
-            if (isValidProvider(user)){
-                ClientUtils.userService.registerUser(user);
-            }
-        }
-
+    public void saveUserData(File imageFile) {
+        userService.createUser(userLiveData.getValue(),imageFile);
+        userLiveData.setValue(new UserCreateRequest());
     }
 
-    private boolean isValidUser(User user){
-        return (user!=null && !user.getFirstName().isEmpty() && !user.getLastName().isEmpty() && !user.getEmail().isEmpty()
-        && !user.getPassword().isEmpty() && !user.getNumber().isEmpty() && !user.getProfileImageURL().isEmpty() && !user.getAddress().isEmpty());
+    private boolean isValidUser(UserCreateRequest userCreateRequest){
+        return (userCreateRequest !=null && !userCreateRequest.getFirstName().isEmpty() && !userCreateRequest.getLastName().isEmpty() && !userCreateRequest.getEmail().isEmpty()
+        && !userCreateRequest.getPassword().isEmpty() && !userCreateRequest.getNumber().isEmpty() && !userCreateRequest.getAddress().isEmpty());
     }
-    private boolean isValidProvider(User user){
-        return isValidUser(user) && !user.getCompanyName().isEmpty() && !user.getCompanyDescription().isEmpty() && !user.getCompanyImagesURL().isEmpty();
+    private boolean isValidProvider(UserCreateRequest userCreateRequest){
+        return isValidUser(userCreateRequest) && !userCreateRequest.getCompanyName().isEmpty() && !userCreateRequest.getCompanyDescription().isEmpty() && !userCreateRequest.getCompanyImagesURL().isEmpty();
     }
 
 }

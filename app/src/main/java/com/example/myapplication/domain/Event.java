@@ -32,7 +32,7 @@ public class Event {
 
     private String imageURL;
 
-    private String eventType;
+    private EventType eventType;
 
     public Event(){
         invitations = new ArrayList<>();
@@ -55,12 +55,12 @@ public class Event {
         this.activities = activities;
     }
 
-    public String getEventType() {
-        return eventType;
+    public void setEventType(EventType eventType) {
+        this.eventType = eventType;
     }
 
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
+    public EventType getEventType() {
+        return eventType;
     }
 
     public String getCapacity() {

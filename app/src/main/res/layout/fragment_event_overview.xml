@@ -20,6 +20,7 @@
         android:layout_marginBottom="4dp" />
 
     <TextView
+        android:id="@+id/eName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
@@ -31,15 +32,33 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Event duration"
+        android:text="Event description"
         android:textSize="16sp"
         android:layout_marginBottom="4dp" />
 
     <TextView
+        android:id="@+id/eDesc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
-        android:text="2 Hours"
+        android:text="I dislike mobile applications quite a bit!"
+        android:textSize="14sp"
+        android:padding="8dp"
+        android:background="@color/light_gray" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event capacity"
+        android:textSize="16sp"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:id="@+id/eCap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:text="lordJorvekUdunjanin"
         android:textSize="14sp"
         android:padding="8dp"
         android:background="@color/light_gray" />
@@ -52,6 +71,7 @@
         android:layout_marginBottom="4dp" />
 
     <TextView
+        android:id="@+id/eStart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
@@ -68,6 +88,7 @@
         android:layout_marginBottom="4dp" />
 
     <TextView
+        android:id="@+id/eEnd"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
@@ -79,11 +100,28 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Event Organizer"
+        android:text="Event Location"
         android:textSize="16sp"
         android:layout_marginBottom="4dp" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/mapButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#A1C084"
+        android:text="View on Map"
+        style="@style/Widget.MaterialComponents.Button" />
+
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event Organizer"
+        android:textSize="16sp"
+        android:layout_marginTop="10px"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:id="@+id/eOrg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
@@ -92,25 +130,23 @@
         android:padding="8dp"
         android:background="@color/light_gray" />
 
-    <Button
-        android:id="@+id/agendaButton"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="Agenda"
-        android:textColor="@color/black"
-        android:background="@android:color/transparent"
-        />
+        android:text="Event Privacy"
+        android:textSize="16sp"
+        android:layout_marginTop="10px"
+        android:layout_marginBottom="4dp" />
 
-    <Button
-        android:id="@+id/guestsButton"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/ePriv"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
-        android:text="Guests"
-        android:textColor="@color/black"
-        android:background="@android:color/transparent"
-        />
+        android:text="najprivatniji dogadjaj"
+        android:textSize="14sp"
+        android:padding="8dp"
+        android:background="@color/light_gray" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/editEventButton"

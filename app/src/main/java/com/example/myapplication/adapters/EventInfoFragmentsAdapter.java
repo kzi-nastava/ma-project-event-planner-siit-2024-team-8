@@ -1,5 +1,7 @@
 package com.example.myapplication.adapters;
 
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -11,16 +13,21 @@ import com.example.myapplication.fragments.ToDoFragment;
 import com.example.myapplication.fragments.event.event_info.EventOverviewFragment;
 
 public class EventInfoFragmentsAdapter extends FragmentStateAdapter {
-    public EventInfoFragmentsAdapter(@NonNull Fragment fragment) {
+    private String eventId;
+
+    public EventInfoFragmentsAdapter(@NonNull Fragment fragment, String eventId) {
         super(fragment);
+        this.eventId = eventId;
     }
 
-    public EventInfoFragmentsAdapter(@NonNull FragmentActivity fragmentActivity) {
+    public EventInfoFragmentsAdapter(@NonNull FragmentActivity fragmentActivity, String eventId) {
         super(fragmentActivity);
+        this.eventId = eventId;
     }
 
-    public EventInfoFragmentsAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
+    public EventInfoFragmentsAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, String eventId) {
         super(fragmentManager, lifecycle);
+        this.eventId = eventId;
     }
 
     @NonNull
@@ -28,7 +35,12 @@ public class EventInfoFragmentsAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position){
             case 0:
-                return new EventOverviewFragment();
+                // Pass the eventId to EventOverviewFragment
+                EventOverviewFragment eventOverviewFragment = new EventOverviewFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("eventId", eventId);
+                eventOverviewFragment.setArguments(bundle);
+                return eventOverviewFragment;
             default:
                 return new ToDoFragment();
         }

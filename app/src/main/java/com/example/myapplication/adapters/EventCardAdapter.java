@@ -24,6 +24,9 @@ public class EventCardAdapter extends RecyclerView.Adapter<EventCardAdapter.View
 
     private ArrayList<Event> _eventCards;
 
+    //TODO MAKE THIS HARDCODING NIGHTMARE END
+    public String eventId = "b6183bde-11f7-4052-aa16-15150003f2bd";
+
     private Context context;
 
     public Context getContext() {
@@ -43,7 +46,7 @@ public class EventCardAdapter extends RecyclerView.Adapter<EventCardAdapter.View
     public void SetOnClick(Activity activity, FragmentManager manager){
         this.setItemClickListener(event -> {
             Log.d("OfferingsFragment", "Clicked on asset: " + event.getName());
-            EventInfoFragment eventInfoFragment = new EventInfoFragment();
+            EventInfoFragment eventInfoFragment = EventInfoFragment.newInstance(eventId); // Pass eventId to the fragment
             if (activity != null) {
                 manager.beginTransaction()
                         .replace(R.id.main, eventInfoFragment)

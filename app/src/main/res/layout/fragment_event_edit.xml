@@ -63,30 +63,27 @@
             app:boxCornerRadiusTopStart="12dp"
             app:boxCornerRadiusTopEnd="12dp"
             app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:counterEnabled="true"
-            app:counterMaxLength="30">
+            app:boxCornerRadiusBottomEnd="12dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/eventNameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sample Event Name"
+                android:text=""
                 android:textSize="14sp"
                 android:padding="8dp"
                 android:background="@android:color/white" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Event Duration -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Event Duration"
+            android:text="Event Description"
             android:textSize="16sp"
             android:layout_marginBottom="8dp" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/eventDurationInputLayout"
+            android:id="@+id/eventDescInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -95,19 +92,18 @@
             app:boxCornerRadiusTopStart="12dp"
             app:boxCornerRadiusTopEnd="12dp"
             app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:counterEnabled="true"
-            app:counterMaxLength="10">
+            app:boxCornerRadiusBottomEnd="12dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/eventDurationEditText"
+                android:id="@+id/eventDescEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="2 Hours"
+                android:text=""
                 android:textSize="14sp"
                 android:padding="8dp"
                 android:background="@android:color/white" />
         </com.google.android.material.textfield.TextInputLayout>
+
 
         <!-- Event Start Date -->
         <TextView
@@ -133,7 +129,7 @@
                 android:id="@+id/eventStartDateEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="2024-12-22"
+                android:inputType="date"
                 android:textSize="14sp"
                 android:padding="8dp"
                 android:background="@android:color/white" />
@@ -163,21 +159,97 @@
                 android:id="@+id/eventEndDateEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="2024-12-22"
+                android:inputType="date"
                 android:textSize="14sp"
                 android:padding="8dp"
                 android:background="@android:color/white" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Save Button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/saveEventButton"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Event Capacity"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/eventCapInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:boxStrokeWidth="1dp"
+            app:hintAnimationEnabled="true"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/eventCapEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:textSize="14sp"
+                android:padding="8dp"
+                android:background="@android:color/white" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event Location"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/eventLocInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:boxStrokeWidth="1dp"
+            app:hintAnimationEnabled="true"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/eventLocEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="14sp"
+                android:padding="8dp"
+                android:background="@android:color/white" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:backgroundTint="#A1C084"
-            android:text="Save Changes"
-            android:textColor="@android:color/white"
-            style="@style/Widget.MaterialComponents.Button" />
+            android:gravity="start">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/saveEventButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="#A1C084"
+                android:text="Save Changes"
+                android:textColor="@android:color/white"
+                style="@style/Widget.MaterialComponents.Button" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/deleteEventButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/deactivate_color"
+                android:text="Delete Event"
+                android:textColor="@android:color/white"
+                style="@style/Widget.MaterialComponents.Button" />
+        </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.main, new CreateEventTypeFragment())
+                .replace(R.id.main, new HomePageFragment())
                 .addToBackStack(null)
                 .commit();
 

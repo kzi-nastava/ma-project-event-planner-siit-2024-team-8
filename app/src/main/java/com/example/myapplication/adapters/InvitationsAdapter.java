@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.domain.BudgetItem;
 import com.example.myapplication.domain.Invitation;
 import com.google.android.material.card.MaterialCardView;
 
@@ -69,9 +70,19 @@ public class InvitationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public int getItemCount() {
         return invitations.size();
     }
+
+    public void removeInvitation (Invitation item){
+        int position = invitations.indexOf(item);
+        if (position != -1) {
+            invitations.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
     public class InputInvitationViewHolder extends RecyclerView.ViewHolder{
 
         private final EditText invitationEmailEditText;
+
+        private Invitation invitation;
         public InputInvitationViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -81,6 +92,13 @@ public class InvitationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             save.setOnClickListener( v -> {
                 onSaveClicked();
             });
+
+            Button removeBtn = itemView.findViewById(R.id.deleteInvitationButton);
+            removeBtn.setOnClickListener(v -> onRemoveInvitationClicked());
+        }
+
+        private void onRemoveInvitationClicked() {
+            removeInvitation(this.invitation);
         }
 
         public void onSaveClicked(){
@@ -91,6 +109,7 @@ public class InvitationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         public void bind(Invitation invitation){
+            this.invitation = invitation;
             invitationEmailEditText.setText(invitation.getEmail());
         }
     }

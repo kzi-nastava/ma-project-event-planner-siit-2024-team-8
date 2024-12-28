@@ -22,29 +22,40 @@ import android.widget.Toast;
 
 import com.auth0.android.jwt.JWT;
 import com.example.myapplication.R;
+import com.example.myapplication.activities.MainActivity;
 import com.example.myapplication.adapters.AssetCardAdapter;
 import com.example.myapplication.adapters.EventCardAdapter;
 import com.example.myapplication.domain.Asset;
 import com.example.myapplication.domain.AssetType;
 import com.example.myapplication.domain.Event;
 import com.example.myapplication.domain.OfferingType;
+import com.example.myapplication.domain.dto.EventCardResponse;
 import com.example.myapplication.fragments.asset.AssetCategoriesFragment;
 import com.example.myapplication.services.AssetCategoryService;
+import com.example.myapplication.services.EventService;
 import com.example.myapplication.utilities.JwtTokenUtil;
 import com.example.myapplication.viewmodels.AssetViewModel;
+import com.example.myapplication.viewmodels.EventViewModel;
 import com.google.android.material.button.MaterialButton;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomePageFragment extends Fragment {
 
     private RecyclerView eventRecyclerView;
     private RecyclerView assetRecyclerView;
     private AssetViewModel assetViewModel;
+
+    private EventViewModel eventViewModel;
     private AssetCardAdapter assetCardAdapter;
 
     public HomePageFragment() {
@@ -62,6 +73,7 @@ public class HomePageFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         assetViewModel = new ViewModelProvider(this).get(AssetViewModel.class);
+        eventViewModel = new ViewModelProvider(this).get(EventViewModel.class);
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -84,6 +96,7 @@ public class HomePageFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
         }
+
     }
 
     private boolean isUserLoggedIn(Context context) {
@@ -95,7 +108,7 @@ public class HomePageFragment extends Fragment {
             String jwtToken = JwtTokenUtil.getToken();
             if (jwtToken != null) {
                 JWT token = new JWT(jwtToken);
-                return !token.isExpired(10); // Adjust the leeway (e.g., 10 seconds)
+                return !token.isExpired(10);
             }
             return false;
         } catch (Exception e) {
@@ -134,17 +147,23 @@ public class HomePageFragment extends Fragment {
             assetViewModel.fetchAssets(authHeader);
         }
 
+        eventViewModel.fetchTop5Events();
         SnapHelper snapHelper = new LinearSnapHelper();
         eventRecyclerView = view.findViewById(R.id.eventRecyclerView);
         EventCardAdapter eventCardAdapter = new EventCardAdapter(getContext());
-        eventCardAdapter.SetOnClick(getActivity(), getActivity().getSupportFragmentManager());
-        eventCardAdapter.set_eventCards(new ArrayList<>(createEvents().stream().limit(5).collect(Collectors.toList())));
+        eventCardAdapter.SetOnClick((MainActivity) getActivity(), getActivity().getSupportFragmentManager());
         eventRecyclerView.setAdapter(eventCardAdapter);
         eventRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
-        snapHelper.attachToRecyclerView(assetRecyclerView);
+        snapHelper.attachToRecyclerView(eventRecyclerView);
+        eventViewModel.getTop5().observe(getViewLifecycleOwner(),eventCardResponses -> {
+            if(eventCardResponses!=null){
+                eventCardAdapter.setEvents(eventCardResponses);
+            }
+        });
 
         setupClickListeners(view);
     }
+
     private void setupClickListeners(View view) {
         Button seeAllEvents = view.findViewById(R.id.seeAllEventsButton);
         Button seeAllAssets = view.findViewById(R.id.seeAllAssetsButton);

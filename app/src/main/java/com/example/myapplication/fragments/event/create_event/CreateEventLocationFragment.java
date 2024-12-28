@@ -18,7 +18,9 @@ import android.widget.Toast;
 import com.example.myapplication.R;
 import com.example.myapplication.databinding.FragmentCreateEventStepTwoBinding;
 import com.example.myapplication.domain.Location;
+import com.example.myapplication.domain.dto.CreateEventRequest;
 import com.example.myapplication.viewmodels.EventViewModel;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.util.GeoPoint;
@@ -48,6 +50,8 @@ public class CreateEventLocationFragment extends Fragment {
     private MapView mapView;
 
     private Marker marker;
+
+    private boolean validLocation = false;
 
     private FragmentCreateEventStepTwoBinding binding;
 
@@ -92,6 +96,7 @@ public class CreateEventLocationFragment extends Fragment {
         Configuration.getInstance().setUserAgentValue(requireContext().getPackageName());
 
         eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
+        binding.setEventVM(eventViewModel);
 
         mapView = binding.mapView3;
         mapView.setMultiTouchControls(true); // Enable zoom controls
@@ -118,6 +123,8 @@ public class CreateEventLocationFragment extends Fragment {
     }
 
     private void nextButtonClicked() {
+        if(!isDataValid()){return;}
+
         CreateEventAgendaFragment stepTwoFragment = new CreateEventAgendaFragment();
         CreateEventFragment parentFragment = (CreateEventFragment) getParentFragment();
         assert parentFragment != null;
@@ -130,10 +137,33 @@ public class CreateEventLocationFragment extends Fragment {
                 .addToBackStack(null)
                 .commit();
         parentFragment.changeTitle(3);
-        parentFragment.animateProgressBar(66);
+        parentFragment.animateProgressBar(2);
 
-        eventViewModel.getEvent().getValue().getLocation().setLongitude(marker.getPosition().getLongitude());
-        eventViewModel.getEvent().getValue().getLocation().setLatitude(marker.getPosition().getLatitude());
+        eventViewModel.getCreateLocationRequest().getValue().setLongitude(marker.getPosition().getLongitude());
+        eventViewModel.getCreateLocationRequest().getValue().setLatitude(marker.getPosition().getLatitude());
+    }
+
+    private boolean isDataValid() {
+
+        int count = 0;
+        TextInputLayout city = binding.textInputEventCity;
+        TextInputLayout street = binding.textInputEventStreet;
+
+        CreateEventRequest request = eventViewModel.getCreateEventRequest().getValue();
+        assert request != null;
+        request.setLocation(eventViewModel.getCreateLocationRequest().getValue());
+        if (request.getLocation().getCity() == null || request.getLocation().getCity().isEmpty()){
+            city.setError("City is required!");
+            count++;
+        }if (request.getLocation().getStreet() == null || request.getLocation().getStreet().isEmpty()){
+            street.setError("Street is required!");
+            count++;
+        }if (!validLocation){
+            Toast.makeText(requireContext(),"No location is selected!",Toast.LENGTH_SHORT).show();
+        }
+
+        return count == 0;
+
     }
 
     private Location getLocationFromAddress(String strAddress) {
@@ -146,12 +176,17 @@ public class CreateEventLocationFragment extends Fragment {
             addresses = geocoder.getFromLocationName(strAddress, 1);  // 1 means we are only interested in one result.
 
             if (addresses != null && !addresses.isEmpty()) {
+                validLocation = true;
                 Address address = addresses.get(0);
                 location.setLatitude(address.getLatitude());
                 location.setLongitude(address.getLongitude());
+            }else{
+                Toast toast = Toast.makeText(requireActivity(), "Cannot find location for given address!\n Try again!", Toast.LENGTH_SHORT);
+                validLocation = false;
             }
 
         } catch (IOException e) {
+            validLocation = false;
             Toast toast = Toast.makeText(requireActivity(), "Cannot find location for given address!\n Try again!", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();

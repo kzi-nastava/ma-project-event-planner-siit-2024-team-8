@@ -8,6 +8,10 @@ public class Invitation {
 
     private boolean isInput;
 
+    public Invitation(String email){
+        this.email = email;
+    }
+
     public Invitation(String email, LocalDate date) {
         this.email = email;
         this.date = date;

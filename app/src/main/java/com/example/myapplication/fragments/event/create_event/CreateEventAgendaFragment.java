@@ -43,7 +43,7 @@ public class CreateEventAgendaFragment extends Fragment implements ActivitiesAda
         recyclerView = binding.activitiesRecyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        activityList = eventViewModel.getActivities();
+        activityList = eventViewModel.getRequestActivities();
         activitiesAdapter = new ActivitiesAdapter(activityList,this);
         recyclerView.setAdapter(activitiesAdapter);
 
@@ -56,15 +56,33 @@ public class CreateEventAgendaFragment extends Fragment implements ActivitiesAda
     }
 
     public void onClickedNext(){
-        eventViewModel.getEvent().getValue().setActivities(activityList);
-        Toast.makeText(getContext(), "Succesfully created an Event!", Toast.LENGTH_SHORT).show();
+        if (activityList.isEmpty() || activityList.size() < 2){
+            Toast.makeText(requireContext(),"You must have at least 1 activity!",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        activityList.remove(activityList.size()-1);
+        eventViewModel.getCreateEventRequest().getValue().setAgenda(activityList);
+
+        CreateEventFragment parentFragment = (CreateEventFragment) getParentFragment();
+        assert parentFragment != null;
+        CreateEventBudgetFragment fragment = new CreateEventBudgetFragment();
+        parentFragment.getChildFragmentManager().beginTransaction()
+                .setCustomAnimations( R.anim.enter_from_right,
+                        R.anim.exit_to_left,
+                        R.anim.enter_from_left,
+                        R.anim.exit_to_right )
+                .replace(R.id.createEventLayout, fragment)
+                .addToBackStack(null)
+                .commit();
+        parentFragment.changeTitle(4);
+        parentFragment.animateProgressBar(3);
     }
 
 
     //When new activity is clicked we add new card for input
     @Override
     public void onCreateNewActivity() {
-        Activity inputActivity = new Activity("", "", "", LocalTime.now(),LocalTime.now(), true);
+        Activity inputActivity = new Activity("", "", "", "","", true);
         activityList.add(activityList.size() - 1, inputActivity);
         activitiesAdapter.notifyItemInserted(activityList.size() - 2);
     }

@@ -36,22 +36,40 @@
                 android:textStyle="bold" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/saveInvitationButton"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="120dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="120dp"
-            android:backgroundTint="@color/olive"
-            android:text="Save"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            app:cornerRadius="10dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
+
+            <Button
+                android:id="@+id/saveInvitationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="40dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="@color/olive"
+                android:text="Save"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:cornerRadius="10dp" />
+
+            <Button
+                android:id="@+id/deleteInvitationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/deactivate_color"
+                android:text="Remove"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:cornerRadius="10dp" />
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

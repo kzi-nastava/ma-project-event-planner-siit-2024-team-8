@@ -1,5 +1,6 @@
 package com.example.myapplication.fragments.event.event_info;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -20,9 +22,12 @@ import android.widget.TextView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.EventInfoFragmentsAdapter;
+import com.example.myapplication.domain.Role;
 import com.example.myapplication.fragments.ToDoFragment;
 import com.example.myapplication.fragments.event.edit_event.EventEditFragment;
+import com.example.myapplication.utilities.JwtTokenUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -71,28 +76,55 @@ public class EventInfoFragment extends Fragment {
         EventInfoFragmentsAdapter adapter = new EventInfoFragmentsAdapter(this, eventId);
         viewPager.setAdapter(adapter);
 
+        adjustTabLayoutByRole(view);
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-            switch (position) {
-                case 0:
-                    tab.setText("Overview");
-                    break;
-                case 1:
-                    tab.setText("Budget");
-                    break;
-                case 2:
-                    tab.setText("Location");
-                    break;
-                case 3:
-                    tab.setText("Guests");
-                    break;
-                case 4:
-                    tab.setText("Agenda");
-                    break;
-                default:
-                    throw new IllegalStateException("Unexpected position " + position);
+            if (JwtTokenUtil.getRole() == Role.ORGANIZER){
+                switch (position) {
+                    case 0:
+                        tab.setText("Overview");
+                        break;
+                    case 1:
+                        tab.setText("Guests");
+
+                        break;
+                    case 2:
+                        tab.setText("Agenda");
+                        break;
+                    case 3:
+                        tab.setText("Budget");
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected position " + position);
+                }
+            }else{
+                switch (position) {
+                    case 0:
+                        tab.setText("Overview");
+                        break;
+                    case 1:
+                        tab.setText("Guests");
+                        break;
+                    case 2:
+                        tab.setText("Agenda");
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected position " + position);
+                }
             }
         }).attach();
 
+
+
         return view;
+    }
+
+    private void adjustTabLayoutByRole(View view) {
+        Role role = JwtTokenUtil.getRole();
+        if (role != Role.ORGANIZER) {
+            TabLayout tabLayout = view.findViewById(R.id.tabLayoutEventInfo);
+            TabLayout.Tab tab = tabLayout.getTabAt(3);
+            assert tab != null;
+            tab.view.setVisibility(View.GONE);
+        }
     }
 }

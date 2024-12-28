@@ -17,6 +17,7 @@ import java.security.GeneralSecurityException;
 public class JwtTokenUtil {
 
     private static SharedPreferences sharedPreferences;
+    public Context context;
     private Role role;
     public static void saveToken(String jwtToken, Context context) throws GeneralSecurityException, IOException {
         MasterKey masterKey = new MasterKey.Builder(context)
@@ -33,9 +34,46 @@ public class JwtTokenUtil {
         sharedPreferences.edit().putString("JWT_TOKEN", jwtToken).apply();
     }
 
+    public static void saveUserId(String id, Context context) throws GeneralSecurityException, IOException {
+        MasterKey masterKey = new MasterKey.Builder(context)
+                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                .build();
+        sharedPreferences = EncryptedSharedPreferences.create(
+                context,
+                "secure_prefs",
+                masterKey,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        );
+
+        sharedPreferences.edit().putString("ID", id).apply();
+    }
+
+    public static void setSharedPreferences(Context context) throws GeneralSecurityException, IOException {
+        MasterKey masterKey = new MasterKey.Builder(context)
+                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                .build();
+        sharedPreferences = EncryptedSharedPreferences.create(
+                context,
+                "secure_prefs",
+                masterKey,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        );
+
+    }
+
     public static String getToken(){
         if (sharedPreferences != null){
             return sharedPreferences.getString("JWT_TOKEN", null);
+        }else{
+            return null;
+        }
+    }
+
+    public static String getUserId(){
+        if (sharedPreferences != null){
+            return sharedPreferences.getString("ID", null);
         }else{
             return null;
         }
@@ -49,5 +87,23 @@ public class JwtTokenUtil {
         assert jwtToken != null;
         JWT token = new JWT(jwtToken);
         return Role.valueOf(token.getClaim("role").asString().toUpperCase());
+    }
+
+    public static boolean isUserLoggedIn(Context context) {
+        try {
+            if (getToken() == null) {
+                return false;
+            }
+
+            String jwtToken = getToken();
+            if (jwtToken != null) {
+                JWT token = new JWT(jwtToken);
+                return !token.isExpired(60*60*10);
+            }
+            return false;
+        } catch (Exception e) {
+            Log.e("JwtTokenUtil", "Error checking login state", e);
+            return false;
+        }
     }
 }

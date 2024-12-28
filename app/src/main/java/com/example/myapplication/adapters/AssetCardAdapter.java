@@ -58,7 +58,7 @@ public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.View
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_event_card, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.asset_home_card, parent, false);
         return new ViewHolder(view);
     }
 

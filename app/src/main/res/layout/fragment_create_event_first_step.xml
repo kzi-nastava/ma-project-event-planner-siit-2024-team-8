@@ -27,13 +27,16 @@
                 android:text="EventType"
                 android:textStyle="bold"/>
 
-            <Spinner
+            <androidx.appcompat.widget.AppCompatSpinner
                 android:id="@+id/eventTypeSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="30dp"
+                app:eventType="@={eventVM.createEventRequest.eventType}"
+                android:popupBackground="@color/white"
+                android:popupElevation="8dp"/>
 
             <TextView
                 android:id="@+id/textView10"
@@ -68,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="30dp"
                     android:layout_marginEnd="30dp"
-                    android:text="@={eventVM.event.name}"/>
+                    android:text="@={eventVM.createEventRequest.name}"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -104,7 +107,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="30dp"
                     android:layout_marginEnd="30dp"
-                    android:text="@={eventVM.event.description}"/>
+                    android:text="@={eventVM.createEventRequest.description}"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -142,7 +145,8 @@
                     android:layout_marginStart="30dp"
                     android:layout_marginEnd="30dp"
                     android:inputType="number"
-                    android:text="@={eventVM.event.capacity}"/>
+                    android:text="@={eventVM.createEventRequest.capacity}"
+                    />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -163,7 +167,56 @@
                 app:thumbIconTint="@color/light_gray"
                 app:thumbTint="@color/olive"
                 app:trackTint="@color/black90"
-                android:checked="@={eventVM.event.private}"/>
+                android:checked="@={eventVM.createEventRequest.private}"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <Button
+                    android:id="@+id/openDateRangePickerButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginEnd="40dp"
+                    android:backgroundTint="@color/olive"
+                    android:text="Open Date Range Picker"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    app:cornerRadius="10dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputDateRange"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:textColorHint="@color/top_card"
+                    android:textSize="16sp"
+                    app:boxCornerRadiusBottomEnd="10dp"
+                    app:boxCornerRadiusBottomStart="10dp"
+                    app:boxCornerRadiusTopEnd="10dp"
+                    app:boxCornerRadiusTopStart="10dp"
+                    app:boxStrokeWidth="1dp">
+
+                    <TextView
+                        android:id="@+id/dateRangeTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:gravity="center_horizontal"
+                        android:text="Selected Date Range"
+                        android:textSize="16sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+            </LinearLayout>
 
             <Button
                 android:id="@+id/createEventNextButton"

@@ -9,8 +9,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.example.myapplication.domain.Role;
 import com.example.myapplication.fragments.ToDoFragment;
 import com.example.myapplication.fragments.event.event_info.EventOverviewFragment;
+import com.example.myapplication.utilities.JwtTokenUtil;
 
 public class EventInfoFragmentsAdapter extends FragmentStateAdapter {
     private String eventId;
@@ -48,6 +50,6 @@ public class EventInfoFragmentsAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 5;
+        return JwtTokenUtil.getRole() == Role.ORGANIZER ? 4 : 3;
     }
 }

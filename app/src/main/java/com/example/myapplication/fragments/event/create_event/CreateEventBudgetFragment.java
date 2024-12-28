@@ -1,21 +1,51 @@
 package com.example.myapplication.fragments.event.create_event;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.myapplication.R;
+import com.example.myapplication.adapters.BudgetItemAdapter;
+import com.example.myapplication.databinding.FragmentCreateEventBinding;
+import com.example.myapplication.databinding.FragmentCreateEventBudgetBinding;
+import com.example.myapplication.databinding.FragmentCreateEventTypeBinding;
+import com.example.myapplication.domain.ApiResponse;
+import com.example.myapplication.domain.AssetCategory;
+import com.example.myapplication.domain.BudgetItem;
+import com.example.myapplication.domain.EventType;
+import com.example.myapplication.domain.dto.BudgetItemCreateRequest;
+import com.example.myapplication.services.EventService;
+import com.example.myapplication.utilities.JwtTokenUtil;
+import com.example.myapplication.viewmodels.AssetCategoryViewModel;
+import com.example.myapplication.viewmodels.EventViewModel;
+import com.google.android.gms.common.internal.Objects;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link CreateEventBudgetFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CreateEventBudgetFragment extends Fragment {
+public class CreateEventBudgetFragment extends Fragment implements BudgetItemAdapter.OnNewBudgetItemClick {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -25,6 +55,14 @@ public class CreateEventBudgetFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private EventViewModel eventViewModel;
+
+    private FragmentCreateEventBudgetBinding binding;
+
+    private List<BudgetItem> items;
+
+    private BudgetItemAdapter adapter;
 
     public CreateEventBudgetFragment() {
         // Required empty public constructor
@@ -61,6 +99,88 @@ public class CreateEventBudgetFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_event_budget, container, false);
+        binding =  FragmentCreateEventBudgetBinding.inflate(inflater,container, false);
+
+        eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
+
+        items = new ArrayList<>();
+        adapter = new BudgetItemAdapter(items,this);
+        RecyclerView itemsRecyclerView = binding.itemsRecyclerView;
+        binding.itemsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        itemsRecyclerView.setAdapter(adapter);
+
+        Button next = binding.createEventNextBudgetButton;
+        next.setOnClickListener(v -> {
+            onNextClicked();
+        });
+
+        Button add = binding.addItemButton;
+        add.setOnClickListener(v ->
+        {
+            onNewBudgetItemClick();
+        });
+
+        Button suggested = binding.suggestedBudgetButton;
+        suggested.setOnClickListener(v -> {
+            onSuggestedButtonClick();
+        });
+
+        return binding.getRoot();
+    }
+
+    private void onSuggestedButtonClick() {
+        EventType eventType = eventViewModel.getCreateEventRequest().getValue().getEventType();
+        for (AssetCategory category : eventType.getAssetCategories()){
+            adapter.addItem(new BudgetItem(category));
+        }
+    }
+
+    private void onNextClicked() {
+        if (!isDataValid()){
+            return;
+        }
+        List<BudgetItemCreateRequest> budgetItems = adapter.getBudgetItems().stream()
+                                                           .map(BudgetItemCreateRequest::new)
+                                                           .collect(Collectors.toList());
+        eventViewModel.getCreateEventRequest().getValue().setBudgetItems(budgetItems);
+        //eventViewModel.getCreateEventRequest().getValue().setOrganizerID(JwtTokenUtil.);
+
+        EventService eventService = new EventService();
+        eventService.createEvent(eventViewModel.getCreateEventRequest().getValue(),
+                new Callback<ApiResponse>() {
+                    @Override
+                    public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                        if (response.isSuccessful() || response.body() != null){
+                            Toast.makeText(getContext(), "Succesfully created an Event!", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(getContext(), response.message(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ApiResponse> call, Throwable t) {
+                        Log.e("EventService", "API call failed", t);
+                    }
+                });
+    }
+
+    private boolean isDataValid() {
+        StringBuilder message = new StringBuilder();
+        for (BudgetItem item : adapter.getBudgetItems()){
+            if (item.getPlannedAmount() == 0.0 || item.getPlannedAmount() == null){
+                Toast.makeText(requireContext(),"Planned ammount of every item is required and must be positive number!",Toast.LENGTH_SHORT).show();
+                return false;
+            }
+            if (item.getCategory() == null){
+                Toast.makeText(requireContext(),"Asset Category can't be null!",Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void onNewBudgetItemClick() {
+        adapter.addItem(new BudgetItem());
     }
 }

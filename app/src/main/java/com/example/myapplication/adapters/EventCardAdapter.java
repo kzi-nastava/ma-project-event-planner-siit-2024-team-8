@@ -1,28 +1,27 @@
 package com.example.myapplication.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
-import com.example.myapplication.domain.Event;
+import com.example.myapplication.activities.MainActivity;
+import com.example.myapplication.domain.dto.EventCardResponse;
 import com.example.myapplication.fragments.event.event_info.EventInfoFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class EventCardAdapter extends RecyclerView.Adapter<EventCardAdapter.ViewHolder> {
 
-    private ArrayList<Event> _eventCards;
+    private List<EventCardResponse> events = new ArrayList<>();
 
     //TODO MAKE THIS HARDCODING NIGHTMARE END
     public String eventId = "b6183bde-11f7-4052-aa16-15150003f2bd";
@@ -43,16 +42,16 @@ public class EventCardAdapter extends RecyclerView.Adapter<EventCardAdapter.View
         this.itemClickListener = listener;
     }
 
-    public void SetOnClick(Activity activity, FragmentManager manager){
+    public void SetOnClick(MainActivity activity, FragmentManager manager){
         this.setItemClickListener(event -> {
-            Log.d("OfferingsFragment", "Clicked on asset: " + event.getName());
-            EventInfoFragment eventInfoFragment = EventInfoFragment.newInstance(eventId); // Pass eventId to the fragment
+            EventInfoFragment eventInfoFragment = EventInfoFragment.newInstance(event.getId().toString()); // Pass eventId to the fragment
             if (activity != null) {
                 manager.beginTransaction()
                         .replace(R.id.main, eventInfoFragment)
                         .addToBackStack(null)  // Add to backstack so you can go back
                         .commit();
             }
+            assert activity != null;
         });
     }
 
@@ -60,33 +59,27 @@ public class EventCardAdapter extends RecyclerView.Adapter<EventCardAdapter.View
 
         private TextView txtName;
         private TextView txtDate;
-        private ImageView imageViewEvent;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtName = itemView.findViewById(R.id.nameTextView);
             txtDate = itemView.findViewById(R.id.secondTextView);
-            imageViewEvent = itemView.findViewById(R.id.imageViewOffering);
         }
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_event_card,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_home_card,parent,false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.txtName.setText(_eventCards.get(position).getName());
-        holder.txtDate.setText(_eventCards.get(position).getStartDateString());
-        Glide.with(context)
-                .asBitmap()
-                .load(_eventCards.get(position).getImageURL())
-                .into(holder.imageViewEvent);
+        holder.txtName.setText(events.get(position).getName());
+        holder.txtDate.setText(events.get(position).getStartDate());
         holder.itemView.setOnClickListener(v -> {
             if (itemClickListener != null) {
-                itemClickListener.onItemClick(_eventCards.get(position));
+                itemClickListener.onItemClick(events.get(position));
             }
         });
     }
@@ -94,15 +87,16 @@ public class EventCardAdapter extends RecyclerView.Adapter<EventCardAdapter.View
 
     @Override
     public int getItemCount() {
-        return _eventCards.size();
+        return events.size();
     }
 
-    public void set_eventCards(ArrayList<Event> _eventCards) {
-        this._eventCards = _eventCards;
+    public void setEvents(List<EventCardResponse> _eventCards) {
+        this.events = _eventCards;
+        notifyDataSetChanged();
     }
 
     public interface OnItemClickListener {
-        void onItemClick(Event event);
+        void onItemClick(EventCardResponse event);
     }
 
     /*

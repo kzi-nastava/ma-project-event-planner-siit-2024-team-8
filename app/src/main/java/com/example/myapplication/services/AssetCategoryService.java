@@ -6,6 +6,7 @@ import com.example.myapplication.domain.AssetCategory;
 import com.example.myapplication.utilities.JwtTokenUtil;
 import com.example.myapplication.utilities.RetrofitClient;
 import java.util.List;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import retrofit2.Call;
@@ -25,6 +26,13 @@ public class AssetCategoryService {
         call.enqueue(callback);
     }
 
+    public Future<List<AssetCategory>> getAllActiveCategories(String token){
+       return apiService.getAllActiveCategories(token);
+    }
+
+    public Call<AssetCategory> getAssetCategoryByName(String name,Callback<AssetCategory>  assetCategoryCallback){
+        return  apiService.getAssetCategoryByName(name);
+    }
     public void getPendingCategories(String token, Callback<List<AssetCategory>> callback) {
         Call<List<AssetCategory>> call = apiService.getPendingCategories(token);
         call.enqueue(callback);

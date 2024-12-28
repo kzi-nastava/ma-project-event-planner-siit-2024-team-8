@@ -110,46 +110,64 @@
 
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/descriptionTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginRight="16dp"
-            android:id="@+id/descriptionTextInputLayout">
+            android:layout_marginBottom="15dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/activityDescriptionEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="top|start"
                 android:hint="Activity Description"
-                android:textSize="16sp"
-                android:textColor="@android:color/black"
                 android:inputType="textMultiLine"
                 android:lines="3"
                 android:maxLines="5"
+                android:padding="10dp"
                 android:scrollHorizontally="false"
-                android:gravity="top|start"
-                android:padding="10dp" />
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/saveActivityButton"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginStart="120dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="120dp"
-            android:layout_marginBottom="10dp"
-            android:backgroundTint="@color/olive"
-            android:text="Save"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            app:cornerRadius="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputEventStreet" />
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:gravity="center"
+            android:orientation="horizontal">
 
+            <Button
+                android:id="@+id/saveActivityButton"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="40dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="@color/olive"
+                android:text="Save"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:cornerRadius="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputEventStreet" />
+
+            <Button
+                android:id="@+id/deleteActivityButton"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/deactivate_color"
+                android:text="Remove"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:cornerRadius="10dp" />
+        </LinearLayout>
 
 
     </LinearLayout>

@@ -1,33 +1,28 @@
 package com.example.myapplication.domain;
 
+import com.example.myapplication.domain.dto.BudgetItemCreateRequest;
+
 import java.util.UUID;
 
 public class BudgetItem {
-    private String name;
 
 
     private AssetCategory category;
 
-    //private Asset boughtAsset;
+    private Double plannedAmount;
 
+    public BudgetItem(){
+        plannedAmount = 0.0;
+    }
 
-    private Budget budget;
-
-    private Integer plannedAmount;
-
-    public BudgetItem(String name,AssetCategory category){
-        this.name = name;
+    public BudgetItem(AssetCategory category){
+        this.plannedAmount = 0.0;
         this.category = category;
     }
 
-    public Budget getBudget() {
-        return budget;
+    public BudgetItem(String plannedAmmount,AssetCategory category){
+        this.category = category;
     }
-
-    public void setBudget(Budget budget) {
-        this.budget = budget;
-    }
-
     public AssetCategory getCategory() {
         return category;
     }
@@ -35,19 +30,12 @@ public class BudgetItem {
     public void setCategory(AssetCategory category) {
         this.category = category;
     }
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getPlannedAmount() {
+    public Double getPlannedAmount() {
         return plannedAmount;
     }
 
-    public void setPlannedAmount(Integer plannedAmount) {
+    public void setPlannedAmount(Double plannedAmount) {
         this.plannedAmount = plannedAmount;
     }
 }

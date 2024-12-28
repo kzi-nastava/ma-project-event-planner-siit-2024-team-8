@@ -24,6 +24,7 @@ import com.example.myapplication.viewmodels.EventViewModel;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -93,7 +94,10 @@ public class CreateEventInvitationsFragment extends Fragment implements Invitati
         recyclerView = binding.invitationsRecyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        invitations = eventViewModel.getEvent().getValue().getInvitations();
+        List<String> guests = eventViewModel.getCreateEventRequest().getValue().getGuests();
+        invitations = guests.stream()
+                    .map(Invitation::new)  // Create Invitation for each guest
+                    .collect(Collectors.toList());;
         invitationsAdapter = new InvitationsAdapter(invitations,this);
 
         recyclerView.setAdapter(invitationsAdapter);
@@ -114,7 +118,14 @@ public class CreateEventInvitationsFragment extends Fragment implements Invitati
     }
 
     public void onNextClicked(){
-        eventViewModel.getEvent().getValue().setInvitations(invitations);
+        if (invitations.isEmpty()) {
+            Toast.makeText(requireContext(),"You must have more than 0 guests", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        List<String> guestEmails = invitations.stream()
+                .map(Invitation::getEmail)
+                .collect(Collectors.toList());
+        eventViewModel.getCreateEventRequest().getValue().setGuests(guestEmails);
 
         CreateEventFragment parentFragment = (CreateEventFragment) getParentFragment();
         assert parentFragment != null;
@@ -128,7 +139,7 @@ public class CreateEventInvitationsFragment extends Fragment implements Invitati
                 .addToBackStack(null)
                 .commit();
         parentFragment.changeTitle(2);
-        parentFragment.animateProgressBar(33);
+        parentFragment.animateProgressBar(2);
     }
 
     @Override

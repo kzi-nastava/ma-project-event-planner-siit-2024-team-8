@@ -23,6 +23,8 @@ import com.example.myapplication.domain.Event;
 import com.example.myapplication.viewmodels.EventViewModel;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.Objects;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link CreateEventFragment#newInstance} factory method to
@@ -94,7 +96,6 @@ public class CreateEventFragment extends Fragment {
         back.setOnClickListener( v -> {
             onBackButtonClick();
         });
-
         return binding.getRoot();
     }
 
@@ -108,29 +109,37 @@ public class CreateEventFragment extends Fragment {
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.createEventLayout, stepOneFragment)
                     .commit();
-            animateProgressBar(0);
+            animateProgressBar(1);
             changeTitle(1);
-        }else if(current instanceof CreateEventLocationFragment && eventViewModel.getEvent().getValue().isPrivate()){
+        }else if(current instanceof CreateEventLocationFragment && eventViewModel.getCreateEventRequest().getValue().isPrivate()){
             CreateEventInvitationsFragment invitationsFragment = new CreateEventInvitationsFragment();
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.createEventLayout, invitationsFragment)
                     .commit();
-            animateProgressBar(0);
-            changeTitle(1);
+            animateProgressBar(1);
+            changeTitle(2);
 
         }else if (current instanceof CreateEventAgendaFragment){
             CreateEventLocationFragment stepTwoFragment = new CreateEventLocationFragment();
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.createEventLayout, stepTwoFragment)
                     .commit();
-            animateProgressBar((1/steps)*100);
+            animateProgressBar(2);
             changeTitle(2);
+        }else if (current instanceof CreateEventBudgetFragment){
+            CreateEventAgendaFragment agendaFragment = new CreateEventAgendaFragment();
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.createEventLayout,agendaFragment)
+                    .commit();
+            animateProgressBar(3);
+            changeTitle(3);
         }
     }
 
-    public void animateProgressBar(int progress) {
+    public void animateProgressBar(int step) {
         ProgressBar progressBar = getView().findViewById(R.id.progressBar);
         if (progressBar != null) {
+            int progress = (int) (((float) step / steps) * 100);
             ObjectAnimator progressAnimator = ObjectAnimator.ofInt(progressBar, "progress", 0, progress);
             progressAnimator.setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator());
             progressAnimator.setDuration(500); // Duration of 2 seconds
@@ -142,10 +151,15 @@ public class CreateEventFragment extends Fragment {
         TextView title = getView().findViewById(R.id.eventCreationTitle);
         if (step == 1){
             title.setText("Create New Event");
-        }else if (step == 2){
+        }else if (step == 2 && eventViewModel.getCreateEventRequest().getValue().isPrivate()){
+            title.setText("Invitations");
+        }else if (step == 2 && !eventViewModel.getCreateEventRequest().getValue().isPrivate()) {
             title.setText("Location");
-        }else if(step == 3){
+        }
+        else if(step == 3){
             title.setText("Agenda");
+        }else if (step == 4) {
+            title.setText("Budget");
         }
     }
 }

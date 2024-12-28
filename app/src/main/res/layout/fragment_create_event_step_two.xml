@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
-                android:text="@={eventVM.event.location.city}"/>
+                android:text="@={eventVM.createLocationRequest.city}"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <org.osmdroid.views.MapView
@@ -124,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
-                android:text="@={eventVM.event.location.address}"/>
+                android:text="@={eventVM.createLocationRequest.street}"/>
         </com.google.android.material.textfield.TextInputLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

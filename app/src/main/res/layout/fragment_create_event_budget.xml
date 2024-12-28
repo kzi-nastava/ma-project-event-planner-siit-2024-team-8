@@ -12,22 +12,27 @@
         android:id="@+id/textView12"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="25dp"
-        android:text="Recommendations"
+        android:layout_marginTop="30dp"
+        android:gravity="center_horizontal"
+        android:text="Make your budget"
         android:textStyle="bold" />
 
-    <Spinner
-        android:id="@+id/spinner"
+    <Button
+        android:id="@+id/suggestedBudgetButton"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="30dp" />
+        android:layout_height="60dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="40dp"
+        android:backgroundTint="@color/olive"
+        android:text="Suggested budget"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:cornerRadius="10dp" />
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="450dp"
+        android:layout_height="400dp"
         android:layout_marginTop="20dp">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -36,8 +41,21 @@
             android:layout_height="match_parent" />
     </ScrollView>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/addItemButton"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:backgroundTint="@color/light_gray"
+        android:text="Add Budget Item"
+        android:textColor="@color/black"
+        app:icon="@drawable/baseline_add_24"
+        app:iconTint="@color/black"
+        app:strokeColor="@color/black"
+        app:strokeWidth="2dp" />
+
+
     <Button
-        android:id="@+id/createEventNextButton4"
+        android:id="@+id/createEventNextBudgetButton"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginStart="40dp"

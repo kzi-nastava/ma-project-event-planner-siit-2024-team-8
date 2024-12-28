@@ -64,18 +64,8 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Overview" />
-
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Budget" />
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Location" />
+            android:text="Overview"
+            android:id="@+id/overviewItem"/>
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="match_parent"
@@ -86,6 +76,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="Agenda" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Budget"
+            android:id="@+id/budgetItem"/>
 
     </com.google.android.material.tabs.TabLayout>
 

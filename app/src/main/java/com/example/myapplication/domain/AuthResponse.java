@@ -2,14 +2,14 @@ package com.example.myapplication.domain;
 
 public class AuthResponse {
     private String token;
-    private String fullName;
+    private String id;
 
-    public String getFullName() {
-        return fullName;
+    public String getId() {
+        return id;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getToken() {

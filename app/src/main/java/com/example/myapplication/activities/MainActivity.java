@@ -8,9 +8,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.transition.Visibility;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowInsets;
 import android.widget.ImageView;
@@ -18,28 +21,44 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.databinding.DataBindingUtil;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainerView;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.NavGraph;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.myapplication.R;
+import com.example.myapplication.databinding.ActivityMainBinding;
 import com.example.myapplication.domain.Role;
 import com.example.myapplication.fragments.CreateEventTypeFragment;
 import com.example.myapplication.fragments.HomePageFragment;
 import com.example.myapplication.fragments.LoginFragment;
 import com.example.myapplication.fragments.StartupFragment;
+import com.example.myapplication.fragments.event.create_event.CreateEventBudgetFragment;
 import com.example.myapplication.fragments.event.create_event.CreateEventFragment;
+import com.example.myapplication.fragments.event.create_event.CreateEventLocationFragment;
 import com.example.myapplication.fragments.event.event_info.EventInfoFragment;
+import com.example.myapplication.utilities.JwtTokenUtil;
+import com.example.myapplication.viewmodels.AssetCategoryViewModel;
+import com.example.myapplication.viewmodels.EventViewModel;
 import com.example.myapplication.viewmodels.UserViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.File;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.OnRoleChangeListener {
 
@@ -62,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
     private LoginFragment loginFragment;
 
     private HomePageFragment homePageFragment;
+
+    private int backStackCount;
 
     public boolean checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -132,6 +153,12 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+        try {
+            JwtTokenUtil.setSharedPreferences(this);
+        } catch (GeneralSecurityException | IOException e) {
+            throw new RuntimeException(e);
+        }
+
         View rootView = findViewById(android.R.id.content);
         rootView.setOnApplyWindowInsetsListener((v, insets) -> {
             // Get the heights of status and navigation bars
@@ -144,9 +171,23 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
         bottomNavigationView = findViewById(R.id.bottomNavigationViewHomePage);
         navController = navHostFragment.getNavController();
 
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                int currentBackStackCount = getSupportFragmentManager().getBackStackEntryCount();
+                if (currentBackStackCount > backStackCount){
+                    hideNavView();
+                }else{
+                    showNavView();
+                }
+                backStackCount = currentBackStackCount;
+            }
+        });
+
+        Fragment startup = JwtTokenUtil.isUserLoggedIn(this) ? new HomePageFragment() : new StartupFragment();
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.main, new HomePageFragment())
+                .replace(R.id.main, startup)
                 .addToBackStack(null)
                 .commit();
 
@@ -155,27 +196,38 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
         loginTransaction.replace(R.id.mainLayout,loginFragment)
                 .commit();*/
 
-
+        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                return true;
+            }
+        });
     }
+
+    public void showNavView(){
+        bottomNavigationView.setVisibility(View.VISIBLE);
+    }
+    public void hideNavView(){
+        bottomNavigationView.setVisibility(View.GONE);
+    }
+
 
     @Override
     public void onRoleChanged(Role role) {
-        /*
-        getSupportFragmentManager().beginTransaction()
-                        .detach(loginFragment)
-                        .commit();
+        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
-         */
+
         bottomNavigationView.setVisibility(View.VISIBLE);
         Menu menu = bottomNavigationView.getMenu();
         if (role == Role.ORGANIZER) {
             bottomNavigationView.inflateMenu(R.menu.home_menu);
             NavGraph organizerGraph = navController.getNavInflater()
-                    .inflate(R.navigation.home_user_navigation);
+                    .inflate(R.navigation.home_organizer_navigation);
             navController.setGraph(organizerGraph);
         } else if (role == Role.USER) {
-            bottomNavigationView.inflateMenu(R.menu.home_menu);
-            bottomNavigationView.getMenu().findItem(R.id.createEventFragment).setVisible(false);
+            bottomNavigationView.inflateMenu(R.menu.home_menu_user);
             NavGraph organizerGraph = navController.getNavInflater()
                     .inflate(R.navigation.home_user_navigation);
             navController.setGraph(organizerGraph);

@@ -128,8 +128,10 @@ public class LoginFragment extends Fragment {
             public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
                 if (response.isSuccessful()) {
                     String jwtToken = response.body().getToken();
+                    String id = response.body().getId();
                     try {
                         JwtTokenUtil.saveToken(jwtToken,getContext());
+                        JwtTokenUtil.saveUserId(id,getContext());
                         notifyRoleChanged(JwtTokenUtil.getRole());
                     } catch (GeneralSecurityException | IOException e) {
                         throw new RuntimeException(e);

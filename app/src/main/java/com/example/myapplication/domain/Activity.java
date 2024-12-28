@@ -5,16 +5,16 @@ import java.time.format.DateTimeFormatter;
 
 public class Activity {
     private String name;
-    private LocalTime startTime;
+    private String startTime;
 
-    private LocalTime endTime;
+    private String endTime;
     private String location;
 
     private String description;
 
     private boolean input;
 
-    public Activity(String name,String location,String description, LocalTime startTime,LocalTime endTime,boolean isInput) {
+    public Activity(String name,String location,String description, String startTime,String endTime,boolean isInput) {
         this.location = location;
         this.name = name;
         this.description = description;
@@ -23,7 +23,7 @@ public class Activity {
         this.input = isInput;
     }
 
-    public Activity( String name,String description, String location, LocalTime startTime,LocalTime endTime) {
+    public Activity( String name,String description, String location, String startTime,String endTime) {
         this.description = description;
         this.location = location;
         this.name = name;
@@ -57,34 +57,25 @@ public class Activity {
         this.name = name;
     }
 
-    public LocalTime getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalTime endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 
-    public LocalTime getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public String getStartTimeString(){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm");
-        return startTime.format(formatter);
-    }
-
-    public String getEndTimeString(){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm");
-        return endTime.format(formatter);
-    }
-    public void setStartTime(LocalTime startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
     public String getTimeString(){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm");
-        return startTime.format(formatter) + "-" + endTime.format(formatter);
+        return startTime + "-" + endTime;
     }
 
     public boolean isInput() {

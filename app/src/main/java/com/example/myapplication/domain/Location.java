@@ -4,9 +4,12 @@ public class Location {
     private double latitude;
     private double longitude;
     private String city;
-    private String address;
+    private String street;
 
-    public Location(){}
+    public Location(){
+        city = "";
+        street = "";
+    }
     public double getLatitude() {
         return latitude;
     }
@@ -23,12 +26,12 @@ public class Location {
         this.longitude = longitude;
     }
 
-    public String getAddress() {
-        return address;
+    public String getStreet() {
+        return street;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setStreet(String street) {
+        this.street = street;
     }
 
     public String getCity() {

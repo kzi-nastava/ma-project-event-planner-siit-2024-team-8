@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activityMaterialCardEdit"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,7 +10,8 @@
     android:layout_marginRight="20dp"
     android:elevation="8dp"
     app:cardCornerRadius="12dp"
-    app:strokeColor="@android:color/darker_gray">
+    app:strokeColor="@color/olive"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,77 +21,73 @@
 
         <!-- Activity Title Input -->
 
+        <RadioGroup
+            android:id="@+id/assetCategoryRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="16dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radioButtonProduct"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Product"
+                android:textColor="@color/black"
+                android:textColorLink="@color/black" />
+
+            <RadioButton
+                android:id="@+id/radioButtonUtility"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Utility"
+                android:textColor="@color/black" />
+        </RadioGroup>
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/assetCateogriesSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="16dp"
+            android:popupBackground="@color/white"
+            android:popupElevation="8dp"/>
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginRight="16dp">
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="10dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/budgetItemTitleEditText"
+                android:id="@+id/plannedAmmountEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Item Name"
-                android:inputType="text"
+                android:inputType="numberDecimal"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="16dp">
-
-            <RadioButton
-                android:id="@+id/radioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Utility"
-                android:textColor="@color/black"
-                android:textColorLink="@color/black" />
-
-            <RadioButton
-                android:id="@+id/radioButton2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Product"
-                android:textColor="@color/black" />
-        </RadioGroup>
-
-        <androidx.appcompat.widget.AppCompatSpinner
-            android:id="@+id/assetCateoriesSpinner"
+        <Button
+            android:id="@+id/removeBudgetItemButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="16dp" />
-
-
-        <Button
-            android:id="@+id/saveActivityButton"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginStart="120dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="120dp"
-            android:layout_marginBottom="10dp"
-            android:backgroundTint="@color/olive"
-            android:text="Save"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            app:cornerRadius="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputEventStreet" />
-
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:backgroundTint="#E85050"
+            android:foregroundTint="@color/olive"
+            android:text="Remove"
+            android:textColor="@color/black"
+            android:textColorLink="@color/black" />
 
 
     </LinearLayout>

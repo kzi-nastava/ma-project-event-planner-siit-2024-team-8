@@ -17,6 +17,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.activities.MainActivity;
 import com.example.myapplication.adapters.AssetCardAdapter;
 import com.example.myapplication.adapters.EventCardAdapter;
 import com.example.myapplication.domain.OfferingType;
@@ -74,11 +75,14 @@ public class AllSolutionsFragment extends Fragment {
 
         switch (type) {
             case EVENT:
+                /*
                 EventCardAdapter eventAdapter = new EventCardAdapter(view.getContext());
-                eventAdapter.SetOnClick(getActivity(), getActivity().getSupportFragmentManager());
+                eventAdapter.SetOnClick((MainActivity) getActivity(), getActivity().getSupportFragmentManager());
                 eventAdapter.set_eventCards(HomePageFragment.createEvents());
                 assetRecyclerView.setAdapter(eventAdapter);
                 header.setText("Events");
+
+                 */
                 break;
             case ASSET:
                 String token = JwtTokenUtil.getToken();

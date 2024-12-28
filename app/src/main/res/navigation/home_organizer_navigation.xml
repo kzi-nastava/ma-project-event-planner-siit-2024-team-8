@@ -11,11 +11,19 @@
         tools:layout="@layout/fragment_home_page">
     </fragment>
 
+
     <fragment
         android:id="@+id/calendarFragment"
         android:name="com.example.myapplication.fragments.ToDoFragment"
         android:label="Calendar"
         tools:layout="@layout/fragment_to_do" />
+
+    <fragment
+        android:id="@+id/createEventFragment"
+        android:name="com.example.myapplication.fragments.event.create_event.CreateEventFragment"
+        android:label="Create Event"
+        tools:layout="@layout/fragment_create_event"/>
+
     <fragment
         android:id="@+id/inboxFragment"
         android:name="com.example.myapplication.fragments.ToDoFragment"

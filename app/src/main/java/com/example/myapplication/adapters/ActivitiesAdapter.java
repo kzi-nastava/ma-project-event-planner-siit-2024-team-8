@@ -16,6 +16,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -33,7 +34,7 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         this.activitiesList = activitiesList;
         this.newActivityListener = newActivityListener;
         // Add "Create New Activity" as the last item
-        this.activitiesList.add(new Activity("Create New Activity", "", "",LocalTime.now(),null));
+        this.activitiesList.add(new Activity("Create New Activity", "", "", "", ""));
     }
 
     @Override
@@ -99,10 +100,20 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
+    public void removeActivity(Activity activity){
+        int position = activitiesList.indexOf(activity);
+        if (position != -1) {
+            activitiesList.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
     // ViewHolder for input form (editing/creating activity)
     public class InputActivityViewHolder extends RecyclerView.ViewHolder {
         private final TextInputEditText titleEditText, locationEditText, descriptionEditText, startTimeEditText,endTimeEditText;
         private final TimePicker startTimePicker,endTimePicker;
+
+        private  Activity activity;
 
         public InputActivityViewHolder(View itemView) {
             super(itemView);
@@ -113,7 +124,6 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             endTimeEditText = itemView.findViewById(R.id.activityEndTimeEditText);
 
 
-
             startTimePicker = itemView.findViewById(R.id.startTimePicker);
             endTimePicker = itemView.findViewById(R.id.endTimePicker);
             Button saveButton = itemView.findViewById(R.id.saveActivityButton);
@@ -121,6 +131,9 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                 saveActivity();
             });
+
+            Button deleteButton = itemView.findViewById(R.id.deleteActivityButton);
+            deleteButton.setOnClickListener(v -> onRemoveClicked());
 
             startTimeEditText.setOnClickListener(v -> {
                 onEditStartTimeClicked();
@@ -133,6 +146,10 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             descriptionEditText.setOnClickListener(v -> {
                 endTimePicker.setVisibility(View.GONE);
             });
+        }
+
+        private void onRemoveClicked() {
+            removeActivity(this.activity);
         }
 
         public void onEditStartTimeClicked(){
@@ -156,11 +173,12 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         public void bind(Activity activity) {
+            this.activity = activity;
             titleEditText.setText(activity.getName());
             locationEditText.setText(activity.getLocation());
             descriptionEditText.setText(activity.getDescription());
-            startTimeEditText.setText(activity.getStartTimeString());
-            endTimeEditText.setText(activity.getEndTimeString());
+            startTimeEditText.setText(activity.getStartTime());
+            endTimeEditText.setText(activity.getEndTime());
         }
 
         private void saveActivity() {
@@ -173,7 +191,11 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             int position = getAdapterPosition();
 
-            Activity updatedActivity = new Activity(title, location, description, LocalTime.parse(time),LocalTime.parse(endTime), false);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
+            String start = LocalTime.parse(time).format(formatter);
+            String end = LocalTime.parse(endTime).format(formatter);
+
+            Activity updatedActivity = new Activity(title, location, description, start,end, false);
 
             activitiesList.set(position, updatedActivity);
 
@@ -218,7 +240,7 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             int position = getAdapterPosition();
 
-            Activity updatedActivity = new Activity(title, location, description, LocalTime.parse(startTime),LocalTime.parse(endTime), true);
+            Activity updatedActivity = new Activity(title, location, description, "","", true);
 
             activitiesList.set(position, updatedActivity);
 

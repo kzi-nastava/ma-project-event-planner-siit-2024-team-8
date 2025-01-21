@@ -19,6 +19,7 @@
         android:background="@color/white"
         android:orientation="vertical">
 
+        <!-- Activity Title Input -->
 
         <RadioGroup
             android:id="@+id/assetCategoryRadioGroup"
@@ -77,18 +78,6 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/removeBudgetItemButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
-            android:backgroundTint="#E85050"
-            android:foregroundTint="@color/olive"
-            android:text="Remove"
-            android:textColor="@color/white"
-            android:textColorLink="@color/white" />
-
-        <Button
             android:id="@+id/addBudgetItemButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -97,7 +86,6 @@
             android:backgroundTint="@color/olive"
             android:foregroundTint="@color/olive"
             android:text="Add"
-            android:visibility="invisible"
             android:textColor="@color/white"
             android:textColorLink="@color/white" />
 

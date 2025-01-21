@@ -11,6 +11,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.myapplication.domain.Role;
 import com.example.myapplication.fragments.ToDoFragment;
+import com.example.myapplication.fragments.event.event_info.BudgetFragment;
 import com.example.myapplication.fragments.event.event_info.EventOverviewFragment;
 import com.example.myapplication.utilities.JwtTokenUtil;
 
@@ -35,14 +36,30 @@ public class EventInfoFragmentsAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        switch (position){
+        switch (position) {
             case 0:
                 // Pass the eventId to EventOverviewFragment
                 EventOverviewFragment eventOverviewFragment = new EventOverviewFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("eventId", eventId);
-                eventOverviewFragment.setArguments(bundle);
+                Bundle overviewBundle = new Bundle();
+                overviewBundle.putString("eventId", eventId);
+                eventOverviewFragment.setArguments(overviewBundle);
                 return eventOverviewFragment;
+
+            case 1:
+                // make GuestsFragment
+                return new ToDoFragment();
+
+            case 2:
+                // make agenda fragment
+                return new ToDoFragment();
+
+            case 3:
+                BudgetFragment budgetFragment = new BudgetFragment();
+                Bundle budgetBundle = new Bundle();
+                budgetBundle.putString("eventId", eventId);
+                budgetFragment.setArguments(budgetBundle);
+                return budgetFragment;
+
             default:
                 return new ToDoFragment();
         }

@@ -25,16 +25,12 @@ import com.example.myapplication.R;
 import com.example.myapplication.domain.AssetCategory;
 import com.example.myapplication.domain.BudgetItem;
 import com.example.myapplication.domain.dto.BudgetItemCreateRequest;
-import com.example.myapplication.services.AssetCategoryService;
-import com.example.myapplication.utilities.JwtTokenUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import javax.security.auth.callback.Callback;
 
 public class BudgetItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -43,8 +39,6 @@ public class BudgetItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public List<BudgetItem> getBudgetItems(){
         return this.budgetItems;
     }
-
-    private AssetCategoryService assetCategoryService = new AssetCategoryService();
 
     OnNewBudgetItemClick onNewBudgetItemClick;
 
@@ -119,32 +113,14 @@ public class BudgetItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         public void bind(BudgetItem budgetItem) {
-            final AssetCategory[] category = new AssetCategory[1];
-            assetCategoryService.getCategoryById(JwtTokenUtil.getToken(), budgetItem.getCategory(), new Callback<AssetCategory>() {
-                @Override
-                public void onResponse(retrofit2.Call<AssetCategory> call, Response<AssetCategory> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        AssetCategory fetchedCategory = response.body();
-                        category[0] = fetchedCategory;
-                        Log.e("AssetCategory", "Succes fetching category for budget items");
-                    } else {
-                        Log.e("AssetCategory", "Failed to fetch category for utility");
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<AssetCategory> call, Throwable t) {
-                    Log.e("AssetCategory", "Category request failed: " + t.getMessage(), t);
-                }
-            });
             this.item = budgetItem;
             if (budgetItem.getCategory() != null){
-                if (Objects.equals(category[0].getType(), "UTILITY")){
+                if (Objects.equals(budgetItem.getCategory().getType(), "UTILITY")){
                     utilityButton.setChecked(true);
                 }else{
                     productButton.setChecked(true);
                 }
-                bindAssetCategory(assetCategorySpinner, category[0], category[0].getType(), null);
+                bindAssetCategory(assetCategorySpinner, budgetItem.getCategory(), budgetItem.getCategory().getType(),null);
             }
             plannedAmmount.setText(budgetItem.getPlannedAmount().toString());
 
@@ -152,7 +128,7 @@ public class BudgetItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                 String categoryType = (checkedId == R.id.radioButtonUtility) ? "UTILITY" : "PRODUCT";
 
-                bindAssetCategory(assetCategorySpinner, budgetItem.getCategory()==null? null : category[0], categoryType, null);
+                bindAssetCategory(assetCategorySpinner, budgetItem.getCategory()==null? null : budgetItem.getCategory(), categoryType, null);
             });
 
             assetCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -161,7 +137,7 @@ public class BudgetItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     AssetCategory selectedCategory = (AssetCategory) view.getTag();
 
                     if (selectedCategory != null) {
-                        budgetItem.setCategory(selectedCategory.getId());
+                        budgetItem.setCategory(selectedCategory);
                     }
                 }
 

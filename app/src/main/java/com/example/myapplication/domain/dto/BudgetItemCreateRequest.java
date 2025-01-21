@@ -7,12 +7,10 @@ import java.util.UUID;
 public class BudgetItemCreateRequest {
     private Double plannedAmount;
     private UUID assetCategoryId;
-    public BudgetItemCreateRequest() {
 
-    }
     public BudgetItemCreateRequest(BudgetItem item){
         this.plannedAmount = item.getPlannedAmount();
-        this.assetCategoryId = UUID.fromString(item.getCategory());
+        this.assetCategoryId = UUID.fromString(item.getCategory().getId());
     }
 
     public UUID getAssetCategoryId() {

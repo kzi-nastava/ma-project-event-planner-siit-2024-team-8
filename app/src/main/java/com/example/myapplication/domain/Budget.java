@@ -8,24 +8,24 @@ public class Budget {
 
     private Integer plannedBudget;
 
-    private Double currentBudget;
+    private Double actualBudget;
 
-    private ArrayList<BudgetItem> budgetItems;
+    private ArrayList<BudgetItem> items;
 
     public ArrayList<BudgetItem> getBudgetItems() {
-        return budgetItems;
+        return items;
     }
 
     public void setBudgetItems(ArrayList<BudgetItem> budgetItems) {
-        this.budgetItems = budgetItems;
+        this.items = budgetItems;
     }
 
-    public Double getCurrentBudget() {
-        return currentBudget;
+    public Double getActualBudget() {
+        return actualBudget;
     }
 
-    public void setCurrentBudget(Double currentBudget) {
-        this.currentBudget = currentBudget;
+    public void setActualBudget(Double actualBudget) {
+        this.actualBudget = actualBudget;
     }
 
     public UUID getId() {

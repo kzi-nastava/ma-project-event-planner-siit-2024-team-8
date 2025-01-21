@@ -2,41 +2,33 @@ package com.example.myapplication.domain;
 
 import com.example.myapplication.domain.dto.BudgetItemCreateRequest;
 
-import java.util.List;
 import java.util.UUID;
 
 public class BudgetItem {
 
-    private String id;
-    private String assetCategoryId;
+
+    private AssetCategory category;
 
     private Double plannedAmount;
-    private Double actualAmount;
-
-    private Boolean deleted;
-    private List<String> assetIds;
 
     public BudgetItem(){
         plannedAmount = 0.0;
-        actualAmount = 0.0;
     }
 
     public BudgetItem(AssetCategory category){
         this.plannedAmount = 0.0;
-        this.assetCategoryId = category.getId();
+        this.category = category;
     }
 
-    public BudgetItem(String plannedAmmount, String category){
-        this.assetCategoryId = category;
+    public BudgetItem(String plannedAmmount,AssetCategory category){
+        this.category = category;
+    }
+    public AssetCategory getCategory() {
+        return category;
     }
 
-
-    public String getCategory() {
-        return assetCategoryId;
-    }
-
-    public void setCategory(String category) {
-        this.assetCategoryId = category;
+    public void setCategory(AssetCategory category) {
+        this.category = category;
     }
 
     public Double getPlannedAmount() {
@@ -45,21 +37,5 @@ public class BudgetItem {
 
     public void setPlannedAmount(Double plannedAmount) {
         this.plannedAmount = plannedAmount;
-    }
-
-    public Double getActualAmount() {
-        return actualAmount;
-    }
-
-    public void setActualAmount(Double actualAmount) {
-        this.actualAmount = actualAmount;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 }

@@ -19,6 +19,7 @@
         android:background="@color/white"
         android:orientation="vertical">
 
+        <!-- Activity Title Input -->
 
         <RadioGroup
             android:id="@+id/assetCategoryRadioGroup"
@@ -69,7 +70,7 @@
                 android:id="@+id/plannedAmmountEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Planned amount"
+                android:hint="Item Name"
                 android:inputType="numberDecimal"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
@@ -85,21 +86,8 @@
             android:backgroundTint="#E85050"
             android:foregroundTint="@color/olive"
             android:text="Remove"
-            android:textColor="@color/white"
-            android:textColorLink="@color/white" />
-
-        <Button
-            android:id="@+id/addBudgetItemButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
-            android:backgroundTint="@color/olive"
-            android:foregroundTint="@color/olive"
-            android:text="Add"
-            android:visibility="invisible"
-            android:textColor="@color/white"
-            android:textColorLink="@color/white" />
+            android:textColor="@color/black"
+            android:textColorLink="@color/black" />
 
 
     </LinearLayout>

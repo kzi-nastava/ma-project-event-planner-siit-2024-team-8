@@ -21,6 +21,7 @@ import com.example.myapplication.domain.Role;
 import com.example.myapplication.domain.dto.UserInfoResponse;
 import com.example.myapplication.fragments.asset.AssetCategoriesFragment;
 import com.example.myapplication.fragments.asset.CreateAssetFragment;
+import com.example.myapplication.fragments.asset.PriceListFragment;
 import com.example.myapplication.services.UserService;
 import com.example.myapplication.utilities.JwtTokenUtil;
 import com.example.myapplication.utilities.RetrofitClient;
@@ -56,10 +57,12 @@ public class ProfileInfoFragment extends Fragment {
         MaterialButton myAssetsButton = view.findViewById(R.id.my_assets_button);
         MaterialButton createAssetButton = view.findViewById(R.id.create_asset_button);
         MaterialButton assetCategoriesButton = view.findViewById(R.id.asset_categories_button);
+        MaterialButton priceListButton = view.findViewById(R.id.price_list_button);
 
         myAssetsButton.setOnClickListener(v -> replaceFragment(new AllSolutionsFragment()));
         createAssetButton.setOnClickListener(v -> replaceFragment(new CreateAssetFragment()));
         assetCategoriesButton.setOnClickListener(v -> replaceFragment(new AssetCategoriesFragment()));
+        priceListButton.setOnClickListener(v -> replaceFragment(new PriceListFragment()));
 
         Button button = view.findViewById(R.id.edit_button);
         button.setOnClickListener(v -> onEditClicked(userInfo));

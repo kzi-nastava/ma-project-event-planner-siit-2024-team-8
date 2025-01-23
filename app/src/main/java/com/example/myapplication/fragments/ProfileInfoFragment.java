@@ -1,6 +1,5 @@
 package com.example.myapplication.fragments;
 
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -24,11 +23,9 @@ import com.example.myapplication.fragments.asset.CreateAssetFragment;
 import com.example.myapplication.fragments.asset.PriceListFragment;
 import com.example.myapplication.services.UserService;
 import com.example.myapplication.utilities.JwtTokenUtil;
-import com.example.myapplication.utilities.RetrofitClient;
 import com.google.android.material.button.MaterialButton;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -58,11 +55,13 @@ public class ProfileInfoFragment extends Fragment {
         MaterialButton createAssetButton = view.findViewById(R.id.create_asset_button);
         MaterialButton assetCategoriesButton = view.findViewById(R.id.asset_categories_button);
         MaterialButton priceListButton = view.findViewById(R.id.price_list_button);
+        MaterialButton reviewsButton = view.findViewById(R.id.reviews_button);
 
         myAssetsButton.setOnClickListener(v -> replaceFragment(new AllSolutionsFragment()));
         createAssetButton.setOnClickListener(v -> replaceFragment(new CreateAssetFragment()));
         assetCategoriesButton.setOnClickListener(v -> replaceFragment(new AssetCategoriesFragment()));
         priceListButton.setOnClickListener(v -> replaceFragment(new PriceListFragment()));
+        reviewsButton.setOnClickListener(v -> replaceFragment(new ReviewFragment()));
 
         Button button = view.findViewById(R.id.edit_button);
         button.setOnClickListener(v -> onEditClicked(userInfo));

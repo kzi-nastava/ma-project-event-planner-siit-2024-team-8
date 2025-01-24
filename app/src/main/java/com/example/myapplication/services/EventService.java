@@ -6,11 +6,13 @@ import com.example.myapplication.domain.ApiResponse;
 import com.example.myapplication.domain.dto.CreateEventRequest;
 import com.example.myapplication.domain.dto.EventCardResponse;
 import com.example.myapplication.domain.dto.EventInfoResponse;
+import com.example.myapplication.domain.dto.EventSignupRequest;
 import com.example.myapplication.domain.dto.EventUpdateRequest;
 import com.example.myapplication.utilities.RetrofitClient;
 
 import java.util.List;
 
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -106,6 +108,53 @@ public class EventService {
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 Log.d("err", "err", t);
+            }
+        });
+    }
+
+    public void submitReview(String eventId, RequestBody reviewData, Callback<String> callback) {
+        Call<String> call = apiService.submitReview(eventId, reviewData);
+        call.enqueue(callback);
+    }
+
+    public void checkAssetInOrganizedEvents(String userId, String assetId, Callback<Boolean> callback) {
+        Call<Boolean> call = apiService.checkAssetInOrganizedEvents(userId, assetId);
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onResponse(call, Response.success(response.body()));
+                } else {
+                    Log.e("EventService", "Failed to check asset in events: " + response.message());
+                    callback.onFailure(call, new Throwable("Error: " + response.message()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Log.e("EventService", "API call failed", t);
+                callback.onFailure(call, t);
+            }
+        });
+    }
+
+    public void isUserSignedUp(EventSignupRequest eventSignupRequest, Callback<Boolean> callback) {
+        Call<Boolean> call = apiService.isUserSignedUp(eventSignupRequest);
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onResponse(call, Response.success(response.body()));
+                } else {
+                    Log.e("EventService", "Failed to check user signup: " + response.message());
+                    callback.onFailure(call, new Throwable("Error: " + response.message()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Log.e("EventService", "API call failed", t);
+                callback.onFailure(call, t);
             }
         });
     }

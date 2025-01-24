@@ -87,6 +87,14 @@
                 android:backgroundTint="@color/olive"
                 android:text="Price List" />
 
+            <Button
+                android:id="@+id/reviews_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/olive"
+                android:text="Reviews" />
+
         </LinearLayout>
     </LinearLayout>
 

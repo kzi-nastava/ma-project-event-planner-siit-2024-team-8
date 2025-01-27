@@ -136,6 +136,15 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/chatButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Chat with provider"
+            android:backgroundTint="@color/olive"
+            android:textColor="@android:color/white" />
+
+        <Button
             android:id="@+id/loadReviewsButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

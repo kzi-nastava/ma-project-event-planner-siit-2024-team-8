@@ -159,6 +159,15 @@
             style="@style/Widget.MaterialComponents.Button" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/chatButton"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#A1C084"
+            android:text="Chat with organizer"
+            style="@style/Widget.MaterialComponents.Button" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/loadReviewsButton"
             android:layout_width="wrap_content"
             android:layout_gravity="center"

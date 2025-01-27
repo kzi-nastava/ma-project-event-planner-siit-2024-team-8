@@ -26,6 +26,7 @@ import com.example.myapplication.domain.Event;
 import com.example.myapplication.domain.Review;
 import com.example.myapplication.domain.dto.EventInfoResponse;
 import com.example.myapplication.domain.dto.EventSignupRequest;
+import com.example.myapplication.fragments.ChatFragment;
 import com.example.myapplication.fragments.event.edit_event.EventEditFragment;
 import com.example.myapplication.services.EventService;
 import com.example.myapplication.services.ReviewService;
@@ -84,6 +85,9 @@ public class EventOverviewFragment extends Fragment {
         Button submitComment = view.findViewById(R.id.submitCommentButton);
         submitComment.setOnClickListener(v -> submitComment());
 
+        Button chatButton = view.findViewById(R.id.chatButton);
+        chatButton.setOnClickListener(v -> openChatFragment());
+
         getEventById(eventId, view);
 
         Button openInMapButton = view.findViewById(R.id.mapButton);
@@ -105,6 +109,11 @@ public class EventOverviewFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void openChatFragment() {
+        ChatFragment chatFragment = ChatFragment.newInstance();
+        replaceFragment(chatFragment);
     }
 
     private void replaceFragment(Fragment fragment) {

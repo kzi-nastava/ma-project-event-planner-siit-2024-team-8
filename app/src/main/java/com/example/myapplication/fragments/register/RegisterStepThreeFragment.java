@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.example.myapplication.R;
 import com.example.myapplication.activities.MainActivity;
 import com.example.myapplication.databinding.FragmentRegisterStepThreeBinding;
-import com.example.myapplication.domain.Role;
+import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.domain.dto.UserCreateRequest;
 import com.example.myapplication.viewmodels.UserViewModel;
 

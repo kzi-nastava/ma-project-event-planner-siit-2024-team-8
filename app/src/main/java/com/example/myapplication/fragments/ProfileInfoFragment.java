@@ -1,6 +1,5 @@
 package com.example.myapplication.fragments;
 
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,18 +16,16 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
-import com.example.myapplication.domain.Role;
+import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.domain.dto.UserInfoResponse;
 import com.example.myapplication.fragments.asset.AssetCategoriesFragment;
 import com.example.myapplication.fragments.asset.CreateAssetFragment;
 import com.example.myapplication.fragments.asset.PriceListFragment;
 import com.example.myapplication.services.UserService;
 import com.example.myapplication.utilities.JwtTokenUtil;
-import com.example.myapplication.utilities.RetrofitClient;
 import com.google.android.material.button.MaterialButton;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import retrofit2.Call;
 import retrofit2.Callback;

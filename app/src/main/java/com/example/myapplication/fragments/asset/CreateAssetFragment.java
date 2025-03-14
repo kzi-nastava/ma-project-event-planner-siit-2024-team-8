@@ -25,7 +25,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.R;
 import com.example.myapplication.domain.AssetCategory;
-import com.example.myapplication.domain.OfferingType;
+import com.example.myapplication.domain.enumerations.OfferingType;
 import com.example.myapplication.domain.Product;
 import com.example.myapplication.domain.Utility;
 import com.example.myapplication.fragments.AllSolutionsFragment;
@@ -42,7 +42,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;

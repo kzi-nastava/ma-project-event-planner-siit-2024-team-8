@@ -22,4 +22,6 @@ public class ClientUtils {
     public static UserAPIService userService = RetrofitClient.getRetrofitInstance().create(UserAPIService.class);
     public static EventTypeAPIService eventTypeService = RetrofitClient.getRetrofitInstance().create(EventTypeAPIService.class);
     public static LoginService loginService = RetrofitClient.getRetrofitInstance().create(LoginService.class);
+
+    public static EventAPIService eventAPIService = RetrofitClient.getRetrofitInstance().create(EventAPIService.class);
 }

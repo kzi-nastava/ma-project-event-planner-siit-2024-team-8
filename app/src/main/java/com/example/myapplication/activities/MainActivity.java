@@ -8,12 +8,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
-import android.transition.Visibility;
-import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowInsets;
 import android.widget.ImageView;
@@ -21,39 +17,23 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.databinding.DataBindingUtil;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 import androidx.navigation.NavGraph;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.myapplication.R;
-import com.example.myapplication.databinding.ActivityMainBinding;
-import com.example.myapplication.domain.Role;
-import com.example.myapplication.fragments.CreateEventTypeFragment;
+import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.fragments.HomePageFragment;
 import com.example.myapplication.fragments.LoginFragment;
 import com.example.myapplication.fragments.StartupFragment;
-import com.example.myapplication.fragments.event.create_event.CreateEventBudgetFragment;
-import com.example.myapplication.fragments.event.create_event.CreateEventFragment;
-import com.example.myapplication.fragments.event.create_event.CreateEventLocationFragment;
-import com.example.myapplication.fragments.event.event_info.EventInfoFragment;
 import com.example.myapplication.utilities.JwtTokenUtil;
-import com.example.myapplication.viewmodels.AssetCategoryViewModel;
-import com.example.myapplication.viewmodels.EventViewModel;
-import com.example.myapplication.viewmodels.UserViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.File;
@@ -83,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
     private HomePageFragment homePageFragment;
 
     private int backStackCount;
+
 
     public boolean checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -171,20 +152,16 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
         bottomNavigationView = findViewById(R.id.bottomNavigationViewHomePage);
         navController = navHostFragment.getNavController();
 
+        checkBackStack();
+
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
-                int currentBackStackCount = getSupportFragmentManager().getBackStackEntryCount();
-                if (currentBackStackCount > backStackCount){
-                    hideNavView();
-                }else{
-                    showNavView();
-                }
-                backStackCount = currentBackStackCount;
+                checkBackStack();
             }
         });
 
-        Fragment startup = JwtTokenUtil.isUserLoggedIn(this) ? new HomePageFragment() : new StartupFragment();
+        Fragment startup = JwtTokenUtil.isUserLoggedIn() ? new HomePageFragment() : new StartupFragment();
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.main, startup)
@@ -195,15 +172,18 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
         FragmentTransaction loginTransaction = getSupportFragmentManager().beginTransaction();
         loginTransaction.replace(R.id.mainLayout,loginFragment)
                 .commit();*/
+    }
 
-        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                return true;
-            }
-        });
+    private void checkBackStack() {
+        int currentBackStackCount = getSupportFragmentManager().getBackStackEntryCount();
+        if (currentBackStackCount > backStackCount){
+            hideNavView();
+        }else if (JwtTokenUtil.isUserLoggedIn() && currentBackStackCount < 2){
+            showNavView();
+        }else{
+            showNavView();
+        }
+        backStackCount = currentBackStackCount;
     }
 
     public void showNavView(){
@@ -230,6 +210,11 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
             bottomNavigationView.inflateMenu(R.menu.home_menu_user);
             NavGraph organizerGraph = navController.getNavInflater()
                     .inflate(R.navigation.home_user_navigation);
+            navController.setGraph(organizerGraph);
+        } else if (role == Role.PROVIDER){
+            bottomNavigationView.inflateMenu(R.menu.home_menu_provider);
+            NavGraph organizerGraph = navController.getNavInflater()
+                    .inflate(R.navigation.home_provider_navigation);
             navController.setGraph(organizerGraph);
         }
         NavigationUI.setupWithNavController(bottomNavigationView, navController);

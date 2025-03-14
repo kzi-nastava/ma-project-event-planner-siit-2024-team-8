@@ -1,26 +1,13 @@
 package com.example.myapplication.viewmodels;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.myapplication.activities.MainActivity;
-import com.example.myapplication.domain.ApiResponse;
-import com.example.myapplication.domain.Role;
 import com.example.myapplication.domain.dto.UserCreateRequest;
-import com.example.myapplication.services.ClientUtils;
 import com.example.myapplication.services.UserService;
 
 import java.io.File;
-import java.io.IOException;
-
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class UserViewModel extends ViewModel {
 

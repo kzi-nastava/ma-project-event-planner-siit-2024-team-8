@@ -10,6 +10,8 @@ import com.example.myapplication.domain.Asset;
 import com.example.myapplication.domain.AssetCategory;
 import com.example.myapplication.domain.Product;
 import com.example.myapplication.domain.Utility;
+import com.example.myapplication.domain.dto.SearchAssetRequest;
+import com.example.myapplication.domain.dto.SearchEventsRequest;
 import com.example.myapplication.services.AssetCategoryService;
 import com.example.myapplication.services.ProductService;
 import com.example.myapplication.services.UtilityService;
@@ -29,11 +31,20 @@ public class AssetViewModel extends ViewModel {
     private final MutableLiveData<List<Asset>> assetsLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
 
+    private final MutableLiveData<SearchAssetRequest> currentFilters = new MutableLiveData<>();
+
     public AssetViewModel() {
         this.productService = new ProductService();
         this.utilityService = new UtilityService();
         this.categoryService = new AssetCategoryService();
+        this.currentFilters.setValue(new SearchAssetRequest());
     }
+
+    public void setCurrentFilters(SearchAssetRequest request){
+        this.currentFilters.setValue(request);
+    }
+
+    public LiveData<SearchAssetRequest> getCurrentFilters() {return currentFilters;}
 
     public LiveData<List<Asset>> getAssetsLiveData() {
         return assetsLiveData;

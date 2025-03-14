@@ -1,5 +1,7 @@
 package com.example.myapplication.domain;
 
+import com.example.myapplication.domain.enumerations.AssetType;
+
 public class AssetDTO {
     private String name;
     private AssetType type;

@@ -3,8 +3,7 @@ package com.example.myapplication.services;
 import android.util.Log;
 
 import com.example.myapplication.domain.ApiResponse;
-import com.example.myapplication.domain.Role;
-import com.example.myapplication.domain.dto.UpdateUserRequest;
+import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.domain.dto.UserCreateRequest;
 import com.example.myapplication.utilities.RetrofitClient;
 import com.google.gson.Gson;
@@ -12,14 +11,12 @@ import com.google.gson.Gson;
 import java.io.File;
 import java.io.IOException;
 
-import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Body;
 
 public class UserService {
 

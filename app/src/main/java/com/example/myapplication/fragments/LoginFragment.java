@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +14,7 @@ import android.widget.EditText;
 
 import com.example.myapplication.R;
 import com.example.myapplication.domain.AuthResponse;
-import com.example.myapplication.domain.Role;
+import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.domain.dto.LoginRequest;
 import com.example.myapplication.fragments.register.RegisterFragment;
 import com.example.myapplication.services.ClientUtils;

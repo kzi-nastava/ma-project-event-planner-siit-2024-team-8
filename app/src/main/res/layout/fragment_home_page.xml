@@ -42,7 +42,7 @@
         </LinearLayout>
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/profileImageButton"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginEnd="20dp"
@@ -52,12 +52,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.google.android.material.search.SearchBar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:backgroundTint="@color/design_default_color_background"
-        app:navigationIconTint="@color/background" />
 
     <ScrollView
         android:layout_width="match_parent"

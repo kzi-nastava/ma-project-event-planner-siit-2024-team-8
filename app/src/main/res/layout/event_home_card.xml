@@ -9,7 +9,8 @@
     android:backgroundTint="@color/bottom_card"
     android:onClick="onCardClicked"
     android:padding="30dp"
-    app:cardBackgroundColor="@android:color/transparent">
+    app:cardBackgroundColor="@android:color/transparent"
+    android:id="@+id/eventCard">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout

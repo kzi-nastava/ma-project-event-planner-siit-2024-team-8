@@ -3,25 +3,41 @@ package com.example.myapplication.fragments.asset;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.myapplication.R;
+import com.example.myapplication.adapters.ReviewLiveAdapter;
 import com.example.myapplication.domain.AssetCategory;
 import com.example.myapplication.domain.Product;
+import com.example.myapplication.domain.Review;
 import com.example.myapplication.domain.Utility;
 import com.example.myapplication.services.AssetCategoryService;
+import com.example.myapplication.services.EventService;
 import com.example.myapplication.services.ProductService;
+import com.example.myapplication.services.ReviewService;
 import com.example.myapplication.services.UtilityService;
 import com.example.myapplication.utilities.JwtTokenUtil;
 
-import java.io.IOException;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
+import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,8 +61,18 @@ public class AssetOverviewFragment extends Fragment {
 
     private TextView assetCancellationDeadlineTextView;
 
+    private Button loadReviewsButton;
+    private RecyclerView reviewsRecyclerView;
+    private Button submitCommentButton;
+
     private UtilityService utilityService;
     private ProductService productService;
+
+    private ReviewService reviewService;
+
+    private EventService eventService;
+
+    private JwtTokenUtil jwtTokenUtil;
 
 
     public AssetOverviewFragment() {
@@ -72,6 +98,9 @@ public class AssetOverviewFragment extends Fragment {
 
         utilityService = new UtilityService();
         productService = new ProductService();
+        reviewService = new ReviewService();
+        eventService = new EventService();
+        jwtTokenUtil = new JwtTokenUtil();
     }
 
     @Override
@@ -79,7 +108,6 @@ public class AssetOverviewFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_asset_overview, container, false);
 
-        // Initialize the views
         assetNameTextView = view.findViewById(R.id.assetNameTextView);
         assetTypeTextView = view.findViewById(R.id.assetTypeTextView);
         assetCategoryTextView = view.findViewById(R.id.assetCategoryTextView);
@@ -92,6 +120,12 @@ public class AssetOverviewFragment extends Fragment {
         assetBookingDeadlineTextView = view.findViewById(R.id.assetBookingDeadlineTextView);
         assetCancellationDeadlineTextView = view.findViewById(R.id.assetCancellationDeadlineTextView);
 
+        loadReviewsButton = view.findViewById(R.id.loadReviewsButton);
+        reviewsRecyclerView = view.findViewById(R.id.reviewsRecyclerView);
+        reviewsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        submitCommentButton = view.findViewById(R.id.submitCommentButton);
+        submitCommentButton.setOnClickListener(v -> submitComment());
+
         String authHeader = "Bearer " + JwtTokenUtil.getToken();
         Log.e("debug", assetId + " i ovo je type " + assetType);
         if ("UTILITY".equals(assetType)) {
@@ -99,7 +133,69 @@ public class AssetOverviewFragment extends Fragment {
         } else if ("PRODUCT".equals(assetType)) {
             getProductById(authHeader, assetId);
         }
+        loadReviewsButton.setOnClickListener(v -> fetchReviews());
+
         return view;
+    }
+
+    private void fetchReviews() {
+        String userId = jwtTokenUtil.getUserId();
+        eventService.checkAssetInOrganizedEvents(userId, assetId, new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    boolean hasPurchased = response.body();
+                    if (hasPurchased) {
+                        showCommentInputFields();
+                        View buyToCommentTextView = getView().findViewById(R.id.buyToCommentTextView);
+                        buyToCommentTextView.setVisibility(View.GONE);
+                    } else {
+                        hideCommentInputFields();
+                        View buyToCommentTextView = getView().findViewById(R.id.buyToCommentTextView);
+                        buyToCommentTextView.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    Log.e("AssetOverviewFragment", "Failed to check purchase: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Log.e("AssetOverviewFragment", "Error checking purchase status: " + t.getMessage(), t);
+            }
+        });
+
+        reviewService.getActiveReviewsForAsset(assetId, new Callback<List<Review>>() {
+            @Override
+            public void onResponse(Call<List<Review>> call, Response<List<Review>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Review> reviews = response.body();
+                    reviewsRecyclerView.setAdapter(new ReviewLiveAdapter(reviews));
+                    reviewsRecyclerView.setVisibility(View.VISIBLE);
+                } else {
+                    Log.e("AssetOverviewFragment", "Failed to fetch reviews: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Review>> call, Throwable t) {
+                Log.e("AssetOverviewFragment", "Error fetching reviews: " + t.getMessage(), t);
+            }
+        });
+    }
+
+    private void showCommentInputFields() {
+        View commentSection = getView().findViewById(R.id.commentSection);
+        if (commentSection != null) {
+            commentSection.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideCommentInputFields() {
+        View commentSection = getView().findViewById(R.id.commentSection);
+        if (commentSection != null) {
+            commentSection.setVisibility(View.GONE);
+        }
     }
 
     private void getUtilityById(String token, String id) {
@@ -111,7 +207,6 @@ public class AssetOverviewFragment extends Fragment {
                     Log.d("AssetOverviewFragment", "Received utility: " + utility.getName());
                     populateUtilityData(utility);
                 } else {
-                    // Log detailed error information
                     try {
                         String errorBody = response.errorBody() != null ? response.errorBody().string() : "No error body";
                         Log.d("AssetOverviewFragment", "Request URL: " + call.request().url());
@@ -123,7 +218,6 @@ public class AssetOverviewFragment extends Fragment {
 
             @Override
             public void onFailure(Call<Utility> call, Throwable t) {
-                // Log the full exception details
                 Log.e("AssetOverviewFragment", "Request failed: " + t.getMessage(), t);
             }
         });
@@ -144,7 +238,6 @@ public class AssetOverviewFragment extends Fragment {
 
             @Override
             public void onFailure(Call<Product> call, Throwable t) {
-                // Handle failure
             }
         });
     }
@@ -219,4 +312,79 @@ public class AssetOverviewFragment extends Fragment {
         assetActualPriceTextView.setText("Actual Price: $" + String.format("%.2f", actualPrice));
         utilityDetailsLayout.setVisibility(View.GONE);
     }
+    private void submitComment() {
+        EditText reviewCommentEditText = getView().findViewById(R.id.reviewCommentEditText);
+        RatingBar reviewRatingBar = getView().findViewById(R.id.reviewRatingBar);
+
+        String userComment = reviewCommentEditText.getText().toString();
+        float userRating = reviewRatingBar.getRating();
+
+        if (userComment.isEmpty()) {
+            Toast.makeText(getContext(), "Please enter a comment.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (userRating == 0) {
+            Toast.makeText(getContext(), "Please provide a rating.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String userId = jwtTokenUtil.getUserId();
+        String assetId = this.assetId;
+
+        RequestBody reviewData = createReviewRequestBody(assetId, userId, userComment, userRating);
+
+        String authHeader = "Bearer " + JwtTokenUtil.getToken();
+        if ("UTILITY".equals(assetType)) {
+            utilityService.submitReview(authHeader, assetId, reviewData, new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(getContext(), "Review submitted successfully!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.e("AssetOverviewFragment", "Failed to submit review: " + response.code());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Log.e("AssetOverviewFragment", "Error submitting review: " + t.getMessage(), t);
+                }
+            });
+        } else if ("PRODUCT".equals(assetType)) {
+            productService.submitReview(authHeader, assetId, reviewData, new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(getContext(), "Review submitted successfully!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.e("AssetOverviewFragment", "Failed to submit review: " + response.code());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Log.e("AssetOverviewFragment", "Error submitting review: " + t.getMessage(), t);
+                    if (t.getMessage() == "404") {
+                        Toast.makeText(getContext(), "Already submitted a review for this asset", Toast.LENGTH_SHORT);
+                    }
+                }
+            });
+        }
+    }
+
+    private RequestBody createReviewRequestBody(String assetId, String userId, String comment, float rating) {
+        JSONObject reviewJson = new JSONObject();
+        try {
+            reviewJson.put("assetId", assetId);
+            reviewJson.put("userId", userId);
+            reviewJson.put("comment", comment);
+            reviewJson.put("rating", rating);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return RequestBody.create(MediaType.parse("application/json"), reviewJson.toString());
+    }
+
 }

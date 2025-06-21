@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Horizontal Scrollable Images -->
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -135,5 +134,71 @@
                 android:text="Cancellation Deadline: 1 day before event"
                 android:textSize="16sp" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/loadReviewsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Load Reviews"
+            android:backgroundTint="@color/olive"
+            android:textColor="@android:color/white" />
+
+        <LinearLayout
+            android:id="@+id/commentSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="20dp"
+            android:visibility="gone">
+
+            <RatingBar
+                android:id="@+id/reviewRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:numStars="5"
+                android:stepSize="0.5"
+                android:rating="0" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/reviewCommentEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Write your comment here..."
+                android:padding="10dp"
+                android:background="@color/white"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:enabled="true" />
+
+
+            <Button
+                android:id="@+id/submitCommentButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Submit"
+                android:backgroundTint="@color/olive"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/buyToCommentTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Buy the product to leave a comment."
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reviewsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            tools:listitem="@layout/item_live_review" />
     </LinearLayout>
 </ScrollView>

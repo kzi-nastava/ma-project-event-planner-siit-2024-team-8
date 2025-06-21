@@ -47,8 +47,9 @@ public class AllSolutionsFragment extends Fragment implements FilterBottomSheetF
 
     private final ArrayList<String> pageSizes = new ArrayList<>(Arrays.asList("1","2","5","10","15","20"));
 
-    public void setType(OfferingType type) {
+    public Fragment setType(OfferingType type) {
         this.type = type;
+        return this;
     }
 
     public AllSolutionsFragment() {}

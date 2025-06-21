@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
+import com.example.myapplication.domain.enumerations.OfferingType;
 import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.domain.dto.UserInfoResponse;
 import com.example.myapplication.fragments.asset.AssetCategoriesFragment;
@@ -55,11 +56,13 @@ public class ProfileInfoFragment extends Fragment {
         MaterialButton createAssetButton = view.findViewById(R.id.create_asset_button);
         MaterialButton assetCategoriesButton = view.findViewById(R.id.asset_categories_button);
         MaterialButton priceListButton = view.findViewById(R.id.price_list_button);
+        MaterialButton reviewsButton = view.findViewById(R.id.reviews_button);
 
-        myAssetsButton.setOnClickListener(v -> replaceFragment(new AllSolutionsFragment()));
+        myAssetsButton.setOnClickListener(v -> replaceFragment((new AllSolutionsFragment().setType(OfferingType.ASSET))));
         createAssetButton.setOnClickListener(v -> replaceFragment(new CreateAssetFragment()));
         assetCategoriesButton.setOnClickListener(v -> replaceFragment(new AssetCategoriesFragment()));
         priceListButton.setOnClickListener(v -> replaceFragment(new PriceListFragment()));
+        reviewsButton.setOnClickListener(v -> replaceFragment(new ReviewFragment()));
 
         Button button = view.findViewById(R.id.edit_button);
         button.setOnClickListener(v -> onEditClicked(userInfo));

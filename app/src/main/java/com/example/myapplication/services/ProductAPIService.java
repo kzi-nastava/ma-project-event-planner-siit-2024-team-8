@@ -1,6 +1,7 @@
 package com.example.myapplication.services;
 
 import com.example.myapplication.domain.Product;
+import com.example.myapplication.domain.Review;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -53,4 +54,7 @@ public interface ProductAPIService {
 
     @DELETE("products/{id}/favorite")
     Call<String> removeProductFromFavorites(@Header("Authorization") String token, @Path("id") String id);
+
+    @POST("products/{id}/review")
+    Call<String> submitReview(@Header("Authorization") String token, @Path("id") String productId, @Body RequestBody reviewData);
 }

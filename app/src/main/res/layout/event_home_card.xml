@@ -71,7 +71,7 @@
                 android:layout_gravity="center|left"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:padding="20dp"
+                android:padding="12dp"
                 android:shadowColor="@color/black"
                 android:shadowRadius="@dimen/material_emphasis_disabled"
                 android:text="@string/event_name"

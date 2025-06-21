@@ -1,5 +1,6 @@
 package com.example.myapplication.services;
 
+import com.example.myapplication.domain.Review;
 import com.example.myapplication.domain.Utility;
 import com.example.myapplication.utilities.RetrofitClient;
 
@@ -93,6 +94,11 @@ public class UtilityService {
 
     public void removeUtilityFromFavorites(String token, String id, Callback<String> callback) {
         Call<String> call = apiService.removeUtilityFromFavorites(token, id);
+        call.enqueue(callback);
+    }
+
+    public void submitReview(String token, String utilityId, RequestBody reviewData, Callback<String> callback) {
+        Call<String> call = apiService.submitReview(token, utilityId, reviewData);
         call.enqueue(callback);
     }
 }

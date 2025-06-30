@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,7 @@ import com.example.myapplication.domain.dto.UpdateUserRequest;
 import com.example.myapplication.domain.dto.UserInfoResponse;
 import com.example.myapplication.services.UserService;
 import com.example.myapplication.utilities.JwtTokenUtil;
+import com.example.myapplication.viewmodels.UserViewModel;
 
 import java.io.File;
 
@@ -46,6 +49,8 @@ public class ProfileEditFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private UserViewModel userVM;
 
     public ProfileEditFragment() {
         // Required empty public constructor
@@ -94,7 +99,7 @@ public class ProfileEditFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile_edit, container, false);
-
+        userVM = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         EditText name = view.findViewById(R.id.nameEditText);
         EditText lastName = view.findViewById(R.id.lastEditText);
         EditText address = view.findViewById(R.id.addressEditText);
@@ -161,23 +166,9 @@ public class ProfileEditFragment extends Fragment {
             imagePart = MultipartBody.Part.createFormData("image", imageFile.getName(), imageRequestBody);
         }
 
-        // Send data to backend
-        userService.getApiService().updateUser(firstName, lastName, email, address, number, imagePart).enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), "User updated successfully", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "Failed to update user", Toast.LENGTH_SHORT).show();
-                }
-            }
+        userVM.editUser(firstName,lastName,email,address,number,imagePart,getContext());
 
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                //Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
+        getParentFragmentManager().popBackStack(null,FragmentManager.POP_BACK_STACK_INCLUSIVE);
         replaceFragment(new HomePageFragment());
     }
 

@@ -7,22 +7,38 @@ import android.os.Bundle;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 
 import com.example.myapplication.R;
+import com.example.myapplication.adapters.EventTypeCheckboxAdapter;
+import com.example.myapplication.adapters.MultiSelectAdapter;
 import com.example.myapplication.databinding.FragmentAssetsFilterBottomSheetBinding;
+import com.example.myapplication.domain.AssetCategory;
+import com.example.myapplication.domain.EventType;
+import com.example.myapplication.domain.dto.SearchAssetRequest;
+import com.example.myapplication.domain.dto.SearchEventsRequest;
 import com.example.myapplication.domain.enumerations.AssetType;
+import com.example.myapplication.services.AssetCategoryService;
+import com.example.myapplication.services.EventTypeService;
+import com.example.myapplication.utilities.JwtTokenUtil;
 import com.example.myapplication.viewmodels.AssetViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.slider.RangeSlider;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,6 +58,15 @@ public class AssetsFilterFragmentBottomSheet extends BottomSheetDialogFragment {
 
     private AssetViewModel assetViewModel;
 
+    private MultiSelectAdapter adapter;
+
+    private RecyclerView recyclerView;
+    private AssetCategoryService assetCategoryService;
+
+    public interface AssetsFilterListener {
+        void onAssetsDataReceived();
+    }
+    private AssetsFilterListener listener;
 
 
     public AssetsFilterFragmentBottomSheet() {
@@ -88,7 +113,7 @@ public class AssetsFilterFragmentBottomSheet extends BottomSheetDialogFragment {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.UTILITY){
-                    assetViewModel.getCurrentFilters().getValue().setAssetType(AssetType.SERVICE);
+                    assetViewModel.getCurrentFilters().getValue().setAssetType(AssetType.UTILITY);
                 }else{
                     assetViewModel.getCurrentFilters().getValue().setAssetType(AssetType.PRODUCT);
                 }
@@ -124,8 +149,47 @@ public class AssetsFilterFragmentBottomSheet extends BottomSheetDialogFragment {
 
         RecyclerView assetCategories = binding.assetCategories;
 
+        Button applyButton = binding.applyButton;
+        applyButton.setOnClickListener(v -> {
+                    applyButtonClicked();
+                    dismiss();
+        });
+
+        assetCategoryService = new AssetCategoryService();
+        recyclerView = binding.assetCategories;
+        adapter = new MultiSelectAdapter(new ArrayList<>());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
 
 
        return binding.getRoot();
+    }
+
+    private void loadAssetCategories() {
+
+        new Thread(() -> {
+            try {
+                Future<List<AssetCategory>> future = assetCategoryService.getAllActiveCategories(JwtTokenUtil.getToken());
+                 List<AssetCategory> categories = future.get();
+
+                requireActivity().runOnUiThread(() -> {
+                    adapter.updateData(categories);
+                });
+            } catch (InterruptedException | ExecutionException e) {
+                requireActivity().runOnUiThread(() -> {
+                    Log.d("error", "Failed to fetch event types: " + e.getMessage());
+                });
+            }
+        }).start();
+    }
+
+    private void applyButtonClicked() {
+        SearchAssetRequest searchAssetRequest = assetViewModel.getCurrentFilters().getValue();
+        assert searchAssetRequest!= null;
+        searchAssetRequest.setAssetCategories(adapter.getSelectedItems().stream().map(category -> category.getId().toString()).collect(Collectors.toList()));
+        if (listener!=null){
+            listener.onAssetsDataReceived();
+        }
     }
 }

@@ -102,6 +102,11 @@ public class JwtTokenUtil {
         }
     }
 
+    public static void logOut(){
+        removeToken();
+        removeID();
+    }
+
     public static void removeToken(){
         sharedPreferences.edit().remove("JWT_TOKEN").apply();
     }

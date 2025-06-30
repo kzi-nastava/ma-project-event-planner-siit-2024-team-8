@@ -161,12 +161,16 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
             }
         });
 
-        Fragment startup = JwtTokenUtil.isUserLoggedIn() ? new HomePageFragment() : new StartupFragment();
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.main, startup)
-                .addToBackStack(null)
-                .commit();
+        if (JwtTokenUtil.isUserLoggedIn()) {onRoleChanged(JwtTokenUtil.getRole());}
+        else{
+            Fragment startup = new StartupFragment();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main, startup)
+                    .addToBackStack(null)
+                    .commit();
+        }
+
 
         /*loginFragment = new LoginFragment();
         FragmentTransaction loginTransaction = getSupportFragmentManager().beginTransaction();
@@ -176,12 +180,13 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
 
     private void checkBackStack() {
         int currentBackStackCount = getSupportFragmentManager().getBackStackEntryCount();
-        if (currentBackStackCount > backStackCount){
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.main);
+        if (currentBackStackCount > backStackCount || currentFragment instanceof StartupFragment){
             hideNavView();
-        }else if (JwtTokenUtil.isUserLoggedIn() && currentBackStackCount < 2){
+        }else if (JwtTokenUtil.isUserLoggedIn() && currentBackStackCount == 0){
             showNavView();
         }else{
-            showNavView();
+            hideNavView();
         }
         backStackCount = currentBackStackCount;
     }
@@ -197,26 +202,26 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
     @Override
     public void onRoleChanged(Role role) {
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        bottomNavigationView.getMenu().clear();
 
 
         bottomNavigationView.setVisibility(View.VISIBLE);
-        Menu menu = bottomNavigationView.getMenu();
+        NavGraph navGraph;
+
         if (role == Role.ORGANIZER) {
             bottomNavigationView.inflateMenu(R.menu.home_menu);
-            NavGraph organizerGraph = navController.getNavInflater()
-                    .inflate(R.navigation.home_organizer_navigation);
-            navController.setGraph(organizerGraph);
+            navGraph = navController.getNavInflater().inflate(R.navigation.home_organizer_navigation);
         } else if (role == Role.USER) {
             bottomNavigationView.inflateMenu(R.menu.home_menu_user);
-            NavGraph organizerGraph = navController.getNavInflater()
-                    .inflate(R.navigation.home_user_navigation);
-            navController.setGraph(organizerGraph);
+            navGraph = navController.getNavInflater().inflate(R.navigation.home_user_navigation);
         } else if (role == Role.PROVIDER){
             bottomNavigationView.inflateMenu(R.menu.home_menu_provider);
-            NavGraph organizerGraph = navController.getNavInflater()
-                    .inflate(R.navigation.home_provider_navigation);
-            navController.setGraph(organizerGraph);
+            navGraph = navController.getNavInflater().inflate(R.navigation.home_provider_navigation);
+        } else {
+            return; // Handle unexpected roles
         }
+        navController.setGraph(navGraph);
+
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
     }
 

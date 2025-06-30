@@ -1,32 +1,49 @@
 package com.example.myapplication.fragments;
 
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
+import com.example.myapplication.activities.MainActivity;
+import com.example.myapplication.databinding.FragmentProfileInfoBinding;
 import com.example.myapplication.domain.enumerations.OfferingType;
 import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.domain.dto.UserInfoResponse;
 import com.example.myapplication.fragments.asset.AssetCategoriesFragment;
 import com.example.myapplication.fragments.asset.CreateAssetFragment;
 import com.example.myapplication.fragments.asset.PriceListFragment;
+import com.example.myapplication.fragments.event.create_event.CreateEventFragment;
+import com.example.myapplication.services.ClientUtils;
 import com.example.myapplication.services.UserService;
 import com.example.myapplication.utilities.JwtTokenUtil;
+import com.example.myapplication.viewmodels.UserViewModel;
 import com.google.android.material.button.MaterialButton;
 
 import java.io.IOException;
+import java.util.Objects;
+import java.util.UUID;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,36 +53,119 @@ public class ProfileInfoFragment extends Fragment {
 
     private UserInfoResponse userInfo;
 
+    private UserViewModel userViewModel;
+
+    private UUID userID;
+
     public ProfileInfoFragment() {
+    }
+
+    private FragmentProfileInfoBinding binding;
+
+    public ProfileInfoFragment(UUID id){
+        userID = id;
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_profile_info, container, false);
-        return view;
+        binding = FragmentProfileInfoBinding.inflate(inflater,container,false);
+        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        binding.setUserVM(userViewModel);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        loadUserProfile();
+        userViewModel.getUserInfo().observe(getViewLifecycleOwner(), userInfo -> {
+            if (userInfo != null) {
+                displayUserProfile(userInfo,view);
+            }
+        });
+        userViewModel.loadUserProfile(userID);
 
-        MaterialButton myAssetsButton = view.findViewById(R.id.my_assets_button);
-        MaterialButton createAssetButton = view.findViewById(R.id.create_asset_button);
-        MaterialButton assetCategoriesButton = view.findViewById(R.id.asset_categories_button);
-        MaterialButton priceListButton = view.findViewById(R.id.price_list_button);
-        MaterialButton reviewsButton = view.findViewById(R.id.reviews_button);
+        setupProviderButtons();
+        setupOrganizerButtons();
 
-        myAssetsButton.setOnClickListener(v -> replaceFragment((new AllSolutionsFragment().setType(OfferingType.ASSET))));
+        ImageButton backButton = view.findViewById(R.id.backButton);
+        Button logOutButton = view.findViewById(R.id.logOutButton);
+        logOutButton.setOnClickListener(v -> logOut());
+        backButton.setOnClickListener(v -> getParentFragmentManager().popBackStack());
+
+        Button button = view.findViewById(R.id.edit_button);
+        button.setOnClickListener(v -> onEditClicked());
+    }
+
+    private void setupProviderButtons(){
+        Button myAssetsButton = binding.myAssetsButton;
+        Button createAssetButton = binding.createAssetButton;
+        Button assetCategoriesButton = binding.assetCategoriesButton;
+        Button priceListButton = binding.priceListButton;
+        myAssetsButton.setOnClickListener(v -> replaceFragment(new AllSolutionsFragment(OfferingType.ASSET)));
         createAssetButton.setOnClickListener(v -> replaceFragment(new CreateAssetFragment()));
         assetCategoriesButton.setOnClickListener(v -> replaceFragment(new AssetCategoriesFragment()));
         priceListButton.setOnClickListener(v -> replaceFragment(new PriceListFragment()));
-        reviewsButton.setOnClickListener(v -> replaceFragment(new ReviewFragment()));
+    }
 
-        Button button = view.findViewById(R.id.edit_button);
-        button.setOnClickListener(v -> onEditClicked(userInfo));
+    private void setupOrganizerButtons(){
+        Button myEventsButton = binding.myEventsButton;
+        Button createEvent = binding.createEventButton;
+        Button eventTypes = binding.eventTypesButton;
+        myEventsButton.setOnClickListener(v -> replaceFragment(new AllSolutionsFragment(OfferingType.EVENT)));
+        createEvent.setOnClickListener(v-> replaceFragment(new CreateEventFragment()));
+        eventTypes.setOnClickListener(v -> replaceFragment(new CreateEventTypeFragment()));
+    }
+
+    //Remove token as well as ID from Shared Preferences memory
+    //Then removing backstack fragments and returning to startup fragment
+    private void logOut(){
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        View view = getActivity().getLayoutInflater().inflate(R.layout.log_out_dialog_layout, null);
+        dialog.setView(view);
+
+        final AlertDialog alert = dialog.create();
+        setUpDialog(alert); //setting up height and background
+        Button cancel = (Button) view.findViewById(R.id.cancel_action);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alert.dismiss();
+            }
+        });
+        Button ok = (Button) view.findViewById(R.id.ok_action);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity activity = (MainActivity) getActivity();
+                activity.hideNavView();
+                JwtTokenUtil.logOut();
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+                    fm.popBackStack();
+                }
+                replaceFragment(new StartupFragment());
+                alert.dismiss();
+            }
+        });
+        alert.show();
+    }
+
+    private void setUpDialog(AlertDialog alert) {
+        Window window = alert.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // Transparent background
+
+            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+            layoutParams.copyFrom(window.getAttributes());
+
+            // Set height and width
+            layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+
+            window.setAttributes(layoutParams);
+        }
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -75,68 +175,12 @@ public class ProfileInfoFragment extends Fragment {
                 .addToBackStack(null)
                 .commit();
     }
-
-    private void loadUserProfile() {
-        // Retrieve the token from storage
-        String token = JwtTokenUtil.getToken();
-
-        if (token != null && !token.isEmpty()) {
-            String authHeader = "Bearer " + token;
-
-            UserService userService = new UserService(); // Create an instance of UserService
-            userService.getApiService().getUserInfo(authHeader).enqueue(new Callback<UserInfoResponse>() {
-                @Override
-                public void onResponse(Call<UserInfoResponse> call, Response<UserInfoResponse> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        userInfo = response.body();
-                        displayUserProfile(userInfo); // Handle the user profile UI
-                    } else {
-                        Log.e("Profile", "Failed to load profile: " + response.code());
-                        try {
-                            // Log the error body to understand why the request failed
-                            Log.e("Profile", "Error body: " + response.errorBody().string());
-                        } catch (IOException e) {
-                            Log.e("Profile", "Error reading error body: " + e.getMessage());
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<UserInfoResponse> call, Throwable t) {
-                    Log.e("Profile", "Error: " + t.getMessage());
-                }
-            });
-        } else {
-            Log.e("Profile", "Token is missing or invalid.");
-        }
-    }
-
-
-
-    private void displayUserProfile(UserInfoResponse userInfo) {
-        Log.d("ProfileImage", userInfo.profileImage);
-        ImageView profileImage = getView().findViewById(R.id.profile_picture);
-        Glide.with(this)
+    private void displayUserProfile(UserInfoResponse userInfo,View view) {
+        ImageView profileImage = view.findViewById(R.id.profile_picture);
+        Glide.with(requireContext())
                 .load(userInfo.profileImage)
                 .placeholder(R.drawable.profile_placeholder) // Optional placeholder while loading// Optional error image
                 .into(profileImage);
-
-        TextView emailTextView = getView().findViewById(R.id.user_email);
-        emailTextView.setText(userInfo.email);
-        TextView fullNameView = getView().findViewById(R.id.user_fullname);
-        fullNameView.setText(userInfo.firstName + userInfo.lastName);
-        TextView addressView = getView().findViewById(R.id.user_address);
-        addressView.setText(userInfo.address);
-        TextView phoneView = getView().findViewById(R.id.user_phone);
-        phoneView.setText(userInfo.number);
-        TextView verifiedView = getView().findViewById(R.id.account_status);
-        if (userInfo.isActive) {
-            verifiedView.setText("Verified");
-        } else {
-            verifiedView.setText("Not Verified");
-        }
-        TextView nameView = getView().findViewById(R.id.user_name);
-        nameView.setText(userInfo.firstName);
         TextView roleView = getView().findViewById(R.id.user_type);
         Role role = JwtTokenUtil.getRole();
         roleView.setText(String.valueOf(role));
@@ -148,8 +192,8 @@ public class ProfileInfoFragment extends Fragment {
         }
     }
 
-    public void onEditClicked(UserInfoResponse userInfo) {
-        ProfileEditFragment profileEditFragment = new ProfileEditFragment(userInfo);
+    public void onEditClicked() {
+        ProfileEditFragment profileEditFragment = new ProfileEditFragment(userViewModel.getUserInfo().getValue());
         replaceFragment(profileEditFragment);
     }
 }

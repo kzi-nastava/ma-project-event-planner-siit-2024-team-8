@@ -10,18 +10,23 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.activities.MainActivity;
 import com.example.myapplication.adapters.AssetCardAdapter;
 import com.example.myapplication.adapters.EventCardAdapter;
+import com.example.myapplication.domain.dto.SearchAssetRequest;
 import com.example.myapplication.domain.enumerations.OfferingType;
 import com.example.myapplication.domain.dto.SearchEventsRequest;
 import com.example.myapplication.utilities.JwtTokenUtil;
@@ -31,7 +36,7 @@ import com.example.myapplication.viewmodels.EventViewModel;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class AllSolutionsFragment extends Fragment implements FilterBottomSheetFragment.FilterListener {
+public class AllSolutionsFragment extends Fragment implements FilterBottomSheetFragment.FilterListener, AssetsFilterFragmentBottomSheet.AssetsFilterListener {
 
     private EventViewModel eventViewModel;
     private AssetViewModel assetViewModel;
@@ -46,6 +51,8 @@ public class AllSolutionsFragment extends Fragment implements FilterBottomSheetF
     private int totalElements = 0;
 
     private final ArrayList<String> pageSizes = new ArrayList<>(Arrays.asList("1","2","5","10","15","20"));
+
+    private boolean sortOpened = false;
 
     public Fragment setType(OfferingType type) {
         this.type = type;
@@ -70,6 +77,133 @@ public class AllSolutionsFragment extends Fragment implements FilterBottomSheetF
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        setupRecyclerViews(view);
+        setupNextPreviousButton(view);
+        setupFilterButton(view);
+        setupPagingSpinner(view);
+        setupSort(view);
+        setupSearch(view);
+
+    }
+
+    private void setupSearch(View view) {
+        EditText search = view.findViewById(R.id.searchEditText);
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Called before the text is changed
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Called as the text is changing
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (type == OfferingType.EVENT){
+                    eventViewModel.getCurrentFilters().getValue().setName(search.getText().toString());
+                    eventViewModel.filterEvents(currentPage,currentPageSize);
+                }else{
+                    assetViewModel.getCurrentFilters().getValue().setName(search.getText().toString());
+                    eventViewModel.filterEvents(currentPage,currentPageSize);
+                }
+
+            }
+        });;
+    }
+
+    private void setupSort(View view) {
+        Spinner mySpinner = view.findViewById(R.id.mySpinner);
+        String[] options = type == OfferingType.EVENT ? new String[]{"Name A-Z","Name Z-A","Start date oldest","Start date newest","End date oldest","End Date newest","Capacity lowest","Capacity highest"} :
+                new String[]{"Name A-Z","Name Z-A","Price lowest", "Price highest", "Grade lowest", " Grade highest","Discount lowest", "Discount highest"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity(),
+                android.R.layout.simple_spinner_dropdown_item,
+                options);
+        mySpinner.setAdapter(adapter);
+    }
+
+    private void setupPagingSpinner(View view) {
+        AppCompatSpinner spinner = view.findViewById(R.id.pageSizeSpinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, pageSizes);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItem = parent.getItemAtPosition(position).toString();
+                currentPageSize = Integer.parseInt(selectedItem);
+                currentPage = 0;
+                if (type == OfferingType.EVENT) {
+                    eventViewModel.filterEvents(currentPage, currentPageSize);
+                }else{
+                    assetViewModel.filterAssets(currentPage,currentPageSize);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
+    }
+
+    private void setupFilterButton(View view) {
+        Button filterButton = view.findViewById(R.id.buttonFilter3);
+        filterButton.setOnClickListener(v->onFilterClicked());
+
+        Button resetFilterButton = view.findViewById(R.id.resetFilterButton);
+        resetFilterButton.setOnClickListener(v -> {
+            if (type == OfferingType.EVENT){
+                eventViewModel.setCurrentFilters(new SearchEventsRequest());
+                eventViewModel.filterEvents(currentPage,currentPageSize);
+            }else{
+                assetViewModel.setCurrentFilters(new SearchAssetRequest());
+                assetViewModel.filterAssets(currentPage,currentPageSize);
+            }
+        });
+    }
+
+    private void setupNextPreviousButton(View view) {
+        Button nextButton = view.findViewById(R.id.next_button);
+        Button previousButton = view.findViewById(R.id.previous_button);
+
+        // Handle Next Button click
+        nextButton.setOnClickListener(v -> {
+            if (currentPage+1 < totalPages) {
+                currentPage++;
+                if (type == OfferingType.EVENT) {
+                    eventViewModel.filterEvents(currentPage, currentPageSize);
+                }else{
+                    assetViewModel.filterAssets(currentPage,currentPageSize);
+                }
+                previousButton.setEnabled(true);
+                if (currentPage+1 == totalPages) {
+                    nextButton.setEnabled(false);
+                }
+            }
+        });
+
+        // Handle Previous Button click
+        previousButton.setOnClickListener(v -> {
+            if (currentPage > 0) { // Check if we are not on the first page
+                currentPage--;
+                if (type == OfferingType.EVENT) {
+                    eventViewModel.filterEvents(currentPage, currentPageSize);
+                }else{
+                    assetViewModel.filterAssets(currentPage,currentPageSize);
+                }
+                nextButton.setEnabled(true);
+                if (currentPage == 0) {
+                    previousButton.setEnabled(false);
+                }
+            }
+        });
+
+        previousButton.setEnabled(false);
+    }
+
+    private void setupRecyclerViews(View view) {
         // Initialize your ViewModel
         eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
         assetViewModel = new ViewModelProvider(requireActivity()).get(AssetViewModel.class);
@@ -97,16 +231,16 @@ public class AllSolutionsFragment extends Fragment implements FilterBottomSheetF
             case ASSET:
                 AssetCardAdapter assetAdapter = new AssetCardAdapter(view.getContext());
                 solutionsRecyclerView.setAdapter(assetAdapter);
-                assetAdapter.SetOnClick((MainActivity) getActivity(),getActivity().getSupportFragmentManager());
-                assetViewModel.getAssetsLiveData().observe(getViewLifecycleOwner(), assets -> {
+                assetViewModel.getCurrentAssets().observe(getViewLifecycleOwner(), assets -> {
                     if (assets != null) {
-                        assetAdapter.setAssets(new ArrayList<>(assets)); // Set all assets
+                        assetAdapter.setAssets(assets); // Set all assets
                     }
                 });
-                String token = JwtTokenUtil.getToken();
-                if (token != null) {
-                    assetViewModel.fetchAssets("Bearer " + token);
-                }
+                assetViewModel.getTotalPages().observe(getViewLifecycleOwner(),pages -> {
+                    this.totalPages = pages;
+                    TextView totalPagesText = view.findViewById(R.id.totalPagesTextView);
+                    totalPagesText.setText(String.format("%s of %s",currentPage+1,totalPages));
+                });
                 assetAdapter.SetOnClick(getActivity(), getActivity().getSupportFragmentManager());
                 header.setText("Assets");
                 break;
@@ -114,77 +248,8 @@ public class AllSolutionsFragment extends Fragment implements FilterBottomSheetF
                 break;
 
         }
-
-        Button nextButton = view.findViewById(R.id.next_button);
-        Button previousButton = view.findViewById(R.id.previous_button);
-        TextView pageNumberText = view.findViewById(R.id.page_number_text);
-
-        // Handle Next Button click
-        nextButton.setOnClickListener(v -> {
-            if (currentPage+1 < totalPages) {
-                currentPage++;
-                pageNumberText.setText(String.format("Page %d",currentPage+1));
-                if (type == OfferingType.EVENT) {
-                    eventViewModel.filterEvents(currentPage, currentPageSize);
-                }
-                previousButton.setEnabled(true);
-                if (currentPage+1 == totalPages) {
-                    nextButton.setEnabled(false);
-                }
-            }
-        });
-
-        // Handle Previous Button click
-        previousButton.setOnClickListener(v -> {
-            if (currentPage > 0) { // Check if we are not on the first page
-                currentPage--;
-                pageNumberText.setText(String.format("Page %d",currentPage+1));
-                if (type == OfferingType.EVENT) {
-                    eventViewModel.filterEvents(currentPage, currentPageSize);
-                }
-                nextButton.setEnabled(true);
-                if (currentPage == 0) {
-                    previousButton.setEnabled(false);
-                }
-            }
-        });
-
-
-        pageNumberText.setText(String.format("Page %d",currentPage+1));
-        previousButton.setEnabled(false);
-
-
-        Button filterButton = view.findViewById(R.id.buttonFilter3);
-        filterButton.setOnClickListener(v->onFilterClicked());
-
-        Button resetFilterButton = view.findViewById(R.id.resetFilterButton);
-        resetFilterButton.setOnClickListener(v -> {
-            eventViewModel.setCurrentFilters(new SearchEventsRequest());
-            eventViewModel.filterEvents(currentPage,currentPageSize);
-        });
-        
-
-
-
-        AppCompatSpinner spinner = view.findViewById(R.id.pageSizeSpinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, pageSizes);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedItem = parent.getItemAtPosition(position).toString();
-                currentPageSize = Integer.parseInt(selectedItem);
-                currentPage = 0;
-                eventViewModel.filterEvents(currentPage,currentPageSize);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
-            }
-        });
-
     }
+
     private void onFilterClicked() {
         if (type == OfferingType.EVENT){
             FilterBottomSheetFragment filterBottomSheet = new FilterBottomSheetFragment();
@@ -194,14 +259,15 @@ public class AllSolutionsFragment extends Fragment implements FilterBottomSheetF
             assetsFilterFragmentBottomSheet.show(getChildFragmentManager(),assetsFilterFragmentBottomSheet.getTag());
         }
     }
-
-    private void filterEvents(){}
-
-    private void filterAssets(){}
-
     @Override
     public void onDataReceived() {
         currentPage = 0;
         eventViewModel.filterEvents(currentPage,currentPageSize);
+    }
+
+    @Override
+    public void onAssetsDataReceived() {
+        currentPage = 0;
+        assetViewModel.filterAssets(currentPage,currentPageSize);
     }
 }

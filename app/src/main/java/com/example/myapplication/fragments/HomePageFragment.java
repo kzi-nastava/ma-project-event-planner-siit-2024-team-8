@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.auth0.android.jwt.JWT;
 import com.example.myapplication.R;
@@ -59,8 +60,13 @@ public class HomePageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d("HomePageFragment", "created view");
-        return inflater.inflate(R.layout.fragment_home_page, container, false);
+        View view = inflater.inflate(R.layout.fragment_home_page, container, false);
 
+        if (JwtTokenUtil.isUserLoggedIn()) {
+            TextView role = view.findViewById(R.id.roleTextView);
+            role.setText(JwtTokenUtil.getRole().toString());
+        }
+        return view;
     }
 
     public void onProfileClick(View view) {
@@ -110,17 +116,19 @@ public class HomePageFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        assetViewModel.loadTopAssets();
         assetRecyclerView = view.findViewById(R.id.assetRecyclerView);
         assetCardAdapter = new AssetCardAdapter(getContext());
         assetRecyclerView.setAdapter(assetCardAdapter);
         assetRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         assetCardAdapter.SetOnClick(getActivity(), getActivity().getSupportFragmentManager());
-
-        assetViewModel.getAssetsLiveData().observe(getViewLifecycleOwner(), assets -> {
+        assetViewModel.getTop5Assets().observe(getViewLifecycleOwner(), assets -> {
             if (assets != null) {
-                assetCardAdapter.setAssets(assets.stream().limit(5).collect(Collectors.toList()));
+                assetCardAdapter.setAssets(assets);
             }
         });
+
+
 
         String token = JwtTokenUtil.getToken();
         if (token != null && !token.isEmpty()) {
@@ -147,11 +155,9 @@ public class HomePageFragment extends Fragment {
         Button seeAllEvents = view.findViewById(R.id.seeAllEventsButton);
         Button seeAllAssets = view.findViewById(R.id.seeAllAssetsButton);
         ImageButton loginButton = view.findViewById(R.id.profileImageButton);
-        MaterialButton categoryButton = view.findViewById(R.id.CategoryButton);
 
         seeAllEvents.setOnClickListener(v -> onSeeAllClick(OfferingType.EVENT));
         seeAllAssets.setOnClickListener(v -> onSeeAllClick(OfferingType.ASSET));
-        categoryButton.setOnClickListener(v -> navigateToAssetCategories());
         loginButton.setOnClickListener(v -> onProfileClick(view));
     }
 

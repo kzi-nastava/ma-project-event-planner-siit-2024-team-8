@@ -19,6 +19,7 @@ import com.example.myapplication.domain.dto.LoginRequest;
 import com.example.myapplication.fragments.register.RegisterFragment;
 import com.example.myapplication.services.ClientUtils;
 import com.example.myapplication.utilities.JwtTokenUtil;
+import com.example.myapplication.utilities.NotificationsUtils;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -131,11 +132,12 @@ public class LoginFragment extends Fragment {
                         JwtTokenUtil.saveToken(jwtToken,getContext());
                         JwtTokenUtil.saveUserId(id,getContext());
                         notifyRoleChanged(JwtTokenUtil.getRole());
+                        NotificationsUtils.getInstance().showSuccessToast(requireContext(),"Successfully logged in!");
                     } catch (GeneralSecurityException | IOException e) {
                         throw new RuntimeException(e);
                     }
                 }else{
-                    Log.d("Response","Response: " + response.code());
+                    NotificationsUtils.getInstance().showErrToast(requireContext(),"User not found!\nEmail or password are invalid!");
                 }
             }
 

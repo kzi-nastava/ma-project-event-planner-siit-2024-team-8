@@ -8,16 +8,20 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.myapplication.domain.Asset;
 import com.example.myapplication.domain.AssetCategory;
+import com.example.myapplication.domain.PagedResponse;
 import com.example.myapplication.domain.Product;
 import com.example.myapplication.domain.Utility;
+import com.example.myapplication.domain.dto.AssetResponse;
 import com.example.myapplication.domain.dto.SearchAssetRequest;
-import com.example.myapplication.domain.dto.SearchEventsRequest;
 import com.example.myapplication.services.AssetCategoryService;
+import com.example.myapplication.services.ClientUtils;
 import com.example.myapplication.services.ProductService;
 import com.example.myapplication.services.UtilityService;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,7 +35,15 @@ public class AssetViewModel extends ViewModel {
     private final MutableLiveData<List<Asset>> assetsLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
 
+    private final MutableLiveData<List<AssetResponse>> currentAssets = new MutableLiveData<>();
+
     private final MutableLiveData<SearchAssetRequest> currentFilters = new MutableLiveData<>();
+
+    private final MutableLiveData<List<AssetResponse>> top5Assets = new MutableLiveData<>();
+
+    private MutableLiveData<Long> totalElements = new MutableLiveData<>();
+
+    private MutableLiveData<Integer> totalPages = new MutableLiveData<>();
 
     public AssetViewModel() {
         this.productService = new ProductService();
@@ -44,6 +56,13 @@ public class AssetViewModel extends ViewModel {
         this.currentFilters.setValue(request);
     }
 
+    public LiveData<List<AssetResponse>> getCurrentAssets(){
+        return currentAssets;
+    }
+
+    public LiveData<Long> getTotalElements() {return totalElements;}
+    public LiveData<Integer> getTotalPages() {return totalPages;}
+
     public LiveData<SearchAssetRequest> getCurrentFilters() {return currentFilters;}
 
     public LiveData<List<Asset>> getAssetsLiveData() {
@@ -53,6 +72,8 @@ public class AssetViewModel extends ViewModel {
     public LiveData<Boolean> getLoadingState() {
         return isLoading;
     }
+
+    public LiveData<List<AssetResponse>> getTop5Assets() { return top5Assets;}
 
     public void fetchAssets(String token) {
         isLoading.setValue(true);
@@ -119,6 +140,59 @@ public class AssetViewModel extends ViewModel {
                 }
             });
         }
+    }
+
+    public void filterAssets(int currentPage,int pageSize){
+        SearchAssetRequest request = currentFilters.getValue();
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+
+
+        Call<PagedResponse<AssetResponse>> call = ClientUtils.assetAPIService.filterAssets(
+                currentPage,
+                pageSize,
+                request.getName(),
+                request.getAssetCategories(),
+                request.getAssetType(),
+                request.getPriceLow(),
+                request.getPriceHigh(),
+                request.getGradeLow(),
+                request.getGradeHigh(),
+                request.getSortParameter(),
+                request.getAscending(),
+                request.getAvailable()
+        );
+        call.enqueue(new Callback<PagedResponse<AssetResponse>>() {
+            @Override
+            public void onResponse(Call<PagedResponse<AssetResponse>> call, Response<PagedResponse<AssetResponse>> response) {
+                if (response.body() == null){return;}
+                Log.d("body ",response.body().toString());
+                currentAssets.setValue(response.body().getContent());
+                totalElements.setValue(response.body().getTotalElements());
+                totalPages.setValue(response.body().getTotalPages());
+            }
+
+            @Override
+            public void onFailure(Call<PagedResponse<AssetResponse>> call, Throwable t) {
+                Log.d("error fetching events", Objects.requireNonNull(t.getMessage()));
+            }
+        });
+    }
+
+    public void loadTopAssets(){
+        Call<List<AssetResponse>> call = ClientUtils.assetAPIService.getTop5Assets();
+        call.enqueue(new Callback<List<AssetResponse>>() {
+            @Override
+            public void onResponse(Call<List<AssetResponse>> call, Response<List<AssetResponse>> response) {
+                if (response.isSuccessful()){
+                    top5Assets.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<AssetResponse>> call, Throwable t) {
+                Log.d("ERROR LOADING TOP ASSETS" , t.getMessage());
+            }
+        });
     }
 }
 

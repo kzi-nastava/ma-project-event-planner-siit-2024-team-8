@@ -25,7 +25,10 @@ public interface AssetAPIService {
             @Query("gradeLow") Integer gradeLow,
             @Query("gradeHigh") Integer gradeHigh,
             @Query("sortParameter") AssetSortParameter sortParameter,
-            @Query("ascending") Boolean ascending
+            @Query("ascending") Boolean ascending,
+            @Query("isAvailable") Boolean isAvailable
     );
 
+    @GET("assets/top5")
+    Call<List<AssetResponse>> getTop5Assets();
 }

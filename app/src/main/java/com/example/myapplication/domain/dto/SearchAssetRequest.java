@@ -10,10 +10,10 @@ public class SearchAssetRequest {
     private AssetType assetType;
     private List<String> assetCategories;
     private String name;
-    private Integer priceLow;
-    private Integer priceHigh;
-    private Integer gradeLow;
-    private Integer gradeHigh;
+    private int priceLow;
+    private int priceHigh;
+    private int gradeLow;
+    private int gradeHigh;
     private Boolean available;
 
     private AssetSortParameter sortParameter;

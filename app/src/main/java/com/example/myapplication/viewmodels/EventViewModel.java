@@ -145,7 +145,7 @@ public class EventViewModel extends ViewModel {
        call.enqueue(new Callback<PagedResponse<EventCardResponse>>() {
             @Override
             public void onResponse(Call<PagedResponse<EventCardResponse>> call, Response<PagedResponse<EventCardResponse>> response) {
-                assert response.body() != null;
+                if (response.body() == null) {return;}
                 Log.d("body ",response.body().toString());
                 currentEvents.setValue(response.body().getContent());
                 totalElements.setValue(response.body().getTotalElements());

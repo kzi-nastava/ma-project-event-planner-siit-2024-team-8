@@ -26,4 +26,6 @@ public class ClientUtils {
     public static EventAPIService eventAPIService = RetrofitClient.getRetrofitInstance().create(EventAPIService.class);
 
     public static AssetAPIService assetAPIService = RetrofitClient.getRetrofitInstance().create(AssetAPIService.class);
+    public static ReportAPIService reportAPIService = RetrofitClient.getRetrofitInstance().create(ReportAPIService.class);
+
 }

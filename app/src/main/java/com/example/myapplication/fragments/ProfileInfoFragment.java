@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,6 +29,7 @@ import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
 import com.example.myapplication.activities.MainActivity;
 import com.example.myapplication.databinding.FragmentProfileInfoBinding;
+import com.example.myapplication.domain.dto.CreateReportRequest;
 import com.example.myapplication.domain.enumerations.OfferingType;
 import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.domain.dto.UserInfoResponse;
@@ -86,17 +88,76 @@ public class ProfileInfoFragment extends Fragment {
             }
         });
         userViewModel.loadUserProfile(userID);
-
         setupProviderButtons();
         setupOrganizerButtons();
+        setupSelfInfoView(view);
+        setupOtherUsersInfoView(view);
 
+        ImageButton button = view.findViewById(R.id.edit_button);
+        button.setOnClickListener(v -> onEditClicked());
+    }
+
+    private void setupOtherUsersInfoView(View view) {
+        if (userID == null){
+            return;
+        }
+        binding.reportButton.setVisibility(View.VISIBLE);
+        binding.blockUserButton.setVisibility(View.VISIBLE);
+        binding.logOutButton.setVisibility(View.GONE);
+        binding.editButton.setVisibility(View.GONE);
+
+        binding.reportButton.setOnClickListener(v -> reportButtonClicked());
+        binding.blockUserButton.setOnClickListener(v -> blockUserButtonClicked());
+    }
+
+    private void blockUserButtonClicked() {
+        userViewModel.blockUser(userID,getContext());
+        getParentFragmentManager().popBackStack();
+    }
+
+
+    private void reportButtonClicked() {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        View view = getActivity().getLayoutInflater().inflate(R.layout.report_user_dialog_layout, null);
+        dialog.setView(view);
+
+        final AlertDialog alert = dialog.create();
+        setUpDialog(alert); //setting up height and background
+        Button cancel = (Button) view.findViewById(R.id.cancel_action);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alert.dismiss();
+            }
+        });
+        Button ok = (Button) view.findViewById(R.id.ok_action);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText reasonET = view.findViewById(R.id.reasonEditText);
+                String reason = reasonET.getText().toString();
+                userViewModel.reportUser(userID,reason,getContext());
+            }
+        });
+        alert.show();
+    }
+
+    private void setupSelfInfoView(View view) {
+        if(userID != null){
+            return;
+        }
         ImageButton backButton = view.findViewById(R.id.backButton);
         Button logOutButton = view.findViewById(R.id.logOutButton);
         logOutButton.setOnClickListener(v -> logOut());
         backButton.setOnClickListener(v -> getParentFragmentManager().popBackStack());
+        switch(Objects.requireNonNull(JwtTokenUtil.getRole())) {
+            case PROVIDER:
+                binding.providerButtons.setVisibility(View.VISIBLE);
+                userViewModel.loadProviderInfo(UUID.fromString(JwtTokenUtil.getUserId()));
+            case ORGANIZER:
+                binding.organizerButtons.setVisibility(View.VISIBLE);
+        }
 
-        Button button = view.findViewById(R.id.edit_button);
-        button.setOnClickListener(v -> onEditClicked());
     }
 
     private void setupProviderButtons(){
@@ -104,7 +165,7 @@ public class ProfileInfoFragment extends Fragment {
         Button createAssetButton = binding.createAssetButton;
         Button assetCategoriesButton = binding.assetCategoriesButton;
         Button priceListButton = binding.priceListButton;
-        myAssetsButton.setOnClickListener(v -> replaceFragment(new AllSolutionsFragment(OfferingType.ASSET)));
+        myAssetsButton.setOnClickListener(v -> replaceFragment(new AllSolutionsFragment(OfferingType.ASSET,JwtTokenUtil.getUserId())));
         createAssetButton.setOnClickListener(v -> replaceFragment(new CreateAssetFragment()));
         assetCategoriesButton.setOnClickListener(v -> replaceFragment(new AssetCategoriesFragment()));
         priceListButton.setOnClickListener(v -> replaceFragment(new PriceListFragment()));
@@ -114,7 +175,7 @@ public class ProfileInfoFragment extends Fragment {
         Button myEventsButton = binding.myEventsButton;
         Button createEvent = binding.createEventButton;
         Button eventTypes = binding.eventTypesButton;
-        myEventsButton.setOnClickListener(v -> replaceFragment(new AllSolutionsFragment(OfferingType.EVENT)));
+        myEventsButton.setOnClickListener(v -> replaceFragment(new AllSolutionsFragment(OfferingType.EVENT,JwtTokenUtil.getUserId())));
         createEvent.setOnClickListener(v-> replaceFragment(new CreateEventFragment()));
         eventTypes.setOnClickListener(v -> replaceFragment(new CreateEventTypeFragment()));
     }
@@ -127,7 +188,7 @@ public class ProfileInfoFragment extends Fragment {
         dialog.setView(view);
 
         final AlertDialog alert = dialog.create();
-        setUpDialog(alert); //setting up height and background
+        setUpDialog(alert);
         Button cancel = (Button) view.findViewById(R.id.cancel_action);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,8 +222,13 @@ public class ProfileInfoFragment extends Fragment {
             WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
             layoutParams.copyFrom(window.getAttributes());
 
-            // Set height and width
+            // Convert 300dp to pixels
+            float density = getResources().getDisplayMetrics().density;
+            int heightInPixels = (int) (300 * density);
+
+            // Set dimensions
             layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+            layoutParams.height = heightInPixels;
 
             window.setAttributes(layoutParams);
         }
@@ -189,11 +255,13 @@ public class ProfileInfoFragment extends Fragment {
             getView().findViewById(R.id.company_name).setVisibility(View.INVISIBLE);
             getView().findViewById(R.id.company_description_label).setVisibility(View.INVISIBLE);
             getView().findViewById(R.id.company_description).setVisibility(View.INVISIBLE);
+            getView().findViewById(R.id.companyNameUnderLine).setVisibility(View.INVISIBLE);
+            getView().findViewById(R.id.companyDescriptionUnderLine).setVisibility(View.INVISIBLE);
         }
     }
 
     public void onEditClicked() {
-        ProfileEditFragment profileEditFragment = new ProfileEditFragment(userViewModel.getUserInfo().getValue());
+        ProfileEditFragment profileEditFragment = new ProfileEditFragment(userViewModel.getUserInfo().getValue(),userViewModel.getProviderInfo().getValue());
         replaceFragment(profileEditFragment);
     }
 }

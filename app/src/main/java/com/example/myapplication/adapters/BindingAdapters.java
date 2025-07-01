@@ -222,22 +222,6 @@ public class BindingAdapters {
             }
         });
 
-        // Listen for changes in selection and notify the InverseBindingListener
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (listener != null) {
-                    listener.onChange(); // Notify the inverse binding system
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                if (listener != null) {
-                    listener.onChange(); // Notify even when nothing is selected
-                }
-            }
-        });
     }
     private static List<String> getAssetCategoryNames(List<AssetCategory> assetCategories) {
         List<String> names = new ArrayList<>();

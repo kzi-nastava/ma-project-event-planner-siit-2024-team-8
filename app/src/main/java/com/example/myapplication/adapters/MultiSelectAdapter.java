@@ -74,7 +74,7 @@ public class MultiSelectAdapter extends RecyclerView.Adapter<MultiSelectAdapter.
         public ViewHolder(View itemView) {
             super(itemView);
             checkBox = itemView.findViewById(R.id.checkbox);
-            text = itemView.findViewById(R.id.textView);
+            text = itemView.findViewById(R.id.checkboxNameTextView);
         }
     }
 }

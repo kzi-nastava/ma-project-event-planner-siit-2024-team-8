@@ -1,6 +1,7 @@
 package com.example.myapplication.services;
 
 import com.example.myapplication.domain.ApiResponse;
+import com.example.myapplication.domain.dto.ProviderInfoResponse;
 import com.example.myapplication.domain.dto.UpdateUserRequest;
 import com.example.myapplication.domain.dto.UserCreateRequest;
 import com.example.myapplication.domain.dto.UserInfoResponse;
@@ -34,6 +35,9 @@ public interface UserAPIService {
 
     @GET("users/{id}")
     Call<UserInfoResponse> getUserById(@Path("id") String id);
+
+    @GET("users/provider/{id}")
+    Call<ProviderInfoResponse> getProviderInfo(@Path("id") UUID id);
     @Multipart
     @PUT("users/update")
     Call<String> updateUser(
@@ -42,6 +46,13 @@ public interface UserAPIService {
             @Part("email") RequestBody email,
             @Part("address") RequestBody address,
             @Part("number") RequestBody number,
+            @Part("companyName") RequestBody companyName,
+            @Part("companyDescription") RequestBody companyDescription,
             @Part MultipartBody.Part image // Optional if you are uploading an image
     );
+
+    @PUT("users/block/{id}")
+    Call<ApiResponse> blockUser(
+            @Path("id") UUID id);
+
 }

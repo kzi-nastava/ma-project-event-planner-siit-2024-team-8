@@ -16,8 +16,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
+import com.example.myapplication.domain.dto.ProviderInfoResponse;
 import com.example.myapplication.domain.dto.UpdateUserRequest;
 import com.example.myapplication.domain.dto.UserInfoResponse;
+import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.services.UserService;
 import com.example.myapplication.utilities.JwtTokenUtil;
 import com.example.myapplication.viewmodels.UserViewModel;
@@ -44,6 +46,8 @@ public class ProfileEditFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     private UserInfoResponse userInfo;
+
+    private ProviderInfoResponse providerInfo;
     UserService userService = new UserService();
 
     // TODO: Rename and change types of parameters
@@ -56,8 +60,9 @@ public class ProfileEditFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public ProfileEditFragment(UserInfoResponse userInfo) {
+    public ProfileEditFragment(UserInfoResponse userInfo,ProviderInfoResponse providerInfo) {
         this.userInfo = userInfo;
+        this.providerInfo = providerInfo;
     }
 
     /**
@@ -111,19 +116,20 @@ public class ProfileEditFragment extends Fragment {
             view.findViewById(R.id.companyDescEditView1).setVisibility(View.INVISIBLE);
             view.findViewById(R.id.companyDescEditView2).setVisibility(View.INVISIBLE);
             view.findViewById(R.id.companyDescEditText).setVisibility(View.INVISIBLE);
+            name.setText(this.userInfo.firstName);
+            lastName.setText(this.userInfo.lastName);
+            address.setText(this.userInfo.address);
+            phone.setText(this.userInfo.number);
         } else {
             EditText companyName = view.findViewById(R.id.companyNameEditText);
             EditText companyDesc =view.findViewById(R.id.companyDescEditText);
-            /*
-            !!! UNAVAILABLE UNTIL PROVIDER IS FIXED !!!
-            companyName.setText(this.userInfo.companyName);
-            companyDesc.setText(this.userInfo.companyDesc);
-            */
+            name.setText(this.providerInfo.firstName);
+            lastName.setText(this.providerInfo.lastName);
+            address.setText(this.providerInfo.address);
+            phone.setText(this.providerInfo.number);
+            companyName.setText(this.providerInfo.companyName);
+            companyDesc.setText(this.providerInfo.companyDescription);
         }
-        name.setText(this.userInfo.firstName);
-        lastName.setText(this.userInfo.lastName);
-        address.setText(this.userInfo.address);
-        phone.setText(this.userInfo.number);
 
 
         return view;
@@ -158,6 +164,17 @@ public class ProfileEditFragment extends Fragment {
         EditText phoneEdit = getView().findViewById(R.id.phoneEditText);
         RequestBody number = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(phoneEdit.getText()));
 
+        RequestBody companyName = null;
+        RequestBody companyDesc = null;
+
+        if (JwtTokenUtil.getRole() == Role.PROVIDER){
+            EditText companyNameEdit = getView().findViewById(R.id.companyNameEditText);
+            companyName = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(companyNameEdit.getText()));
+
+            EditText companyDescEdit = getView().findViewById(R.id.companyDescEditText);
+            companyDesc = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(companyDescEdit.getText()));
+        }
+
         // Handle image upload if available
         File imageFile = null;  // Set your image file here (if any)
         MultipartBody.Part imagePart = null;
@@ -166,10 +183,9 @@ public class ProfileEditFragment extends Fragment {
             imagePart = MultipartBody.Part.createFormData("image", imageFile.getName(), imageRequestBody);
         }
 
-        userVM.editUser(firstName,lastName,email,address,number,imagePart,getContext());
+        userVM.editUser(firstName,lastName,email,address,number,companyName,companyDesc,imagePart,getContext());
 
         getParentFragmentManager().popBackStack(null,FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        replaceFragment(new HomePageFragment());
     }
 
 }

@@ -37,6 +37,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -113,7 +114,7 @@ public class EventOverviewFragment extends Fragment {
     }
 
     private void organizerClicked() {
-        replaceFragment(new ProfileInfoFragment());
+        replaceFragment(new ProfileInfoFragment(UUID.fromString(eventInfo.getOrganizerID())));
     }
 
     private void replaceFragment(Fragment fragment) {

@@ -157,9 +157,10 @@ public class AssetViewModel extends ViewModel {
                 request.getPriceHigh(),
                 request.getGradeLow(),
                 request.getGradeHigh(),
-                request.getSortParameter(),
-                request.getAscending(),
-                request.getAvailable()
+                request.getSortBy(),
+                request.getSortOrder(),
+                request.getAvailable(),
+                request.getOwner()
         );
         call.enqueue(new Callback<PagedResponse<AssetResponse>>() {
             @Override

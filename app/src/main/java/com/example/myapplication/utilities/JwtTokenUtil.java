@@ -129,9 +129,12 @@ public class JwtTokenUtil {
             String jwtToken = getToken();
             if (jwtToken != null) {
                 JWT token = new JWT(jwtToken);
-                return !token.isExpired(60*60*10);
+                if(token.isExpired(1000*60*60)){
+                    JwtTokenUtil.removeToken();
+                    return false;
+                }
             }
-            return false;
+            return true;
         } catch (Exception e) {
             Log.e("JwtTokenUtil", "Error checking login state", e);
             return false;

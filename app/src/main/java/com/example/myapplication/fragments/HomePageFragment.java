@@ -29,6 +29,7 @@ import com.example.myapplication.viewmodels.AssetViewModel;
 import com.example.myapplication.viewmodels.EventViewModel;
 import com.google.android.material.button.MaterialButton;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class HomePageFragment extends Fragment {

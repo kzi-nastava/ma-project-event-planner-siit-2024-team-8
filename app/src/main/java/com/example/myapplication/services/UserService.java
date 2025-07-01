@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.example.myapplication.callbacks.UserRegisterCallBack;
 import com.example.myapplication.domain.ApiResponse;
+import com.example.myapplication.domain.dto.CreateReportRequest;
+import com.example.myapplication.domain.dto.ProviderInfoResponse;
 import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.domain.dto.UserCreateRequest;
 import com.example.myapplication.utilities.NotificationsUtils;
@@ -13,6 +15,7 @@ import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -67,13 +70,47 @@ public class UserService {
     }
 
 
-    public void updateUser(RequestBody firstName, RequestBody lastName, RequestBody email,
-                           RequestBody address, RequestBody number, MultipartBody.Part image,
-                           Callback<String> callback) {
 
-        // Call to the backend API with multipart data
-        Call<String> call = apiService.updateUser(firstName, lastName, email, address, number, image);
-        call.enqueue(callback);
+    public void loadProviderInfo (UUID id,Callback<ProviderInfoResponse> callback){
+        apiService.getProviderInfo(id).enqueue(new Callback<ProviderInfoResponse>() {
+            @Override
+            public void onResponse(Call<ProviderInfoResponse> call, Response<ProviderInfoResponse> response) {
+                callback.onResponse(call,response);
+            }
+
+            @Override
+            public void onFailure(Call<ProviderInfoResponse> call, Throwable t) {
+                callback.onFailure(call,t);
+            }
+        });
+    }
+
+    public void blockUser(UUID userId,Callback<ApiResponse> callback){
+        apiService.blockUser(userId).enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                callback.onResponse(call,response);
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                callback.onFailure(call,t);
+            }
+        });
+    }
+
+    public void reportUser(CreateReportRequest request,Callback<ApiResponse> callback){
+        ClientUtils.reportAPIService.createReport(request).enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                callback.onResponse(call,response);
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                callback.onFailure(call,t);
+            }
+        });
     }
 
 }

@@ -24,9 +24,10 @@ public interface AssetAPIService {
             @Query("priceHigh") Integer priceHigh,
             @Query("gradeLow") Integer gradeLow,
             @Query("gradeHigh") Integer gradeHigh,
-            @Query("sortParameter") AssetSortParameter sortParameter,
-            @Query("ascending") Boolean ascending,
-            @Query("isAvailable") Boolean isAvailable
+            @Query("sortBy") String sortParameter,
+            @Query("sortOrder") String sortOrder,
+            @Query("isAvailable") Boolean isAvailable,
+            @Query("owner") String owner
     );
 
     @GET("assets/top5")

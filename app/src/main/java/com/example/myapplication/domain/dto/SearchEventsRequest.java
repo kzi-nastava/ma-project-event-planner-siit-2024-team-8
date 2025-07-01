@@ -5,6 +5,7 @@ import com.example.myapplication.domain.enumerations.EventSortParameter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class SearchEventsRequest {
     private String name; //searchByName
@@ -15,29 +16,41 @@ public class SearchEventsRequest {
 
     private LocalDate endDate;
 
-    private EventSortParameter sortParameter;
+    private String sortBy;
 
-    private Boolean ascending;
+    private String sortOrder;
 
-    public Boolean getAscending() {
-        return ascending;
+    private String owner;
+
+    public String getOwner() {
+        return owner;
     }
 
-    public void setAscending(Boolean ascending) {
-        this.ascending = ascending;
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
-    public EventSortParameter getSortParameter() {
-        return sortParameter;
+    public String getSortOrder() {
+        return sortOrder;
     }
 
-    public void setSortParameter(EventSortParameter sortParameter) {
-        this.sortParameter = sortParameter;
+    public void setSortOrder(String sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+
+    public String getSortBy() {
+        return sortBy;
+    }
+
+    public void setSortBy(String  sortBy) {
+        this.sortBy = sortBy;
     }
 
     public SearchEventsRequest(){
         eventTypes = new ArrayList<>();
         name = "";
+        sortBy = null;
+        sortOrder = null;
     }
 
     public LocalDate getEndDate() {

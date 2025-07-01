@@ -35,6 +35,7 @@ import com.example.myapplication.viewmodels.EventViewModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.UUID;
 
 public class AllSolutionsFragment extends Fragment implements FilterBottomSheetFragment.FilterListener, AssetsFilterFragmentBottomSheet.AssetsFilterListener {
 
@@ -42,9 +43,11 @@ public class AllSolutionsFragment extends Fragment implements FilterBottomSheetF
     private AssetViewModel assetViewModel;
     private OfferingType type;
 
+    private String owner = null;
+
     private int currentPage = 0;
 
-    private int currentPageSize = 5;
+    private int currentPageSize = 1;
 
     private int totalPages = 0;
 
@@ -52,7 +55,7 @@ public class AllSolutionsFragment extends Fragment implements FilterBottomSheetF
 
     private final ArrayList<String> pageSizes = new ArrayList<>(Arrays.asList("1","2","5","10","15","20"));
 
-    private boolean sortOpened = false;
+    private boolean spinnerInitialized = false;
 
     public Fragment setType(OfferingType type) {
         this.type = type;
@@ -63,6 +66,10 @@ public class AllSolutionsFragment extends Fragment implements FilterBottomSheetF
 
     public AllSolutionsFragment(OfferingType type) {
         this.type = type;
+    }
+    public AllSolutionsFragment(OfferingType type,String owner) {
+        this.type = type;
+        this.owner = owner;
     }
 
     public static AllSolutionsFragment newInstance(){
@@ -76,13 +83,21 @@ public class AllSolutionsFragment extends Fragment implements FilterBottomSheetF
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         setupRecyclerViews(view);
         setupNextPreviousButton(view);
         setupFilterButton(view);
         setupPagingSpinner(view);
         setupSort(view);
         setupSearch(view);
+        if (this.owner != null){
+            switch (type){
+                case EVENT:
+                    eventViewModel.getCurrentFilters().getValue().setOwner(owner);
+                case ASSET:
+                    assetViewModel.getCurrentFilters().getValue().setOwner(owner);
+            }
+
+        }
 
     }
 
@@ -103,10 +118,10 @@ public class AllSolutionsFragment extends Fragment implements FilterBottomSheetF
             public void afterTextChanged(Editable s) {
                 if (type == OfferingType.EVENT){
                     eventViewModel.getCurrentFilters().getValue().setName(search.getText().toString());
-                    eventViewModel.filterEvents(currentPage,currentPageSize);
+                    eventViewModel.filterEvents(0,10);
                 }else{
                     assetViewModel.getCurrentFilters().getValue().setName(search.getText().toString());
-                    eventViewModel.filterEvents(currentPage,currentPageSize);
+                    eventViewModel.filterEvents(0,10);
                 }
 
             }
@@ -122,6 +137,76 @@ public class AllSolutionsFragment extends Fragment implements FilterBottomSheetF
                 android.R.layout.simple_spinner_dropdown_item,
                 options);
         mySpinner.setAdapter(adapter);
+        mySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(!spinnerInitialized){
+                    spinnerInitialized = true;
+                    return;
+                }
+                if (type == OfferingType.EVENT){
+                    setEventSortParameter(position);
+                }else{
+                    setAssetSortParameter(position);
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    private void setAssetSortParameter(int position){
+        String attr = "";
+        String sortOrder = "";
+        switch (position) {
+            case 0: case 1:
+                attr = "name";
+                break;
+            case 2: case 3:
+                attr = "price";
+                break;
+            case 4: case 5:
+                attr = "grade";
+                break;
+            case 6: case 7:
+                attr = "discount";
+                break;
+            default:
+                attr = "";
+        }
+        sortOrder = position%2 == 0 && position != 0 ? "asc" : "desc";
+        assetViewModel.getCurrentFilters().getValue().setSortBy(attr);
+        assetViewModel.getCurrentFilters().getValue().setSortOrder(sortOrder);
+        assetViewModel.filterAssets(currentPage,currentPageSize);
+    }
+
+    private void setEventSortParameter(int position){
+        String attr = "";
+        String sortOrder = "";
+        switch (position) {
+            case 0: case 1:
+                attr = "name";
+                break;
+            case 2: case 3:
+                attr = "startDate";
+                break;
+            case 4: case 5:
+                attr = "endDate";
+                break;
+            case 6: case 7:
+                attr = "capacity";
+                break;
+            default:
+                attr = "";
+        }
+        sortOrder = position%2 == 0 ? "asc" : "desc";
+        eventViewModel.getCurrentFilters().getValue().setSortBy(attr);
+        eventViewModel.getCurrentFilters().getValue().setSortOrder(sortOrder);
+        eventViewModel.filterEvents(currentPage,currentPageSize);
     }
 
     private void setupPagingSpinner(View view) {

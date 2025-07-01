@@ -5,6 +5,7 @@ import com.example.myapplication.domain.enumerations.AssetSortParameter;
 import com.example.myapplication.domain.enumerations.AssetType;
 
 import java.util.List;
+import java.util.UUID;
 
 public class SearchAssetRequest {
     private AssetType assetType;
@@ -16,16 +17,33 @@ public class SearchAssetRequest {
     private int gradeHigh;
     private Boolean available;
 
-    private AssetSortParameter sortParameter;
+    private String sortBy;
 
-    private Boolean ascending;
+    private String sortOrder;
+    private String owner;
 
-    public Boolean getAscending() {
-        return ascending;
+    public String getOwner() {
+        return owner;
     }
 
-    public void setAscending(Boolean ascending) {
-        this.ascending = ascending;
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public String getSortBy() {
+        return sortBy;
+    }
+
+    public void setSortBy(String sortBy) {
+        this.sortBy = sortBy;
+    }
+
+    public String getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(String sortOrder) {
+        this.sortOrder = sortOrder;
     }
 
     public List<String> getAssetCategories() {
@@ -90,13 +108,5 @@ public class SearchAssetRequest {
 
     public void setPriceLow(Integer priceLow) {
         this.priceLow = priceLow;
-    }
-
-    public AssetSortParameter getSortParameter() {
-        return sortParameter;
-    }
-
-    public void setSortParameter(AssetSortParameter sortParameter) {
-        this.sortParameter = sortParameter;
     }
 }

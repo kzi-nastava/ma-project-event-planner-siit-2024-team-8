@@ -46,8 +46,9 @@ public interface EventAPIService {
             @Query("upperCapacity") int upperCapacity,
             @Query("startDate") String startDate,
             @Query("endDate") String endDate,
-            @Query("sortParameter") EventSortParameter sortParameter,
-            @Query("ascending") Boolean ascending
+            @Query("sortBy") String sortParameter,
+            @Query("sortOrder") String ascending,
+            @Query ("owner") String owner
     );
     @PUT("events/update")
     Call<String> updateEvent(@Body EventUpdateRequest eventUpdateRequest);

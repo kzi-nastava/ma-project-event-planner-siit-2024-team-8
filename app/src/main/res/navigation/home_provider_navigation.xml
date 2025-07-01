@@ -18,10 +18,10 @@
         tools:layout="@layout/fragment_to_do" />
 
     <fragment
-    android:id="@+id/createAssetFragment"
-    android:name="com.example.myapplication.fragments.asset.CreateAssetFragment"
-    android:label="Create Event"
-    tools:layout="@layout/fragment_create_event"/>
+        android:id="@+id/createAssetFragment"
+        android:name="com.example.myapplication.fragments.asset.CreateAssetFragment"
+        android:label="Create Asset"
+        tools:layout="@layout/fragment_create_asset"/>
 
     <fragment
         android:id="@+id/inboxFragment"

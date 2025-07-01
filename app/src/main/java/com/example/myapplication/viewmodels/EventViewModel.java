@@ -139,8 +139,9 @@ public class EventViewModel extends ViewModel {
                 request.getUpperCapacity(),
                 startDate,
                 endDate,
-                request.getSortParameter(),
-                request.getAscending()
+                request.getSortBy(),
+                request.getSortOrder(),
+                request.getOwner()
         );
        call.enqueue(new Callback<PagedResponse<EventCardResponse>>() {
             @Override

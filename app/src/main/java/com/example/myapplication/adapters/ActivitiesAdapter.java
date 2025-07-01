@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.domain.Activity;
-import com.example.myapplication.domain.BudgetItem;
 import com.example.myapplication.utilities.NotificationsUtils;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
@@ -175,7 +174,7 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public void bind(Activity activity) {
             this.activity = activity;
             titleEditText.setText(activity.getName());
-            locationEditText.setText(activity.getLocation());
+            locationEditText.setText(activity.getPlace());
             descriptionEditText.setText(activity.getDescription());
             startTimeEditText.setText(activity.getStartTime());
             endTimeEditText.setText(activity.getEndTime());
@@ -242,7 +241,7 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         public void bind(Activity activity) {
             activityTitle.setText(activity.getName());
-            activityLocation.setText(activity.getLocation());
+            activityLocation.setText(activity.getPlace());
             activityTime.setText(activity.getTimeString());
             activityDescription.setText(activity.getDescription());
         }

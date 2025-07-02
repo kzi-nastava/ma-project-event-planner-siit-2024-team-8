@@ -3,6 +3,7 @@ package com.example.myapplication.fragments.asset;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +24,7 @@ import com.example.myapplication.domain.AssetCategory;
 import com.example.myapplication.domain.Product;
 import com.example.myapplication.domain.Review;
 import com.example.myapplication.domain.Utility;
+import com.example.myapplication.fragments.ChatFragment;
 import com.example.myapplication.services.AssetCategoryService;
 import com.example.myapplication.services.EventService;
 import com.example.myapplication.services.ProductService;
@@ -64,6 +66,7 @@ public class AssetOverviewFragment extends Fragment {
     private Button loadReviewsButton;
     private RecyclerView reviewsRecyclerView;
     private Button submitCommentButton;
+    private Button chatButton;
 
     private UtilityService utilityService;
     private ProductService productService;
@@ -119,12 +122,14 @@ public class AssetOverviewFragment extends Fragment {
         assetDurationTextView = view.findViewById(R.id.assetDurationTextView);
         assetBookingDeadlineTextView = view.findViewById(R.id.assetBookingDeadlineTextView);
         assetCancellationDeadlineTextView = view.findViewById(R.id.assetCancellationDeadlineTextView);
+        chatButton = view.findViewById(R.id.chatButton);
 
         loadReviewsButton = view.findViewById(R.id.loadReviewsButton);
         reviewsRecyclerView = view.findViewById(R.id.reviewsRecyclerView);
         reviewsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         submitCommentButton = view.findViewById(R.id.submitCommentButton);
         submitCommentButton.setOnClickListener(v -> submitComment());
+        chatButton.setOnClickListener(v -> openChatFragment());
 
         String authHeader = "Bearer " + JwtTokenUtil.getToken();
         Log.e("debug", assetId + " i ovo je type " + assetType);
@@ -136,6 +141,15 @@ public class AssetOverviewFragment extends Fragment {
         loadReviewsButton.setOnClickListener(v -> fetchReviews());
 
         return view;
+    }
+
+    private void openChatFragment() {
+        ChatFragment chatFragment = ChatFragment.newInstance();
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main, chatFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     private void fetchReviews() {

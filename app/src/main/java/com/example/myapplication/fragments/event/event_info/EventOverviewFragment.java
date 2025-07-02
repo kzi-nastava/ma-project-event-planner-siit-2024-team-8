@@ -26,6 +26,7 @@ import com.example.myapplication.domain.Event;
 import com.example.myapplication.domain.Review;
 import com.example.myapplication.domain.dto.EventInfoResponse;
 import com.example.myapplication.domain.dto.EventSignupRequest;
+import com.example.myapplication.fragments.ChatFragment;
 import com.example.myapplication.fragments.ProfileInfoFragment;
 import com.example.myapplication.domain.dto.EventSignupRequest;
 import com.example.myapplication.fragments.event.edit_event.EventEditFragment;
@@ -124,6 +125,11 @@ public class EventOverviewFragment extends Fragment {
 
     private void organizerClicked() {
         replaceFragment(new ProfileInfoFragment(UUID.fromString(eventInfo.getOrganizerID())));
+    }
+
+    private void openChatFragment() {
+        ChatFragment chatFragment = ChatFragment.newInstance();
+        replaceFragment(chatFragment);
     }
 
     private void replaceFragment(Fragment fragment) {

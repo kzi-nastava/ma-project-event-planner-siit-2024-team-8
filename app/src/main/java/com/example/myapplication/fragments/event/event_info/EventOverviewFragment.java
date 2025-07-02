@@ -27,6 +27,7 @@ import com.example.myapplication.domain.Review;
 import com.example.myapplication.domain.dto.EventInfoResponse;
 import com.example.myapplication.domain.dto.EventSignupRequest;
 import com.example.myapplication.fragments.ProfileInfoFragment;
+import com.example.myapplication.domain.dto.EventSignupRequest;
 import com.example.myapplication.fragments.event.edit_event.EventEditFragment;
 import com.example.myapplication.services.EventService;
 import com.example.myapplication.services.ReviewService;
@@ -38,6 +39,14 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
+import java.util.Objects;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;

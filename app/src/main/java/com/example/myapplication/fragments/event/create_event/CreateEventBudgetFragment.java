@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,12 +27,12 @@ import com.example.myapplication.domain.AssetCategory;
 import com.example.myapplication.domain.BudgetItem;
 import com.example.myapplication.domain.EventType;
 import com.example.myapplication.domain.dto.BudgetItemCreateRequest;
+import com.example.myapplication.fragments.HomePageFragment;
 import com.example.myapplication.services.EventService;
 import com.example.myapplication.utilities.JwtTokenUtil;
+import com.example.myapplication.utilities.NotificationsUtils;
 import com.example.myapplication.viewmodels.AssetCategoryViewModel;
 import com.example.myapplication.viewmodels.EventViewModel;
-import com.google.android.gms.common.internal.Objects;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -143,17 +144,19 @@ public class CreateEventBudgetFragment extends Fragment implements BudgetItemAda
                                                            .map(BudgetItemCreateRequest::new)
                                                            .collect(Collectors.toList());
         eventViewModel.getCreateEventRequest().getValue().setBudgetItems(budgetItems);
-        //eventViewModel.getCreateEventRequest().getValue().setOrganizerID(JwtTokenUtil.);
-
+        eventViewModel.getCreateEventRequest().getValue().setOrganizerID(JwtTokenUtil.getUserId());
         EventService eventService = new EventService();
         eventService.createEvent(eventViewModel.getCreateEventRequest().getValue(),
                 new Callback<ApiResponse>() {
                     @Override
                     public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                         if (response.isSuccessful() || response.body() != null){
-                            Toast.makeText(getContext(), "Succesfully created an Event!", Toast.LENGTH_SHORT).show();
+                            NotificationsUtils.getInstance().showSuccessToast(getContext(), "Succesfully created an Event!");
+                            getParentFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                            getParentFragmentManager().beginTransaction().replace(R.id.main, new HomePageFragment()).commit();
+
                         }else{
-                            Toast.makeText(getContext(), response.message(), Toast.LENGTH_SHORT).show();
+                            NotificationsUtils.getInstance().showErrToast(getContext(), response.message());
                         }
                     }
 
@@ -165,14 +168,13 @@ public class CreateEventBudgetFragment extends Fragment implements BudgetItemAda
     }
 
     private boolean isDataValid() {
-        StringBuilder message = new StringBuilder();
         for (BudgetItem item : adapter.getBudgetItems()){
             if (item.getPlannedAmount() == 0.0 || item.getPlannedAmount() == null){
-                Toast.makeText(requireContext(),"Planned ammount of every item is required and must be positive number!",Toast.LENGTH_SHORT).show();
+                NotificationsUtils.getInstance().showErrToast(requireContext(),"Planned ammount of every item is required and must be positive number!");
                 return false;
             }
             if (item.getCategory() == null){
-                Toast.makeText(requireContext(),"Asset Category can't be null!",Toast.LENGTH_SHORT).show();
+                NotificationsUtils.getInstance().showErrToast(requireContext(),"Asset Category can't be null!");
                 return false;
             }
         }

@@ -2,6 +2,7 @@ package com.example.myapplication.fragments.event.create_event;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +19,7 @@ import com.example.myapplication.adapters.ActivitiesAdapter;
 import com.example.myapplication.databinding.FragmentCreateEventAgendaBinding;
 import com.example.myapplication.databinding.FragmentCreateEventInvitationsBinding;
 import com.example.myapplication.domain.Activity;
+import com.example.myapplication.utilities.NotificationsUtils;
 import com.example.myapplication.viewmodels.EventViewModel;
 
 import java.time.LocalTime;
@@ -57,7 +59,7 @@ public class CreateEventAgendaFragment extends Fragment implements ActivitiesAda
 
     public void onClickedNext(){
         if (activityList.isEmpty() || activityList.size() < 2){
-            Toast.makeText(requireContext(),"You must have at least 1 activity!",Toast.LENGTH_SHORT).show();
+            NotificationsUtils.getInstance().showErrToast(requireContext(),"You must have at least 1 activity!");
             return;
         }
         activityList.remove(activityList.size()-1);

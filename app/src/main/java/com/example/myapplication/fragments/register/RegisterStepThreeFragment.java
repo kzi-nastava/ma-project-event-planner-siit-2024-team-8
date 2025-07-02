@@ -15,9 +15,11 @@ import android.widget.Toast;
 
 import com.example.myapplication.R;
 import com.example.myapplication.activities.MainActivity;
+import com.example.myapplication.callbacks.UserRegisterCallBack;
 import com.example.myapplication.databinding.FragmentRegisterStepThreeBinding;
-import com.example.myapplication.domain.Role;
+import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.domain.dto.UserCreateRequest;
+import com.example.myapplication.utilities.NotificationsUtils;
 import com.example.myapplication.viewmodels.UserViewModel;
 
 /**
@@ -111,20 +113,35 @@ public class RegisterStepThreeFragment extends Fragment {
             parentFragment.changeTitle(5);
             parentFragment.animateProgressBar(85);
         } else {
-            RegisterFinalStep finalStep = new RegisterFinalStep();
-            assert parentFragment != null;
-            parentFragment.getChildFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.enter_from_right,
-                            R.anim.exit_to_left,
-                            R.anim.enter_from_left,
-                            R.anim.exit_to_right)
-                    .replace(R.id.registerLayout, finalStep)
-                    .addToBackStack(null)
-                    .commit();
-            parentFragment.changeTitle(4);
-            parentFragment.animateProgressBar(100);
+            userViewModel.saveUserData(((MainActivity) getActivity()).imageFile, new UserRegisterCallBack() {
+                @Override
+                public void onSuccess() {
+                    NotificationsUtils.getInstance().showSuccessToast(requireContext(), "Successfully registered!");
+                    RegisterFinalStep finalStep = new RegisterFinalStep();
+                    assert parentFragment != null;
+                    parentFragment.getChildFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.enter_from_right,
+                                    R.anim.exit_to_left,
+                                    R.anim.enter_from_left,
+                                    R.anim.exit_to_right)
+                            .replace(R.id.registerLayout, finalStep)
+                            .addToBackStack(null)
+                            .commit();
+                    parentFragment.changeTitle(4);
+                    parentFragment.animateProgressBar(100);
+                }
+
+                @Override
+                public void onServerError(String errorMessage) {
+                    NotificationsUtils.getInstance().showErrToast(requireContext(), errorMessage);
+                }
+
+                @Override
+                public void onNetworkError(Throwable t) {
+                    NotificationsUtils.getInstance().showErrToast(requireContext(),"Network error!");
+                }
+            });
         }
-        userViewModel.saveUserData(((MainActivity) getActivity()).imageFile);
     }
 
     private boolean retrieveData(UserCreateRequest userCreateRequest) {

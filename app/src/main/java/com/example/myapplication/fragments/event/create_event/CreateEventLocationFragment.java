@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,7 @@ import com.example.myapplication.R;
 import com.example.myapplication.databinding.FragmentCreateEventStepTwoBinding;
 import com.example.myapplication.domain.Location;
 import com.example.myapplication.domain.dto.CreateEventRequest;
+import com.example.myapplication.utilities.NotificationsUtils;
 import com.example.myapplication.viewmodels.EventViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -30,6 +33,9 @@ import org.osmdroid.views.overlay.Marker;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -159,59 +165,57 @@ public class CreateEventLocationFragment extends Fragment {
             street.setError("Street is required!");
             count++;
         }if (!validLocation){
-            Toast.makeText(requireContext(),"No location is selected!",Toast.LENGTH_SHORT).show();
+            NotificationsUtils.getInstance().showErrToast(requireContext(),"No location is selected!");
+            count++;
         }
 
         return count == 0;
 
     }
 
-    private Location getLocationFromAddress(String strAddress) {
-        Location location = new Location();
+    private void getLocationFromAddress(String strAddress, Consumer<Location> callback) {
+        Location location = null;
         Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
-        List<Address> addresses = null;
 
         try {
-            // Geocode the address to get latitude and longitude
-            addresses = geocoder.getFromLocationName(strAddress, 1);  // 1 means we are only interested in one result.
-
+            List<Address> addresses = geocoder.getFromLocationName(strAddress, 1);
             if (addresses != null && !addresses.isEmpty()) {
-                validLocation = true;
                 Address address = addresses.get(0);
+                location = new Location();
                 location.setLatitude(address.getLatitude());
                 location.setLongitude(address.getLongitude());
-            }else{
-                Toast toast = Toast.makeText(requireActivity(), "Cannot find location for given address!\n Try again!", Toast.LENGTH_SHORT);
+                validLocation = true;
+            } else {
                 validLocation = false;
             }
-
         } catch (IOException e) {
             validLocation = false;
-            Toast toast = Toast.makeText(requireActivity(), "Cannot find location for given address!\n Try again!", Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-
         }
 
-        return location;
+        if (location != null) {
+            callback.accept(location);
+        } else {
+            NotificationsUtils.getInstance().showErrToast(requireActivity(), "Cannot find location for given address!\nTry again!");
+        }
     }
 
+
     public void onSubmitClicked(){
-        EditText city = requireActivity().findViewById(R.id.editTextEventStreet);
-        EditText street = requireActivity().findViewById(R.id.editTextEventCity);
+        String city = binding.editTextEventCity.getText().toString().trim();
+        String street = binding.editTextEventStreet.getText().toString().trim();
 
-        String address = String.format("%s %s", street.getText(),city.getText());
+        String address = String.format("%s %s", city, street);
 
-        Location location = getLocationFromAddress(address);
 
-        GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-        mapView.getController().setCenter(startPoint);
-
-        removeMarker();
-        marker = new Marker(mapView);
-        marker.setPosition(startPoint);
-        marker.setTitle("Hello, OpenStreetMap!");
-        mapView.getOverlays().add(marker);
+        getLocationFromAddress(address, location -> {
+            GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+            mapView.getController().setCenter(startPoint);
+            removeMarker();
+            marker = new Marker(mapView);
+            marker.setPosition(startPoint);
+            marker.setTitle("Hello, OpenStreetMap!");
+            mapView.getOverlays().add(marker);
+        });
 
     }
 

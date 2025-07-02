@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.domain.Activity;
-import com.example.myapplication.domain.BudgetItem;
+import com.example.myapplication.utilities.NotificationsUtils;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -128,8 +128,7 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             endTimePicker = itemView.findViewById(R.id.endTimePicker);
             Button saveButton = itemView.findViewById(R.id.saveActivityButton);
             saveButton.setOnClickListener(v -> {
-
-                saveActivity();
+                saveActivity(this);
             });
 
             Button deleteButton = itemView.findViewById(R.id.deleteActivityButton);
@@ -175,13 +174,17 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public void bind(Activity activity) {
             this.activity = activity;
             titleEditText.setText(activity.getName());
-            locationEditText.setText(activity.getLocation());
+            locationEditText.setText(activity.getPlace());
             descriptionEditText.setText(activity.getDescription());
             startTimeEditText.setText(activity.getStartTime());
             endTimeEditText.setText(activity.getEndTime());
         }
 
-        private void saveActivity() {
+        private void saveActivity(InputActivityViewHolder holder) {
+            if (!isValid()){
+                NotificationsUtils.getInstance().showErrToast(holder.itemView.getContext(),"All fields needs to be filled!");
+                return;
+            }
             // Get values from the input fields
             String title = titleEditText.getText().toString();
             String location = locationEditText.getText().toString();
@@ -201,7 +204,20 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             notifyItemChanged(position);
         }
+        private boolean isValid(){
+            String title = titleEditText.getText().toString();
+            String location = locationEditText.getText().toString();
+            String description = descriptionEditText.getText().toString();
+            String time = startTimeEditText.getText().toString();
+            String endTime = endTimeEditText.getText().toString();
+            if (title.isEmpty() || location.isEmpty() || description.isEmpty() ||
+                time.isEmpty() || endTime.isEmpty()){
+                return false;
+            }
+            return true;
+        }
     }
+
 
     // ViewHolder for normal activity card
     public class ActivityViewHolder extends RecyclerView.ViewHolder {
@@ -225,7 +241,7 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         public void bind(Activity activity) {
             activityTitle.setText(activity.getName());
-            activityLocation.setText(activity.getLocation());
+            activityLocation.setText(activity.getPlace());
             activityTime.setText(activity.getTimeString());
             activityDescription.setText(activity.getDescription());
         }

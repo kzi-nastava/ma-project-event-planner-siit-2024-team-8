@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_navigation_user"
+    app:startDestination="@id/homeFragment">
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.myapplication.fragments.HomePageFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home_page">
+    </fragment>
+
+    <fragment
+        android:id="@+id/calendarFragment"
+        android:name="com.example.myapplication.fragments.ToDoFragment"
+        android:label="Calendar"
+        tools:layout="@layout/fragment_to_do" />
+
+    <fragment
+        android:id="@+id/createAssetFragment"
+        android:name="com.example.myapplication.fragments.asset.CreateAssetFragment"
+        android:label="Create Asset"
+        tools:layout="@layout/fragment_create_asset"/>
+
+    <fragment
+        android:id="@+id/inboxFragment"
+        android:name="com.example.myapplication.fragments.ToDoFragment"
+        android:label="Inbox"
+        tools:layout="@layout/fragment_to_do" />
+    <fragment
+        android:id="@+id/notificationsFragment"
+        android:name="com.example.myapplication.fragments.ToDoFragment"
+        android:label="Notifications"
+        tools:layout="@layout/fragment_to_do" />
+</navigation>

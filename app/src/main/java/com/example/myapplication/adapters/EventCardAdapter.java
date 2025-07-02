@@ -15,6 +15,7 @@ import com.example.myapplication.R;
 import com.example.myapplication.activities.MainActivity;
 import com.example.myapplication.domain.dto.EventCardResponse;
 import com.example.myapplication.fragments.event.event_info.EventInfoFragment;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +39,18 @@ public class EventCardAdapter extends RecyclerView.Adapter<EventCardAdapter.View
 
     private OnItemClickListener itemClickListener;
 
+    private boolean isFragmentTransactionInProgress = false;
+
     public void setItemClickListener(OnItemClickListener listener) {
         this.itemClickListener = listener;
     }
 
     public void SetOnClick(MainActivity activity, FragmentManager manager){
         this.setItemClickListener(event -> {
+            if (isFragmentTransactionInProgress) return;
+
+            isFragmentTransactionInProgress = true;
+
             EventInfoFragment eventInfoFragment = EventInfoFragment.newInstance(event.getId().toString()); // Pass eventId to the fragment
             if (activity != null) {
                 manager.beginTransaction()
@@ -59,10 +66,13 @@ public class EventCardAdapter extends RecyclerView.Adapter<EventCardAdapter.View
 
         private TextView txtName;
         private TextView txtDate;
+
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtName = itemView.findViewById(R.id.nameTextView);
             txtDate = itemView.findViewById(R.id.secondTextView);
+
         }
     }
 

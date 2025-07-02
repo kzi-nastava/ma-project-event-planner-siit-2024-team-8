@@ -1,21 +1,19 @@
 package com.example.myapplication.domain;
 
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class Activity {
     private String name;
     private String startTime;
-
     private String endTime;
-    private String location;
+    private String place;
 
     private String description;
 
     private boolean input;
 
     public Activity(String name,String location,String description, String startTime,String endTime,boolean isInput) {
-        this.location = location;
+        this.place = location;
         this.name = name;
         this.description = description;
         this.startTime = startTime;
@@ -25,7 +23,7 @@ public class Activity {
 
     public Activity( String name,String description, String location, String startTime,String endTime) {
         this.description = description;
-        this.location = location;
+        this.place = location;
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -41,12 +39,12 @@ public class Activity {
         this.description = description;
     }
 
-    public String getLocation() {
-        return location;
+    public String getPlace() {
+        return place;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setPlace(String place) {
+        this.place = place;
     }
 
     public String getName() {

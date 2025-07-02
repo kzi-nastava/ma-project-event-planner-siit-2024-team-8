@@ -15,14 +15,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
 import com.example.myapplication.domain.Asset;
+import com.example.myapplication.domain.dto.AssetResponse;
 import com.example.myapplication.fragments.asset.AssetInfoFragment;
+import com.example.myapplication.fragments.asset.AssetOverviewFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.ViewHolder> {
-    private List<Asset> assets = new ArrayList<>();
+    private List<AssetResponse> assets = new ArrayList<>();
     private Context context;
     private OnItemClickListener itemClickListener;
 
@@ -30,7 +32,7 @@ public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.View
         this.context = context;
     }
 
-    public void setAssets(List<Asset> assets) {
+    public void setAssets(List<AssetResponse> assets) {
         this.assets = assets;
         notifyDataSetChanged();
     }
@@ -41,10 +43,10 @@ public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.View
 
     public void SetOnClick(Activity activity, FragmentManager manager){
         this.setItemClickListener(asset -> {
-            AssetInfoFragment assetInfoFragment = new AssetInfoFragment();
+            AssetOverviewFragment assetInfoFragment = new AssetOverviewFragment();
             Bundle bundle = new Bundle();
-            bundle.putString("asset_id", asset.getId());
-            bundle.putString("asset_type", asset.getType());
+            bundle.putString("asset_id", asset.getId().toString());
+            bundle.putString("asset_type", asset.getCategory().getType());
             assetInfoFragment.setArguments(bundle);
             if (activity != null) {
                 manager.beginTransaction()
@@ -64,10 +66,10 @@ public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Asset asset = assets.get(position);
+        AssetResponse asset = assets.get(position);
 
         holder.txtName.setText(asset.getName());
-        holder.txtAssetType.setText(asset.getType() != null ? asset.getType() : "Unknown");
+        holder.txtAssetType.setText(asset.getCategory().getType() != null ? asset.getCategory().getType() : "Unknown");
 
         String imageUrl = !asset.getImages().isEmpty() ? asset.getImages().get(0) : null;
         if (imageUrl != null) {
@@ -92,7 +94,7 @@ public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.View
     }
 
     public interface OnItemClickListener {
-        void onItemClick(Asset asset);
+        void onItemClick(AssetResponse asset);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

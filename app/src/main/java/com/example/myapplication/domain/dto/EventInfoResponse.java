@@ -8,6 +8,15 @@ public class EventInfoResponse {
     public Boolean isPrivate;
     public EventLocationDTO location;
     public String organizerName;
+    public String organizerID;
     public String startDate;
     public String endDate;
+
+    public String getOrganizerID() {
+        return organizerID;
+    }
+
+    public void setOrganizerID(String organizerID) {
+        this.organizerID = organizerID;
+    }
 }

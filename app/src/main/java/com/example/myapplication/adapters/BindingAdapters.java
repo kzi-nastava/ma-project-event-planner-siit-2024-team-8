@@ -5,7 +5,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -17,7 +16,7 @@ import androidx.databinding.InverseBindingListener;
 
 import com.example.myapplication.domain.AssetCategory;
 import com.example.myapplication.domain.EventType;
-import com.example.myapplication.domain.Role;
+import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.services.AssetCategoryService;
 import com.example.myapplication.services.EventTypeService;
 import com.example.myapplication.utilities.JwtTokenUtil;
@@ -223,22 +222,6 @@ public class BindingAdapters {
             }
         });
 
-        // Listen for changes in selection and notify the InverseBindingListener
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (listener != null) {
-                    listener.onChange(); // Notify the inverse binding system
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                if (listener != null) {
-                    listener.onChange(); // Notify even when nothing is selected
-                }
-            }
-        });
     }
     private static List<String> getAssetCategoryNames(List<AssetCategory> assetCategories) {
         List<String> names = new ArrayList<>();

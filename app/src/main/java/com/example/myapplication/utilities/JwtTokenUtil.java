@@ -4,15 +4,19 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import androidx.lifecycle.MutableLiveData;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKey;
 
 import com.auth0.android.jwt.JWT;
-import com.example.myapplication.domain.Role;
+import com.example.myapplication.domain.enumerations.Role;
+import com.example.myapplication.services.ClientUtils;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class JwtTokenUtil {
 
@@ -61,6 +65,25 @@ public class JwtTokenUtil {
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         );
 
+        isExpired();
+
+    }
+
+    private static void isExpired() {
+        if (getToken() == null) {return;}
+        ClientUtils.loginService.isExpired(getToken()).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (Boolean.TRUE.equals(response.body())){
+                    removeToken();
+                    removeID();
+                }
+            }
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+
+            }
+        });
     }
 
     public static String getToken(){
@@ -79,17 +102,25 @@ public class JwtTokenUtil {
         }
     }
 
+    public static void logOut(){
+        removeToken();
+        removeID();
+    }
+
     public static void removeToken(){
         sharedPreferences.edit().remove("JWT_TOKEN").apply();
     }
+    public static void removeID(){
+        sharedPreferences.edit().remove("ID").apply();
+    }
     public static Role getRole(){
         String jwtToken = sharedPreferences.getString("JWT_TOKEN",null);
-        assert jwtToken != null;
+        if (jwtToken == null) return null;
         JWT token = new JWT(jwtToken);
         return Role.valueOf(token.getClaim("role").asString().toUpperCase());
     }
 
-    public static boolean isUserLoggedIn(Context context) {
+    public static boolean isUserLoggedIn() {
         try {
             if (getToken() == null) {
                 return false;
@@ -98,9 +129,12 @@ public class JwtTokenUtil {
             String jwtToken = getToken();
             if (jwtToken != null) {
                 JWT token = new JWT(jwtToken);
-                return !token.isExpired(60*60*10);
+                if(token.isExpired(1000*60*60)){
+                    JwtTokenUtil.removeToken();
+                    return false;
+                }
             }
-            return false;
+            return true;
         } catch (Exception e) {
             Log.e("JwtTokenUtil", "Error checking login state", e);
             return false;

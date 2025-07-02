@@ -1,25 +1,28 @@
 package com.example.myapplication.services;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.example.myapplication.callbacks.UserRegisterCallBack;
 import com.example.myapplication.domain.ApiResponse;
-import com.example.myapplication.domain.Role;
-import com.example.myapplication.domain.dto.UpdateUserRequest;
+import com.example.myapplication.domain.dto.CreateReportRequest;
+import com.example.myapplication.domain.dto.ProviderInfoResponse;
+import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.domain.dto.UserCreateRequest;
+import com.example.myapplication.utilities.NotificationsUtils;
 import com.example.myapplication.utilities.RetrofitClient;
 import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
-import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Body;
 
 public class UserService {
 
@@ -33,52 +36,81 @@ public class UserService {
         return this.apiService;
     }
 
-    public void createUser(UserCreateRequest user,File file) {
+    public void createUser(UserCreateRequest user, File file, UserRegisterCallBack callback) {
         Gson gson = new Gson();
-        String json = gson.toJson(user); // Convert object to JSON string
+        String json = gson.toJson(user);
         RequestBody userRequestBody = RequestBody.create(MediaType.parse("application/json"), json);
-
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
         MultipartBody.Part imagePart = MultipartBody.Part.createFormData("image", file.getName(), requestBody);
 
-        
         if (user.getUserType() == Role.USER || user.getUserType() == Role.ORGANIZER) {
-            ClientUtils.userService.registerUser(userRequestBody,imagePart).enqueue(new Callback<ApiResponse>() {
+            ClientUtils.userService.registerUser(userRequestBody, imagePart).enqueue(new Callback<ApiResponse>() {
                 @Override
                 public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                     if (response.isSuccessful()) {
-                        Log.d("RegisterUser", "User registered successfully: ");
+                        callback.onSuccess();
                     } else {
-                        // Handle server error
                         try {
-                            // Log the response code and error body
-                            String errorMessage = response.errorBody().string(); // Get the error body as a string
-                            Log.e("RegisterUser", "Server error: " + response.code() + " - " + errorMessage);
+                            String errorMessage = response.errorBody() != null ? response.errorBody().string() : "Unknown server error";
+                            callback.onServerError(errorMessage);
                         } catch (IOException e) {
-                            Log.e("RegisterUser", "Error while reading the error body", e);
+                            callback.onServerError("Server error occurred.");
                         }
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ApiResponse> call, Throwable t) {
-                    // Handle network failure
                     Log.e("RegisterUser", "Network error: ", t);
+                    callback.onNetworkError(t);
                 }
             });
-
-        } else {
         }
     }
 
-    public void updateUser(RequestBody firstName, RequestBody lastName, RequestBody email,
-                           RequestBody address, RequestBody number, MultipartBody.Part image,
-                           Callback<String> callback) {
 
-        // Call to the backend API with multipart data
-        Call<String> call = apiService.updateUser(firstName, lastName, email, address, number, image);
-        call.enqueue(callback);
+
+    public void loadProviderInfo (UUID id,Callback<ProviderInfoResponse> callback){
+        apiService.getProviderInfo(id).enqueue(new Callback<ProviderInfoResponse>() {
+            @Override
+            public void onResponse(Call<ProviderInfoResponse> call, Response<ProviderInfoResponse> response) {
+                callback.onResponse(call,response);
+            }
+
+            @Override
+            public void onFailure(Call<ProviderInfoResponse> call, Throwable t) {
+                callback.onFailure(call,t);
+            }
+        });
+    }
+
+    public void blockUser(UUID userId,Callback<ApiResponse> callback){
+        apiService.blockUser(userId).enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                callback.onResponse(call,response);
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                callback.onFailure(call,t);
+            }
+        });
+    }
+
+    public void reportUser(CreateReportRequest request,Callback<ApiResponse> callback){
+        ClientUtils.reportAPIService.createReport(request).enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                callback.onResponse(call,response);
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                callback.onFailure(call,t);
+            }
+        });
     }
 
 }

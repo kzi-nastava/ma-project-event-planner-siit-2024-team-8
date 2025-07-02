@@ -1,10 +1,13 @@
 package com.example.myapplication.services;
 import com.example.myapplication.domain.ApiResponse;
+import com.example.myapplication.domain.PagedResponse;
 import com.example.myapplication.domain.dto.CreateEventRequest;
 import com.example.myapplication.domain.dto.EventCardResponse;
 import com.example.myapplication.domain.dto.EventInfoResponse;
 import com.example.myapplication.domain.dto.EventSignupRequest;
 import com.example.myapplication.domain.dto.EventUpdateRequest;
+import com.example.myapplication.domain.dto.SearchEventsRequest;
+import com.example.myapplication.domain.enumerations.EventSortParameter;
 
 import java.util.List;
 
@@ -28,6 +31,25 @@ public interface EventAPIService {
 
     @GET("events/top5")
     Call<List<EventCardResponse>> getTop5Events();
+
+    @GET("events/all")
+    Call<PagedResponse<EventCardResponse>> getEvents(@Query("page") int page,
+                                                     @Query("size") int size);
+
+    @GET("events/filter")
+    Call<PagedResponse<EventCardResponse>> filterEvents(
+            @Query("page") int page,
+            @Query("size") int size,
+            @Query("name") String name,
+            @Query("eventTypes") List<String> eventTypes,
+            @Query("lowerCapacity") int lowerCapacity,
+            @Query("upperCapacity") int upperCapacity,
+            @Query("startDate") String startDate,
+            @Query("endDate") String endDate,
+            @Query("sortBy") String sortParameter,
+            @Query("sortOrder") String ascending,
+            @Query ("owner") String owner
+    );
     @PUT("events/update")
     Call<String> updateEvent(@Body EventUpdateRequest eventUpdateRequest);
 

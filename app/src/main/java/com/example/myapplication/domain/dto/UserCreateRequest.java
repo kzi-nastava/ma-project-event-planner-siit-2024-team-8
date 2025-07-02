@@ -1,13 +1,9 @@
 package com.example.myapplication.domain.dto;
 
-import com.example.myapplication.domain.Role;
+import com.example.myapplication.domain.enumerations.Role;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.File;
 import java.util.ArrayList;
-
-import okhttp3.MultipartBody;
-import retrofit2.http.Multipart;
 
 public class UserCreateRequest {
     @SerializedName("firstName")

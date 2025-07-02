@@ -2,6 +2,7 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/eventCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="15dp"
@@ -9,12 +10,14 @@
     android:backgroundTint="@color/bottom_card"
     android:onClick="onCardClicked"
     android:padding="30dp"
-    app:cardBackgroundColor="@android:color/transparent">
+    app:cardBackgroundColor="@android:color/transparent"
+    app:strokeWidth="2dp">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:elevation="10dp">
 
         <LinearLayout
             android:id="@+id/linearLayout6"
@@ -68,9 +71,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center|left"
-                android:layout_weight="1"
+                android:layout_weight="0"
                 android:gravity="center"
-                android:padding="20dp"
+                android:padding="16dp"
                 android:shadowColor="@color/black"
                 android:shadowRadius="@dimen/material_emphasis_disabled"
                 android:text="@string/event_name"

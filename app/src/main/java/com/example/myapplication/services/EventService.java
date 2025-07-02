@@ -3,6 +3,7 @@ package com.example.myapplication.services;
 import android.util.Log;
 
 import com.example.myapplication.domain.ApiResponse;
+import com.example.myapplication.domain.PagedResponse;
 import com.example.myapplication.domain.dto.CreateEventRequest;
 import com.example.myapplication.domain.dto.EventCardResponse;
 import com.example.myapplication.domain.dto.EventInfoResponse;
@@ -112,6 +113,7 @@ public class EventService {
         });
     }
 
+
     public void submitReview(String eventId, RequestBody reviewData, Callback<String> callback) {
         Call<String> call = apiService.submitReview(eventId, reviewData);
         call.enqueue(callback);
@@ -155,6 +157,21 @@ public class EventService {
             public void onFailure(Call<Boolean> call, Throwable t) {
                 Log.e("EventService", "API call failed", t);
                 callback.onFailure(call, t);
+            }
+        });
+    }
+
+    public void getEvents(int pageSize,int pageNumber, Callback<PagedResponse<EventCardResponse>> events){
+        Call<PagedResponse<EventCardResponse>> call = apiService.getEvents(pageNumber,pageSize);
+        call.enqueue(new Callback<PagedResponse<EventCardResponse>>() {
+            @Override
+            public void onResponse(Call<PagedResponse<EventCardResponse>> call, Response<PagedResponse<EventCardResponse>> response) {
+                events.onResponse(call,response);
+            }
+
+            @Override
+            public void onFailure(Call<PagedResponse<EventCardResponse>> call, Throwable t) {
+
             }
         });
     }

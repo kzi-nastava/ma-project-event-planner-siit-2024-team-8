@@ -26,11 +26,22 @@ import com.example.myapplication.domain.Event;
 import com.example.myapplication.domain.Review;
 import com.example.myapplication.domain.dto.EventInfoResponse;
 import com.example.myapplication.domain.dto.EventSignupRequest;
+import com.example.myapplication.fragments.ProfileInfoFragment;
+import com.example.myapplication.domain.dto.EventSignupRequest;
 import com.example.myapplication.fragments.event.edit_event.EventEditFragment;
 import com.example.myapplication.services.EventService;
 import com.example.myapplication.services.ReviewService;
 import com.example.myapplication.utilities.JwtTokenUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -104,7 +115,15 @@ public class EventOverviewFragment extends Fragment {
             }
         });
 
+
+        Button eOrg = view.findViewById(R.id.eOrg);
+        eOrg.setOnClickListener(v -> organizerClicked());
+
         return view;
+    }
+
+    private void organizerClicked() {
+        replaceFragment(new ProfileInfoFragment(UUID.fromString(eventInfo.getOrganizerID())));
     }
 
     private void replaceFragment(Fragment fragment) {

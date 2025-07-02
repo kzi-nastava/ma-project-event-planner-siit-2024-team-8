@@ -25,7 +25,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.R;
 import com.example.myapplication.domain.AssetCategory;
-import com.example.myapplication.domain.OfferingType;
+import com.example.myapplication.domain.enumerations.OfferingType;
 import com.example.myapplication.domain.Product;
 import com.example.myapplication.domain.Utility;
 import com.example.myapplication.fragments.AllSolutionsFragment;
@@ -35,6 +35,7 @@ import com.example.myapplication.services.UtilityService;
 import com.example.myapplication.utilities.FileUtils;
 import com.example.myapplication.utilities.JwtTokenUtil;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.materialswitch.MaterialSwitch;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -42,7 +43,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -183,8 +183,8 @@ public class CreateAssetFragment extends Fragment {
         String description = getFieldText(R.id.assetDescriptionEditText);
         double price = Double.parseDouble(getFieldText(R.id.assetPriceEditText));
         double discount = Double.parseDouble(getFieldText(R.id.assetDiscountEditText));
-        boolean visible = ((Switch) requireView().findViewById(R.id.visibilitySwitch)).isChecked();
-        boolean available = ((Switch) requireView().findViewById(R.id.availabilitySwitch)).isChecked();
+        boolean visible = ((MaterialSwitch) requireView().findViewById(R.id.visibilitySwitch)).isChecked();
+        boolean available = ((MaterialSwitch) requireView().findViewById(R.id.availabilitySwitch)).isChecked();
         String suggestedCategoryName = "", suggestedCategoryDesc = "";
 
         if ("00000000-0000-0000-0000-000000000000".equals(selectedCategoryId)) {

@@ -167,8 +167,12 @@ public class CreateEventBasicInfoFragment extends Fragment {
         TextInputLayout dateRange= binding.textInputDateRange;
 
         assert request != null;
-        request.setStartDate(formatDate(startDate));
-        request.setEndDate(formatDate(endDate));
+        if (startDate == null || endDate == null){
+            name.setError("Event start date and end date are required!");
+        }else{
+            request.setStartDate(formatDate(startDate));
+            request.setEndDate(formatDate(endDate));
+        }
         if (request.getName() == null|| request.getName().isEmpty()){
             name.setError("Event Name Is Required!");
             count++;

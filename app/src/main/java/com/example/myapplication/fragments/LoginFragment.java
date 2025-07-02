@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,12 +13,14 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.myapplication.R;
+import com.example.myapplication.activities.MainActivity;
 import com.example.myapplication.domain.AuthResponse;
-import com.example.myapplication.domain.Role;
+import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.domain.dto.LoginRequest;
 import com.example.myapplication.fragments.register.RegisterFragment;
 import com.example.myapplication.services.ClientUtils;
 import com.example.myapplication.utilities.JwtTokenUtil;
+import com.example.myapplication.utilities.NotificationsUtils;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -133,17 +133,19 @@ public class LoginFragment extends Fragment {
                         JwtTokenUtil.saveToken(jwtToken,getContext());
                         JwtTokenUtil.saveUserId(id,getContext());
                         notifyRoleChanged(JwtTokenUtil.getRole());
+                        NotificationsUtils.getInstance().showSuccessToast(requireContext(),"Successfully logged in!");
                     } catch (GeneralSecurityException | IOException e) {
                         throw new RuntimeException(e);
                     }
                 }else{
-                    Log.d("Response","Response: " + response.code());
+                    NotificationsUtils.getInstance().showErrToast(requireContext(),"User not found!\nEmail or password are invalid!");
                 }
             }
 
             @Override
             public void onFailure(Call<AuthResponse> call, Throwable t) {
-                Log.d("Error",call.toString());
+                Log.e("LoginError", "Request failed", t); // logs full stack trace
+                NotificationsUtils.getInstance().showErrToast(requireContext(), "Login failed: " + t.getMessage());
             }
         });
     }

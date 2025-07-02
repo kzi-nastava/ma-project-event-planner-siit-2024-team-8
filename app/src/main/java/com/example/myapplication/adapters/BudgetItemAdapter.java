@@ -155,6 +155,7 @@ public class BudgetItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 bindAssetCategory(assetCategorySpinner, budgetItem.getCategory()==null? null : category[0], categoryType, null);
             });
 
+
             assetCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

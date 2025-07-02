@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.myapplication.domain.Role;
+import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.fragments.ToDoFragment;
 import com.example.myapplication.fragments.event.event_info.BudgetFragment;
 import com.example.myapplication.fragments.event.event_info.EventOverviewFragment;

@@ -270,13 +270,13 @@ public class AssetOverviewFragment extends Fragment {
         double price = utility.getPrice();
         double discount = utility.getDiscount();
         double actualPrice = price - (price * discount / 100);
-        assetPriceTextView.setText("Price: $" + price);
-        assetDiscountTextView.setText("Discount: " + discount + "%");
-        assetActualPriceTextView.setText("Actual Price: $" + String.format("%.2f", actualPrice));
+        assetPriceTextView.setText((int) price);
+        assetDiscountTextView.setText(discount + "%");
+        assetActualPriceTextView.setText(String.format("%.2f", actualPrice));
         utilityDetailsLayout.setVisibility(View.VISIBLE);
-        assetDurationTextView.setText("Duration: " + utility.getDuration() + " hours");
-        assetBookingDeadlineTextView.setText("Booking Deadline: " + utility.getReservationTerm());
-        assetCancellationDeadlineTextView.setText("Cancellation Deadline: " + utility.getCancellationTerm());
+        assetDurationTextView.setText(utility.getDuration() + " hours");
+        assetBookingDeadlineTextView.setText(utility.getReservationTerm());
+        assetCancellationDeadlineTextView.setText(utility.getCancellationTerm());
     }
 
     private void populateProductData(Product product) {
@@ -307,9 +307,9 @@ public class AssetOverviewFragment extends Fragment {
         double price = product.getPrice();
         double discount = product.getDiscount();
         double actualPrice = price - (price * discount / 100);
-        assetPriceTextView.setText("Price: $" + price);
-        assetDiscountTextView.setText("Discount: " + discount + "%");
-        assetActualPriceTextView.setText("Actual Price: $" + String.format("%.2f", actualPrice));
+        assetPriceTextView.setText((int) price);
+        assetDiscountTextView.setText(discount + "%");
+        assetActualPriceTextView.setText(String.format("%.2f", actualPrice));
         utilityDetailsLayout.setVisibility(View.GONE);
     }
     private void submitComment() {

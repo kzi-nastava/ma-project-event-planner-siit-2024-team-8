@@ -29,6 +29,10 @@ public class MultiSelectAdapter extends RecyclerView.Adapter<MultiSelectAdapter.
         this.selectedItems = selectedItems;
     }
 
+    public void updateData(List<AssetCategory> categories){
+        this.items = categories;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.checkbox_item, parent, false);
@@ -70,7 +74,7 @@ public class MultiSelectAdapter extends RecyclerView.Adapter<MultiSelectAdapter.
         public ViewHolder(View itemView) {
             super(itemView);
             checkBox = itemView.findViewById(R.id.checkbox);
-            text = itemView.findViewById(R.id.textView);
+            text = itemView.findViewById(R.id.checkboxNameTextView);
         }
     }
 }

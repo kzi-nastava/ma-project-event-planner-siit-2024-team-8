@@ -13,9 +13,6 @@ public class BudgetItem {
     private Double plannedAmount;
     private Double actualAmount;
 
-    private Boolean deleted;
-    private List<String> assetIds;
-
     public BudgetItem(){
         plannedAmount = 0.0;
         actualAmount = 0.0;

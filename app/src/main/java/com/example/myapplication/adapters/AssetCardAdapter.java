@@ -17,6 +17,7 @@ import com.example.myapplication.R;
 import com.example.myapplication.domain.Asset;
 import com.example.myapplication.domain.dto.AssetResponse;
 import com.example.myapplication.fragments.asset.AssetInfoFragment;
+import com.example.myapplication.fragments.asset.AssetOverviewFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.View
 
     public void SetOnClick(Activity activity, FragmentManager manager){
         this.setItemClickListener(asset -> {
-            AssetInfoFragment assetInfoFragment = new AssetInfoFragment();
+            AssetOverviewFragment assetInfoFragment = new AssetOverviewFragment();
             Bundle bundle = new Bundle();
             bundle.putString("asset_id", asset.getId().toString());
             bundle.putString("asset_type", asset.getCategory().getType());

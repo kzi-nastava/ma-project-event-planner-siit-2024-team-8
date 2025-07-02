@@ -73,7 +73,7 @@
         <Spinner
             android:id="@+id/assetCategorySpinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:background="@android:color/white"
             android:textColor="@color/black" />
 

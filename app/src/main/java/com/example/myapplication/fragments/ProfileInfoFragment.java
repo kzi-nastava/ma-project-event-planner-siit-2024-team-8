@@ -150,12 +150,15 @@ public class ProfileInfoFragment extends Fragment {
         Button logOutButton = view.findViewById(R.id.logOutButton);
         logOutButton.setOnClickListener(v -> logOut());
         backButton.setOnClickListener(v -> getParentFragmentManager().popBackStack());
-        switch(Objects.requireNonNull(JwtTokenUtil.getRole())) {
+        Role role = Objects.requireNonNull(JwtTokenUtil.getRole());
+        switch(role) {
             case PROVIDER:
                 binding.providerButtons.setVisibility(View.VISIBLE);
                 userViewModel.loadProviderInfo(UUID.fromString(JwtTokenUtil.getUserId()));
+                break;
             case ORGANIZER:
                 binding.organizerButtons.setVisibility(View.VISIBLE);
+                break;
         }
 
     }

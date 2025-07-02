@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.myapplication.R;
+import com.example.myapplication.activities.MainActivity;
 import com.example.myapplication.domain.AuthResponse;
 import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.domain.dto.LoginRequest;
@@ -143,7 +144,8 @@ public class LoginFragment extends Fragment {
 
             @Override
             public void onFailure(Call<AuthResponse> call, Throwable t) {
-                Log.d("Error",call.toString());
+                Log.e("LoginError", "Request failed", t); // logs full stack trace
+                NotificationsUtils.getInstance().showErrToast(requireContext(), "Login failed: " + t.getMessage());
             }
         });
     }

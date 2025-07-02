@@ -15,7 +15,7 @@ public interface ProductAPIService {
     @GET("products/all")
     Call<List<Product>> getAllProducts(@Header("Authorization") String token);
 
-    @GET("products/{id}")
+    @GET("product-versions/{id}")
     Call<Product> getProductById(@Header("Authorization") String token, @Path("id") String id);
 
     @Multipart

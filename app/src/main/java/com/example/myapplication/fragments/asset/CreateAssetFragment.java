@@ -97,6 +97,7 @@ public class CreateAssetFragment extends Fragment {
 
         ((RadioButton) view.findViewById(R.id.assetTypeProduct)).setChecked(true);
         toggleUtilitySpecificFields(false);
+        loadCategories(false);
 
         assetTypeGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.assetTypeService) {
@@ -206,12 +207,13 @@ public class CreateAssetFragment extends Fragment {
     }
 
     private void createUtility(String token, String name, String description, List<MultipartBody.Part> images, double price, double discount, boolean visible, boolean available, String suggestedCategoryName, String suggestedCategoryDesc) {
+        String providerId = JwtTokenUtil.getUserId();
         int duration = Integer.parseInt(getFieldText(R.id.assetDurationEditText));
         String reservationTerm = bookingDeadlineTextView.getText().toString();
         String cancellationTerm = cancellationDeadlineTextView.getText().toString();
         boolean confirmationMethod = ((RadioButton) requireView().findViewById(R.id.confirmationMethodManual)).isChecked();
 
-        utilityService.createUtility(token, name, description, selectedCategoryId, null, price, discount, visible, available, duration,
+        utilityService.createUtility(token, name, description, selectedCategoryId, providerId, price, discount, visible, available, duration,
                 reservationTerm, cancellationTerm, confirmationMethod, images, suggestedCategoryName, suggestedCategoryDesc, new Callback<Utility>() {
                     @Override
                     public void onResponse(Call<Utility> call, Response<Utility> response) {
@@ -231,7 +233,8 @@ public class CreateAssetFragment extends Fragment {
     }
 
     private void createProduct(String token, String name, String description, List<MultipartBody.Part> images, double price, double discount, boolean visible, boolean available, String suggestedCategoryName, String suggestedCategoryDesc) {
-        productService.createProduct(token, name, description, selectedCategoryId, null, price, discount, visible, available, images, suggestedCategoryName, suggestedCategoryDesc,
+        String providerId = JwtTokenUtil.getUserId();
+        productService.createProduct(token, name, description, selectedCategoryId, providerId, price, discount, visible, available, images, suggestedCategoryName, suggestedCategoryDesc,
                 new Callback<Product>() {
                     @Override
                     public void onResponse(Call<Product> call, Response<Product> response) {
@@ -253,7 +256,7 @@ public class CreateAssetFragment extends Fragment {
         Bundle args = new Bundle();
         args.putSerializable("offeringType", OfferingType.ASSET);
 
-        Fragment fragment = new AllSolutionsFragment();
+        Fragment fragment = new AllSolutionsFragment(OfferingType.ASSET);
         fragment.setArguments(args);
 
         requireActivity().getSupportFragmentManager()

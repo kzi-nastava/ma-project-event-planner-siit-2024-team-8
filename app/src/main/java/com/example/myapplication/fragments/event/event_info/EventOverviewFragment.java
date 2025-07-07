@@ -128,7 +128,7 @@ public class EventOverviewFragment extends Fragment {
     }
 
     private void openChatFragment() {
-        ChatFragment chatFragment = ChatFragment.newInstance();
+        ChatFragment chatFragment = ChatFragment.newInstance(eventInfo.getOrganizerID());
         replaceFragment(chatFragment);
     }
 

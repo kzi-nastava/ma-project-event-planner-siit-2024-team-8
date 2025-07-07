@@ -41,7 +41,7 @@ public class EditAssetFragment extends Fragment {
 
     private RadioButton confirmationMethodAutomatic, confirmationMethodManual;
 
-    private MaterialButton saveButton;
+    private MaterialButton saveButton, cancelButton;
 
     private UtilityService utilityService;
     private ProductService productService;
@@ -104,6 +104,8 @@ public class EditAssetFragment extends Fragment {
         cancellationDeadlineTextView.setOnClickListener(v -> showDatePickerDialog(cancellationDeadlineTextView));
         confirmationMethodAutomatic = view.findViewById(R.id.confirmationMethodAutomatic);
         confirmationMethodManual = view.findViewById(R.id.confirmationMethodManual);
+        cancelButton = view.findViewById(R.id.cancelButton);
+        cancelButton.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
     }
 
     private boolean validateInputs() {
@@ -174,11 +176,11 @@ public class EditAssetFragment extends Fragment {
         return true;
     }
 
-    private void navigateToAssetDetailsFragment() {
-        AssetDetailsFragment assetDetailsFragment = AssetDetailsFragment.newInstance(this.assetId, this.assetType);
+    private void navigateToAssetInfoFragment() {
+        AssetInfoFragment assetInfoFragment = AssetInfoFragment.newInstance(this.assetId, this.assetType, true);
 
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.main, assetDetailsFragment);
+        transaction.replace(R.id.main, assetInfoFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -203,7 +205,7 @@ public class EditAssetFragment extends Fragment {
                         public void onResponse(Call<Utility> call, Response<Utility> response) {
                             if (response.isSuccessful()) {
                                 Toast.makeText(getContext(), "Utility updated successfully.", Toast.LENGTH_SHORT).show();
-                                navigateToAssetDetailsFragment();
+                                navigateToAssetInfoFragment();
                             } else {
                                 Toast.makeText(getContext(), "Failed to update utility.", Toast.LENGTH_SHORT).show();
                             }
@@ -220,7 +222,7 @@ public class EditAssetFragment extends Fragment {
                 public void onResponse(Call<Object> call, Response<Object> response) {
                     if (response.isSuccessful()) {
                         Toast.makeText(getContext(), "Product updated successfully.", Toast.LENGTH_SHORT).show();
-                        navigateToAssetDetailsFragment();
+                        navigateToAssetInfoFragment();
                     } else {
                         Toast.makeText(getContext(), "Failed to update product.", Toast.LENGTH_SHORT).show();
                     }

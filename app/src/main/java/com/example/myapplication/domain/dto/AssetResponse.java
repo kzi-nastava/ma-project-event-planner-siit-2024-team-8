@@ -13,6 +13,8 @@ public class AssetResponse {
     private List<String> images;
     private AssetCategory category;
 
+    private UUID providerId;
+
     public AssetCategory getCategory() {
         return category;
     }
@@ -51,5 +53,13 @@ public class AssetResponse {
 
     public void setType(AssetType type) {
         this.type = type;
+    }
+
+    public UUID getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(UUID providerId) {
+        this.providerId = providerId;
     }
 }

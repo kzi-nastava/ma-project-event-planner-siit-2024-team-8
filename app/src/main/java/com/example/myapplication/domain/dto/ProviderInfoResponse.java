@@ -13,4 +13,12 @@ public class ProviderInfoResponse {
     public String companyDescription;
     public String companyName;
     public List<String> companyImagesURL;
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
 }

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -89,16 +91,26 @@ public class AllSolutionsFragment extends Fragment implements FilterBottomSheetF
         setupPagingSpinner(view);
         setupSort(view);
         setupSearch(view);
+        setupBackButton(view);
         if (this.owner != null){
             switch (type){
                 case EVENT:
                     eventViewModel.getCurrentFilters().getValue().setOwner(owner);
+                    break;
                 case ASSET:
                     assetViewModel.getCurrentFilters().getValue().setOwner(owner);
+                    break;
             }
 
         }
 
+    }
+
+    private void setupBackButton(View view) {
+        ImageButton backButton = view.findViewById(R.id.imageButton);
+        backButton.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager().popBackStack();
+        });
     }
 
     private void setupSearch(View view) {
@@ -121,7 +133,7 @@ public class AllSolutionsFragment extends Fragment implements FilterBottomSheetF
                     eventViewModel.filterEvents(0,10);
                 }else{
                     assetViewModel.getCurrentFilters().getValue().setName(search.getText().toString());
-                    eventViewModel.filterEvents(0,10);
+                    assetViewModel.filterAssets(0,10);
                 }
 
             }
@@ -318,7 +330,10 @@ public class AllSolutionsFragment extends Fragment implements FilterBottomSheetF
                 solutionsRecyclerView.setAdapter(assetAdapter);
                 assetViewModel.getCurrentAssets().observe(getViewLifecycleOwner(), assets -> {
                     if (assets != null) {
-                        assetAdapter.setAssets(assets); // Set all assets
+                        Log.d("ASSET_DEBUG", "Assets received from backend: " + assets.size());
+                        assetAdapter.setAssets(assets);
+                    } else {
+                        Log.d("ASSET_DEBUG", "No assets received or null response.");
                     }
                 });
                 assetViewModel.getTotalPages().observe(getViewLifecycleOwner(),pages -> {

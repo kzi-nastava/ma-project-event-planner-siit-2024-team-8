@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -24,19 +25,23 @@ import com.example.myapplication.domain.AssetCategory;
 import com.example.myapplication.domain.Product;
 import com.example.myapplication.domain.Review;
 import com.example.myapplication.domain.Utility;
+import com.example.myapplication.domain.dto.ProviderInfoResponse;
 import com.example.myapplication.fragments.ChatFragment;
 import com.example.myapplication.services.AssetCategoryService;
 import com.example.myapplication.services.EventService;
 import com.example.myapplication.services.ProductService;
 import com.example.myapplication.services.ReviewService;
+import com.example.myapplication.services.UserService;
 import com.example.myapplication.services.UtilityService;
 import com.example.myapplication.utilities.JwtTokenUtil;
+import com.google.android.material.button.MaterialButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -63,10 +68,11 @@ public class AssetOverviewFragment extends Fragment {
 
     private TextView assetCancellationDeadlineTextView;
 
-    private Button loadReviewsButton;
+    private MaterialButton loadReviewsButton;
     private RecyclerView reviewsRecyclerView;
     private Button submitCommentButton;
-    private Button chatButton;
+    private MaterialButton providerName;
+    private MaterialButton chatButton;
 
     private UtilityService utilityService;
     private ProductService productService;
@@ -76,6 +82,12 @@ public class AssetOverviewFragment extends Fragment {
     private EventService eventService;
 
     private JwtTokenUtil jwtTokenUtil;
+
+    private TextView availableTextView;
+
+    private String providerId;
+
+    private ImageButton backButton;
 
 
     public AssetOverviewFragment() {
@@ -122,8 +134,12 @@ public class AssetOverviewFragment extends Fragment {
         assetDurationTextView = view.findViewById(R.id.assetDurationTextView);
         assetBookingDeadlineTextView = view.findViewById(R.id.assetBookingDeadlineTextView);
         assetCancellationDeadlineTextView = view.findViewById(R.id.assetCancellationDeadlineTextView);
+        availableTextView = view.findViewById(R.id.available);
+        providerName = view.findViewById(R.id.providerNameButton);
         chatButton = view.findViewById(R.id.chatButton);
+        backButton = view.findViewById(R.id.backButton);
 
+        backButton.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
         loadReviewsButton = view.findViewById(R.id.loadReviewsButton);
         reviewsRecyclerView = view.findViewById(R.id.reviewsRecyclerView);
         reviewsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -144,7 +160,11 @@ public class AssetOverviewFragment extends Fragment {
     }
 
     private void openChatFragment() {
-        ChatFragment chatFragment = ChatFragment.newInstance();
+        if (providerId == null) {
+            Toast.makeText(getContext(), "Provider ID not available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        ChatFragment chatFragment = ChatFragment.newInstance(providerId);
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.main, chatFragment)
@@ -259,6 +279,8 @@ public class AssetOverviewFragment extends Fragment {
     private void populateUtilityData(Utility utility) {
         assetNameTextView.setText(utility.getName());
         assetTypeTextView.setText("Utility");
+        loadProviderInfo(utility.getProviderId());
+        this.providerId = utility.getProviderId();
 
         String categoryId = utility.getCategory();
         String authHeader = "Bearer " + JwtTokenUtil.getToken();
@@ -284,18 +306,39 @@ public class AssetOverviewFragment extends Fragment {
         double price = utility.getPrice();
         double discount = utility.getDiscount();
         double actualPrice = price - (price * discount / 100);
-        assetPriceTextView.setText((int) price);
+        assetPriceTextView.setText(String.valueOf(price));
         assetDiscountTextView.setText(discount + "%");
         assetActualPriceTextView.setText(String.format("%.2f", actualPrice));
         utilityDetailsLayout.setVisibility(View.VISIBLE);
         assetDurationTextView.setText(utility.getDuration() + " hours");
         assetBookingDeadlineTextView.setText(utility.getReservationTerm());
         assetCancellationDeadlineTextView.setText(utility.getCancellationTerm());
+        availableTextView.setText(String.valueOf(utility.isAvailable()));
     }
+    private void loadProviderInfo(String providerId) {
+        new UserService().loadProviderInfo(UUID.fromString(providerId), new Callback<ProviderInfoResponse>() {
+            @Override
+            public void onResponse(Call<ProviderInfoResponse> call, Response<ProviderInfoResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ProviderInfoResponse provider = response.body();
+                    String fullName = provider.getFirstName() + " " + provider.getLastName();
+                    providerName.setText(fullName);
+                } else {
+                    Log.e("ProviderInfo", "Failed to load provider info: " + response.code());
+                }
+            }
 
+            @Override
+            public void onFailure(Call<ProviderInfoResponse> call, Throwable t) {
+                Log.e("ProviderInfo", "Error: " + t.getMessage(), t);
+            }
+        });
+    }
     private void populateProductData(Product product) {
         assetNameTextView.setText(product.getName());
         assetTypeTextView.setText("Product");
+        loadProviderInfo(product.getProviderId());
+        this.providerId = product.getProviderId();
 
         String categoryId = product.getCategory();
         String authHeader = "Bearer " + JwtTokenUtil.getToken();
@@ -321,10 +364,11 @@ public class AssetOverviewFragment extends Fragment {
         double price = product.getPrice();
         double discount = product.getDiscount();
         double actualPrice = price - (price * discount / 100);
-        assetPriceTextView.setText((int) price);
+        assetPriceTextView.setText(String.valueOf(price));
         assetDiscountTextView.setText(discount + "%");
         assetActualPriceTextView.setText(String.format("%.2f", actualPrice));
         utilityDetailsLayout.setVisibility(View.GONE);
+        availableTextView.setText(String.valueOf(product.isAvailable()));
     }
     private void submitComment() {
         EditText reviewCommentEditText = getView().findViewById(R.id.reviewCommentEditText);

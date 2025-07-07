@@ -75,7 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@android:color/white"
-            android:textColor="@color/black" />
+            />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/categoryNameInputLayout"

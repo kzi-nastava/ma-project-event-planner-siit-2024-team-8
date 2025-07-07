@@ -17,6 +17,7 @@ public interface UtilityAPIService {
     @GET("utilities/{id}")
     Call<Utility> getUtilityById(@Header("Authorization") String token, @Path("id") String id);
 
+    @Multipart
     @POST("utilities")
     Call<Utility> createUtility(@Header("Authorization") String token,
                                 @Part("name") RequestBody name,

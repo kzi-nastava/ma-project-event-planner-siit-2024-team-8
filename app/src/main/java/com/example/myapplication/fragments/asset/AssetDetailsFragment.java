@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.myapplication.R;
 import com.example.myapplication.domain.Product;
 import com.example.myapplication.domain.Utility;
+import com.example.myapplication.fragments.HomePageFragment;
 import com.example.myapplication.services.ProductService;
 import com.example.myapplication.services.UtilityService;
 import com.example.myapplication.utilities.JwtTokenUtil;
@@ -35,6 +37,7 @@ public class AssetDetailsFragment extends Fragment {
             assetConfirmationTextView, assetDurationTextView, assetBookingDeadlineTextView,
             assetCancellationDeadlineTextView;
     private MaterialButton editButton, deleteButton;
+    private ImageButton backButton;
 
     private UtilityService utilityService;
     private ProductService productService;
@@ -99,11 +102,13 @@ public class AssetDetailsFragment extends Fragment {
         assetCancellationDeadlineTextView = view.findViewById(R.id.assetCancellationDeadlineTextView);
         editButton = view.findViewById(R.id.editButton);
         deleteButton = view.findViewById(R.id.deleteButton);
+        backButton = view.findViewById(R.id.backButton);
+        backButton.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
     }
 
     private void navigateToEditFragment() {
         EditAssetFragment fragment = EditAssetFragment.newInstance(assetId, assetType);
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -151,7 +156,7 @@ public class AssetDetailsFragment extends Fragment {
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
                         Log.d("AssetDetailsFragment", "Product deleted successfully");
-                        getParentFragmentManager().popBackStack();
+                        navigateToHomeFragment();
                     } else {
                         Log.e("AssetDetailsFragment", "Failed to delete product");
                     }
@@ -163,6 +168,14 @@ public class AssetDetailsFragment extends Fragment {
                 }
             });
         }
+    }
+
+    private void navigateToHomeFragment() {
+        Fragment homeFragment = new HomePageFragment();
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main, homeFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     private void getUtilityById(String token, String id) {

@@ -42,10 +42,7 @@ public class ProductService {
         RequestBody suggestedCategoryDescPart = RequestBody.create(MultipartBody.FORM,
                 suggestedCategoryDesc != null ? suggestedCategoryDesc : "");
         RequestBody categoryPart = RequestBody.create(MultipartBody.FORM, category);
-        RequestBody providerIdPart = null;
-        if (providerId != null) {
-            providerIdPart = RequestBody.create(MultipartBody.FORM, providerId);
-        }
+        RequestBody providerIdPart = RequestBody.create(MultipartBody.FORM, providerId);
         Call<Product> call = apiService.createProduct(token, namePart, descriptionPart, pricePart, discountPart,
                 visiblePart, availablePart, images, suggestedCategoryNamePart, suggestedCategoryDescPart, categoryPart, providerIdPart);
         call.enqueue(callback);

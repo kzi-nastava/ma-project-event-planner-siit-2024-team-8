@@ -82,6 +82,10 @@ public class AssetViewModel extends ViewModel {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    List<Product> products = response.body();
+                    for (Product product : products) {
+                        Log.d("PRODUCT_FETCHED", "Product ID: " + product.getId());
+                    }
                     List<Asset> combinedAssets = new ArrayList<>(response.body());
 
                     utilityService.getAllUtilities(token, new Callback<List<Utility>>() {
@@ -91,6 +95,7 @@ public class AssetViewModel extends ViewModel {
                             if (response.isSuccessful() && response.body() != null) {
                                 combinedAssets.addAll(response.body());
                                 resolveAssetCategories(token, combinedAssets);
+                                Log.d("ProductService", "Fetched products: " + response.body().toString());
                             }
                         }
 
@@ -147,16 +152,34 @@ public class AssetViewModel extends ViewModel {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
 
+        Integer priceLow = (request.getPriceLow() != null && request.getPriceLow() > 0) ? request.getPriceLow() : null;
+        Integer priceHigh = (request.getPriceHigh() != null && request.getPriceHigh() > 0) ? request.getPriceHigh() : null;
+        Integer gradeLow = (request.getGradeLow() != null && request.getGradeLow() > 0) ? request.getGradeLow() : null;
+        Integer gradeHigh = (request.getGradeHigh() != null && request.getGradeHigh() > 0) ? request.getGradeHigh() : null;
+
+        Log.d("FILTERS", "Filtering assets with values: \n" +
+                "Name: " + request.getName() + "\n" +
+                "Categories: " + request.getAssetCategories() + "\n" +
+                "Type: " + request.getAssetType() + "\n" +
+                "PriceLow: " + priceLow + "\n" +
+                "PriceHigh: " + priceHigh + "\n" +
+                "GradeLow: " + gradeLow + "\n" +
+                "GradeHigh: " + gradeHigh + "\n" +
+                "SortBy: " + request.getSortBy() + "\n" +
+                "SortOrder: " + request.getSortOrder() + "\n" +
+                "Available: " + request.getAvailable() + "\n" +
+                "Owner: " + request.getOwner());
+
         Call<PagedResponse<AssetResponse>> call = ClientUtils.assetAPIService.filterAssets(
                 currentPage,
                 pageSize,
                 request.getName(),
                 request.getAssetCategories(),
                 request.getAssetType(),
-                request.getPriceLow(),
-                request.getPriceHigh(),
-                request.getGradeLow(),
-                request.getGradeHigh(),
+                priceLow,
+                priceHigh,
+                gradeLow,
+                gradeHigh,
                 request.getSortBy(),
                 request.getSortOrder(),
                 request.getAvailable(),
@@ -166,7 +189,11 @@ public class AssetViewModel extends ViewModel {
             @Override
             public void onResponse(Call<PagedResponse<AssetResponse>> call, Response<PagedResponse<AssetResponse>> response) {
                 if (response.body() == null){return;}
-                Log.d("body ",response.body().toString());
+                List<AssetResponse> assets = response.body().getContent();
+                Log.d("ASSET_FILTER_RESULT", "Total assets fetched: " + assets.size());
+                for (AssetResponse asset : assets) {
+                    Log.d("ASSET_ID", "Filtered asset ID: " + asset.getId());
+                }
                 currentAssets.setValue(response.body().getContent());
                 totalElements.setValue(response.body().getTotalElements());
                 totalPages.setValue(response.body().getTotalPages());

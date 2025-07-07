@@ -18,6 +18,7 @@ import com.example.myapplication.domain.Asset;
 import com.example.myapplication.domain.dto.AssetResponse;
 import com.example.myapplication.fragments.asset.AssetInfoFragment;
 import com.example.myapplication.fragments.asset.AssetOverviewFragment;
+import com.example.myapplication.utilities.JwtTokenUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.View
     private List<AssetResponse> assets = new ArrayList<>();
     private Context context;
     private OnItemClickListener itemClickListener;
+    String currentUserId = JwtTokenUtil.getUserId();
 
     public AssetCardAdapter(Context context) {
         this.context = context;
@@ -43,11 +45,12 @@ public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.View
 
     public void SetOnClick(Activity activity, FragmentManager manager){
         this.setItemClickListener(asset -> {
-            AssetOverviewFragment assetInfoFragment = new AssetOverviewFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString("asset_id", asset.getId().toString());
-            bundle.putString("asset_type", asset.getCategory().getType());
-            assetInfoFragment.setArguments(bundle);
+            boolean isMine = currentUserId.equals(asset.getProviderId());
+            AssetInfoFragment assetInfoFragment = AssetInfoFragment.newInstance(
+                    asset.getId().toString(),
+                    asset.getCategory().getType(),
+                    true
+            );
             if (activity != null) {
                 manager.beginTransaction()
                         .replace(R.id.main, assetInfoFragment)

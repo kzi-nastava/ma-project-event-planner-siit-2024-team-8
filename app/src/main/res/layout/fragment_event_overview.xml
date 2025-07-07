@@ -218,6 +218,15 @@
             app:icon="@drawable/baseline_edit_24" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/chatButton"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center|left"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#A1C084"
+            android:text="Chat with organizer"
+            style="@style/Widget.MaterialComponents.Button" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/loadReviewsButton"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="150dp"

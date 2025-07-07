@@ -2,6 +2,7 @@ package com.example.myapplication.fragments;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,18 +16,41 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.R;
+import com.example.myapplication.domain.Message;
+import com.example.myapplication.domain.dto.MarkSeenRequest;
+import com.example.myapplication.services.ChatAPIService;
+import com.example.myapplication.services.ChatService;
+import com.example.myapplication.utilities.JwtTokenUtil;
+import com.example.myapplication.utilities.RetrofitClient;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChatFragment extends Fragment {
 
     private LinearLayout messagesLayout;
+    private ScrollView scrollView;
     private EditText messageInput;
-    private Button sendMessageButton;
+    private Button sendButton;
 
-    public ChatFragment() {
-    }
+    private ChatService chatService;
+    private ChatAPIService chatAPIService;
 
-    public static ChatFragment newInstance() {
-        return new ChatFragment();
+    private String userId;
+    private String otherUserId;
+
+    private List<Message> messages = new ArrayList<>();
+
+    public static ChatFragment newInstance(String otherUserId) {
+        ChatFragment fragment = new ChatFragment();
+        Bundle args = new Bundle();
+        args.putString("otherUserId", otherUserId);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -35,60 +59,136 @@ public class ChatFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
         messagesLayout = view.findViewById(R.id.messagesLayout);
+        scrollView = view.findViewById(R.id.scrollViewMessages);
         messageInput = view.findViewById(R.id.messageInput);
-        sendMessageButton = view.findViewById(R.id.sendMessageButton);
+        sendButton = view.findViewById(R.id.sendMessageButton);
 
-        sendMessageButton.setOnClickListener(v -> sendMessage());
+        chatService = new ChatService();
+        chatAPIService = RetrofitClient.getRetrofitInstance().create(ChatAPIService.class);
+
+        setupListeners();
+        connectWebSocket();
+        loadChatHistory();
 
         return view;
     }
 
-    private void sendMessage() {
-        String messageText = messageInput.getText().toString().trim();
-        if (!messageText.isEmpty()) {
-            // User's message
-            TextView userMessage = new TextView(getContext());
-            userMessage.setText(messageText);
-            userMessage.setBackgroundResource(R.drawable.rounded_message);
-            userMessage.setPadding(10, 10, 10, 10);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0, 10, 0, 10);
-            userMessage.setLayoutParams(params);
-            userMessage.setGravity(Gravity.END);
-
-            messagesLayout.addView(userMessage);
-            messageInput.setText("");
-
-            scrollToBottom();
-
-            simulateProviderResponse();
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        userId = JwtTokenUtil.getUserId();
+        if (getArguments() != null) {
+            otherUserId = getArguments().getString("otherUserId");
         }
     }
 
-    private void simulateProviderResponse() {
-        new Handler().postDelayed(() -> {
-            // Provider's message
-            TextView providerMessage = new TextView(getContext());
-            providerMessage.setText("This is a response from the provider.");
-            providerMessage.setBackgroundResource(R.drawable.rounded_message_other);
-            providerMessage.setPadding(10, 10, 10, 10);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0, 10, 0, 10);
-            providerMessage.setLayoutParams(params);
-            providerMessage.setGravity(Gravity.START);
+    private void setupListeners() {
+        sendButton.setOnClickListener(v -> {
+            String msgText = messageInput.getText().toString().trim();
+            if (!msgText.isEmpty()) {
+                Message message = new Message();
+                message.setSenderId(userId);
+                message.setReceiverId(otherUserId);
+                message.setMessageContent(msgText);
+                message.setSentAt(java.time.Instant.now().toString());
+                message.setDeleted(false);
 
-            messagesLayout.addView(providerMessage);
+                chatService.sendMessage(message);
+                addMessageToView(message);
+                messageInput.setText("");
+            }
+        });
+    }
 
-            scrollToBottom();
-        }, 1000);
+    private void connectWebSocket() {
+        String token = JwtTokenUtil.getToken();
+        chatService.connect(token, message -> {
+            if ((message.getSenderId().equals(otherUserId) && message.getReceiverId().equals(userId)) ||
+                    (message.getSenderId().equals(userId) && message.getReceiverId().equals(otherUserId))) {
+
+                getActivity().runOnUiThread(() -> {
+                    messages.add(message);
+                    addMessageToView(message);
+                    scrollToBottom();
+
+                    if (message.getSenderId().equals(otherUserId)) {
+                        markMessagesAsSeen();
+                    }
+                });
+            }
+        });
+    }
+
+    private void loadChatHistory() {
+        Log.d("ChatFragment", "Loading chat history for: userId=" + userId + ", otherUserId=" + otherUserId);
+        chatAPIService.getChatHistory(userId, otherUserId).enqueue(new Callback<List<Message>>() {
+            @Override
+            public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("ChatFragment", "Chat history loaded. Messages count: " + response.body().size());
+                    messages.clear();
+                    messages.addAll(response.body());
+                    getActivity().runOnUiThread(() -> {
+                        messagesLayout.removeAllViews();
+                        for (Message m : messages) {
+                            addMessageToView(m);
+                        }
+                        scrollToBottom();
+                    });
+                } else {
+                    Log.e("ChatFragment", "Failed to load chat history: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Message>> call, Throwable t) {
+                Log.e("ChatFragment", "Failed to load history", t);
+            }
+        });
+    }
+
+    private void markMessagesAsSeen() {
+        MarkSeenRequest request = new MarkSeenRequest(userId, otherUserId);
+        chatAPIService.markMessagesAsSeen(request).enqueue(new Callback<Void>() {
+            @Override public void onResponse(Call<Void> call, Response<Void> response) {
+                if (!response.isSuccessful()) Log.e("ChatFragment", "Mark as seen failed");
+            }
+            @Override public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("ChatFragment", "Mark as seen error", t);
+            }
+        });
+    }
+
+    private void addMessageToView(Message message) {
+        TextView tv = new TextView(getContext());
+        tv.setText(message.getMessageContent());
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        params.setMargins(0, 10, 0, 10);
+        tv.setLayoutParams(params);
+        int padding = (int) (10 * getResources().getDisplayMetrics().density);
+        tv.setPadding(padding, padding, padding, padding);
+
+        if (message.getSenderId().equals(userId)) {
+            tv.setBackgroundResource(R.drawable.rounded_message_right);
+            tv.setGravity(Gravity.END);
+        } else {
+            tv.setBackgroundResource(R.drawable.rounded_message_left);
+            tv.setGravity(Gravity.START);
+        }
+
+        messagesLayout.addView(tv);
+        scrollToBottom();
     }
 
     private void scrollToBottom() {
-        ScrollView scrollView = (ScrollView) messagesLayout.getParent();
         scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        chatService.disconnect();
     }
 }

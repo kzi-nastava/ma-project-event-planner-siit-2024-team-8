@@ -90,12 +90,14 @@ public class ProfileInfoFragment extends Fragment {
         userViewModel.loadUserProfile(userID);
         setupProviderButtons();
         setupOrganizerButtons();
+        setupAdminButtons();
         setupSelfInfoView(view);
         setupOtherUsersInfoView(view);
 
         ImageButton button = view.findViewById(R.id.edit_button);
         button.setOnClickListener(v -> onEditClicked());
     }
+
 
     private void setupOtherUsersInfoView(View view) {
         if (userID == null){
@@ -136,7 +138,7 @@ public class ProfileInfoFragment extends Fragment {
             public void onClick(View v) {
                 EditText reasonET = view.findViewById(R.id.reasonEditText);
                 String reason = reasonET.getText().toString();
-                userViewModel.reportUser(userID,reason,getContext());
+                userViewModel.reportUser(UUID.fromString(JwtTokenUtil.getUserId()),reason,getContext());
             }
         });
         alert.show();
@@ -159,10 +161,23 @@ public class ProfileInfoFragment extends Fragment {
             case ORGANIZER:
                 binding.organizerButtons.setVisibility(View.VISIBLE);
                 break;
+            case ADMIN:
+                binding.adminButtons.setVisibility(View.VISIBLE);
+                break;
         }
 
     }
 
+    private void setupAdminButtons() {
+        Button manageReviewsButton = binding.manageReviewsButton;
+        MaterialButton viewReportsButton = binding.viewReportsButton;
+        Button assetCategoriesButton = binding.assetCategoriesButtonAdmin;
+        Button eventTypes = binding.eventTypesButtonAdmin;
+        assetCategoriesButton.setOnClickListener(v -> replaceFragment(new AssetCategoriesFragment()));
+        eventTypes.setOnClickListener(v -> replaceFragment(new CreateEventTypeFragment()));
+        viewReportsButton.setOnClickListener(v -> replaceFragment(new ReportsFragment()));
+
+    }
     private void setupProviderButtons(){
         Button myAssetsButton = binding.myAssetsButton;
         Button createAssetButton = binding.createAssetButton;
@@ -251,7 +266,7 @@ public class ProfileInfoFragment extends Fragment {
                 .placeholder(R.drawable.profile_placeholder) // Optional placeholder while loading// Optional error image
                 .into(profileImage);
         TextView roleView = getView().findViewById(R.id.user_type);
-        Role role = JwtTokenUtil.getRole();
+        Role role = userID == null ? JwtTokenUtil.getRole() : userInfo.role;
         roleView.setText(String.valueOf(role));
         if (!String.valueOf(role).equalsIgnoreCase("PROVIDER")) {
             getView().findViewById(R.id.company_name_label).setVisibility(View.INVISIBLE);

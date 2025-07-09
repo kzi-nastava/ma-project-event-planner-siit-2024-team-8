@@ -1,9 +1,18 @@
 package com.example.myapplication.fragments.event.event_info;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,6 +35,7 @@ import com.example.myapplication.domain.Event;
 import com.example.myapplication.domain.Review;
 import com.example.myapplication.domain.dto.EventInfoResponse;
 import com.example.myapplication.domain.dto.EventSignupRequest;
+import com.example.myapplication.domain.dto.EventUpdateRequest;
 import com.example.myapplication.fragments.ChatFragment;
 import com.example.myapplication.fragments.ProfileInfoFragment;
 import com.example.myapplication.domain.dto.EventSignupRequest;
@@ -33,6 +43,9 @@ import com.example.myapplication.fragments.event.edit_event.EventEditFragment;
 import com.example.myapplication.services.EventService;
 import com.example.myapplication.services.ReviewService;
 import com.example.myapplication.utilities.JwtTokenUtil;
+import com.example.myapplication.utilities.NotificationsUtils;
+import com.example.myapplication.viewmodels.EventViewModel;
+import com.google.android.material.button.MaterialButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,6 +79,14 @@ public class EventOverviewFragment extends Fragment {
     private JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
 
     private RecyclerView reviewsRecyclerView;
+
+    private EventViewModel eventVM;
+
+    private Boolean isMyEvent;
+
+    private Boolean isPrivate;
+
+    private Boolean isUserSignedUp;
 
     public EventOverviewFragment() {
         // Required empty public constructor
@@ -102,9 +123,9 @@ public class EventOverviewFragment extends Fragment {
         openInMapButton.setOnClickListener(v -> {
             double longitude = 0;
             double latitude = 0;
-            if (eventInfo != null && eventInfo.location != null) {
-                latitude = eventInfo.location.latitude;
-                longitude = eventInfo.location.longitude;
+            if (eventInfo != null && eventInfo.getLocation() != null) {
+                latitude = eventInfo.getLocation().latitude;
+                longitude = eventInfo.getLocation().longitude;
             }
             String uri = String.format("geo:%f,%f?q=%f,%f", latitude, longitude, latitude, longitude);
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
@@ -116,11 +137,131 @@ public class EventOverviewFragment extends Fragment {
             }
         });
 
+        eventVM = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
+
+
 
         Button eOrg = view.findViewById(R.id.eOrg);
         eOrg.setOnClickListener(v -> organizerClicked());
 
+        Button chatButton = view.findViewById(R.id.chatButton);
+        chatButton.setOnClickListener(v -> openChatFragment());
+
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        eventVM.getEvent().observe(getViewLifecycleOwner(), eventInfoResponse -> {
+            isMyEvent = Objects.equals(eventVM.getEvent().getValue().getOrganizerID(), JwtTokenUtil.getUserId());
+            isPrivate = eventVM.getEvent().getValue().getPrivate();
+            isUserSignedUp(view);
+        });
+    }
+
+    private void setupEventButtons(View view){
+        MaterialButton editButton = view.findViewById(R.id.editEventButton);
+        MaterialButton chatButton = view.findViewById(R.id.chatButton);
+        if(isMyEvent){
+            editButton.setVisibility(View.VISIBLE);
+            chatButton.setVisibility(View.GONE);
+        }
+        MaterialButton signUpButton = view.findViewById(R.id.signUpButton);
+        if (!isMyEvent && !isPrivate){signUpButton.setVisibility(View.VISIBLE);}
+        if(isUserSignedUp){
+            signUpButton.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.deactivate_color));
+            signUpButton.setIcon(ContextCompat.getDrawable(requireContext(),R.drawable.leave_icon));
+            signUpButton.setText("Leave Event");
+        }
+        signUpButton.setOnClickListener(v -> signUserUpToEvent(view));
+        ;
+
+    }
+
+    private void signUserUpToEvent(View view) {
+        String userId = JwtTokenUtil.getUserId();
+        if(isUserSignedUp){
+            showLeaveDialog(userId,view);
+        }else{
+            showJoinDialog(userId,view);
+        }
+    }
+
+    private void showJoinDialog(String userId,View view) {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Confirm")
+                .setMessage("Are you sure you want to join this event?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        eventService.signUserUpToEvent(new EventSignupRequest(userId, eventId), new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                if(response.isSuccessful()){
+                                    NotificationsUtils.getInstance().showSuccessToast(getContext(),String.format("Joined event %s",eventInfo.getName()));
+                                    isUserSignedUp = true;
+                                    setupJoinButton(getView());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
+
+    private void setupJoinButton(View view) {
+        MaterialButton signUpButton = view.findViewById(R.id.signUpButton);
+        signUpButton.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.olive));
+        signUpButton.setIcon(ContextCompat.getDrawable(requireContext(),R.drawable.baseline_supervised_user_circle_24));
+        signUpButton.setText("Join Event");
+    }
+
+    private void showLeaveDialog(String userId,View view) {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Confirm")
+                .setMessage("Are you sure you want to leave this event?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        eventService.leaveEvent(new EventSignupRequest(userId, eventId), new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                if (response.isSuccessful()){
+                                    NotificationsUtils.getInstance().showSuccessToast(getContext(),String.format("Event %s left.",eventInfo.getName()));
+                                    isUserSignedUp = false;
+                                    setupLeaveButton(getView());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
+
+    private void setupLeaveButton(View view) {
+        MaterialButton signUpButton = view.findViewById(R.id.signUpButton);
+        signUpButton.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.deactivate_color));
+        signUpButton.setIcon(ContextCompat.getDrawable(requireContext(),R.drawable.leave_icon));
+        signUpButton.setText("Leave Event");
     }
 
     private void organizerClicked() {
@@ -151,6 +292,7 @@ public class EventOverviewFragment extends Fragment {
             public void onResponse(Call<EventInfoResponse> call, Response<EventInfoResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     eventInfo = response.body();
+                    eventVM.setCurrentEvent(response.body());
                     updateUI(view);
                     Log.d("EventFragment", "Event retrieved: " + eventInfo.toString());
                 } else {
@@ -173,23 +315,23 @@ public class EventOverviewFragment extends Fragment {
 
     private void loadDataIntoFields(View view) {
         TextView eName = view.findViewById(R.id.eName);
-        eName.setText(eventInfo.name);
+        eName.setText(eventInfo.getName());
         TextView eDesc = view.findViewById(R.id.eDesc);
-        eDesc.setText(eventInfo.description);
+        eDesc.setText(eventInfo.getDescription());
         TextView eStart = view.findViewById(R.id.eStart);
-        eStart.setText(eventInfo.startDate);
+        eStart.setText(eventInfo.getStartDate());
         TextView eEnd = view.findViewById(R.id.eEnd);
-        eEnd.setText(eventInfo.endDate);
+        eEnd.setText(eventInfo.getEndDate());
         TextView eOrg = view.findViewById(R.id.eOrg);
-        eOrg.setText(eventInfo.organizerName);
+        eOrg.setText(eventInfo.getOrganizerName());
         TextView ePriv = view.findViewById(R.id.ePriv);
-        if (eventInfo.isPrivate) {
+        if (eventInfo.getPrivate()) {
             ePriv.setText("PRIVATE");
         } else {
             ePriv.setText("PUBLIC");
         }
         TextView eCap = view.findViewById(R.id.eCap);
-        eCap.setText(eventInfo.capacity.toString());
+        eCap.setText(eventInfo.getCapacity().toString());
     }
 
     private void fetchReviews() {
@@ -235,6 +377,27 @@ public class EventOverviewFragment extends Fragment {
             @Override
             public void onFailure(Call<List<Review>> call, Throwable t) {
                 Log.e("EventOverviewFragment", "Error fetching reviews: " + t.getMessage(), t);
+            }
+        });
+    }
+
+    private void isUserSignedUp(View view){
+        String userId = jwtTokenUtil.getUserId();
+        EventSignupRequest request = new EventSignupRequest(userId,eventId);
+        eventService.isUserSignedUp(request, new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful()){
+                    isUserSignedUp = response.body();
+                    setupEventButtons(view);
+                }else{
+                    NotificationsUtils.getInstance().showErrToast(getContext(),response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+
             }
         });
     }

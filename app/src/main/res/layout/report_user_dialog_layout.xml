@@ -54,6 +54,8 @@
                 style="?android:buttonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:text="Report"
                 android:textAllCaps="false"
@@ -61,12 +63,14 @@
                 android:textStyle="bold"
                 app:cornerRadius="5dp"
                 app:strokeColor="@color/olive"
-                app:strokeWidth="2dp"/>
+                app:strokeWidth="2dp" />
         </LinearLayout>
 
         <EditText
             android:id="@+id/reasonEditText"
             android:layout_width="0dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:layout_height="0dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
@@ -79,7 +83,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dialog_text" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

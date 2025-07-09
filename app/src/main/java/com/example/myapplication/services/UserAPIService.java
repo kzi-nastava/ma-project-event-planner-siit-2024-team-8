@@ -38,6 +38,9 @@ public interface UserAPIService {
 
     @GET("users/provider/{id}")
     Call<ProviderInfoResponse> getProviderInfo(@Path("id") UUID id);
+
+    @GET("users/{email}")
+    Call<UUID> getUserIdByEmail(@Path("email") String email);
     @Multipart
     @PUT("users/update")
     Call<String> updateUser(

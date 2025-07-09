@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/calendarFragment"
-        android:name="com.example.myapplication.fragments.ToDoFragment"
+        android:name="com.example.myapplication.fragments.CalendarFragment"
         android:label="Calendar"
-        tools:layout="@layout/fragment_to_do" />
+        tools:layout="@layout/fragment_calendar" />
 
     <fragment
         android:id="@+id/createAssetFragment"

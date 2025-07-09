@@ -15,6 +15,12 @@ public class EventCardResponse {
         this.startDate = startDate;
     }
 
+    public EventCardResponse(EventInfoResponse response){
+        this.id = UUID.fromString(response.getId());
+        this.name = response.getName();
+        this.startDate = response.getStartDate();
+    }
+
     public UUID getId() {
         return id;
     }

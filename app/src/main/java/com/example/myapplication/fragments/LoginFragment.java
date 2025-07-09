@@ -21,6 +21,7 @@ import com.example.myapplication.fragments.register.RegisterFragment;
 import com.example.myapplication.services.ClientUtils;
 import com.example.myapplication.utilities.JwtTokenUtil;
 import com.example.myapplication.utilities.NotificationsUtils;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -137,8 +138,26 @@ public class LoginFragment extends Fragment {
                     } catch (GeneralSecurityException | IOException e) {
                         throw new RuntimeException(e);
                     }
-                }else{
+                }else if (response.code() == 404){
                     NotificationsUtils.getInstance().showErrToast(requireContext(),"User not found!\nEmail or password are invalid!");
+                }else if (response.code() == 403){
+                    if (response.errorBody() != null) {
+                        String errorJson = null;
+                        try {
+                            errorJson = response.errorBody().string();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        // Parse errorJson into your AuthResponse or a generic error message
+                        AuthResponse errorResponse = new Gson().fromJson(errorJson, AuthResponse.class);
+                        if (errorResponse != null) {
+                            NotificationsUtils.getInstance().showErrToast(requireContext(), errorResponse.getMessage());
+                        } else {
+                            NotificationsUtils.getInstance().showErrToast(requireContext(), "Forbidden");
+                        }
+                    } else {
+                        NotificationsUtils.getInstance().showErrToast(requireContext(), "Forbidden");
+                    }
                 }
             }
 

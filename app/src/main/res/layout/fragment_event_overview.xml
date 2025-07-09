@@ -215,25 +215,44 @@
             android:backgroundTint="#A1C084"
             android:padding="10dp"
             android:text="Edit Event"
+            android:visibility="gone"
             app:icon="@drawable/baseline_edit_24" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/chatButton"
-            android:layout_width="wrap_content"
-            android:layout_gravity="center|left"
+            android:id="@+id/signUpButton"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom|left"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="#A1C084"
+            android:padding="10dp"
+            android:text="Join Event"
+            android:visibility="gone"
+            app:icon="@drawable/baseline_supervised_user_circle_24"
+            app:iconSize="22dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/chatButton"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|left"
             android:backgroundTint="#A1C084"
             android:text="Chat with organizer"
-            style="@style/Widget.MaterialComponents.Button" />
+            app:icon="@drawable/baseline_chat_24"
+            app:iconSize="22dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/loadReviewsButton"
             style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|left"
             android:backgroundTint="#A1C084"
-            android:text="Load reviews" />
+            android:text="Load reviews"
+            app:icon="@drawable/baseline_add_comment_24"
+            app:iconSize="22dp" />
 
         
 

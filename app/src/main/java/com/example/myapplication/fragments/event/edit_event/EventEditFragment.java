@@ -110,17 +110,17 @@ public class EventEditFragment extends Fragment {
 
     private void loadDataIntoFields(View view) {
         EditText name = view.findViewById(R.id.eventNameEditText);
-        name.setText(eventInfo.name);
+        name.setText(eventInfo.getName());
         EditText desc = view.findViewById(R.id.eventDescEditText);
-        desc.setText(eventInfo.description);
+        desc.setText(eventInfo.getDescription());
         EditText startDate = view.findViewById(R.id.eventStartDateEditText);
-        startDate.setText(eventInfo.startDate);
+        startDate.setText(eventInfo.getStartDate());
         EditText endDate = view.findViewById(R.id.eventEndDateEditText);
-        endDate.setText(eventInfo.endDate);
+        endDate.setText(eventInfo.getEndDate());
         EditText cap = view.findViewById(R.id.eventCapEditText);
-        cap.setText(eventInfo.capacity.toString());
+        cap.setText(eventInfo.getCapacity().toString());
         EditText loc = view.findViewById(R.id.eventLocEditText);
-        loc.setText(eventInfo.location.city + "," + eventInfo.location.street);
+        loc.setText(eventInfo.getLocation().city + "," + eventInfo.getLocation().street);
     }
 
     public void onClickSubmit() {

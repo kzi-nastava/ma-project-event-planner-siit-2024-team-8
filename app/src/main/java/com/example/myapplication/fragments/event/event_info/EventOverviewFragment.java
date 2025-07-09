@@ -117,6 +117,9 @@ public class EventOverviewFragment extends Fragment {
         Button submitComment = view.findViewById(R.id.submitCommentButton);
         submitComment.setOnClickListener(v -> submitComment());
 
+        MaterialButton chatButton = view.findViewById(R.id.chatButton);
+        chatButton.setOnClickListener(v -> openChatFragment());
+
         getEventById(eventId, view);
 
         Button openInMapButton = view.findViewById(R.id.mapButton);
@@ -144,7 +147,6 @@ public class EventOverviewFragment extends Fragment {
         Button eOrg = view.findViewById(R.id.eOrg);
         eOrg.setOnClickListener(v -> organizerClicked());
 
-        Button chatButton = view.findViewById(R.id.chatButton);
         chatButton.setOnClickListener(v -> openChatFragment());
 
         return view;
@@ -268,11 +270,6 @@ public class EventOverviewFragment extends Fragment {
         replaceFragment(new ProfileInfoFragment(UUID.fromString(eventInfo.getOrganizerID())));
     }
 
-    private void openChatFragment() {
-        ChatFragment chatFragment = ChatFragment.newInstance(eventInfo.getOrganizerID());
-        replaceFragment(chatFragment);
-    }
-
     private void replaceFragment(Fragment fragment) {
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
@@ -292,7 +289,6 @@ public class EventOverviewFragment extends Fragment {
             public void onResponse(Call<EventInfoResponse> call, Response<EventInfoResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     eventInfo = response.body();
-                    eventVM.setCurrentEvent(response.body());
                     updateUI(view);
                     Log.d("EventFragment", "Event retrieved: " + eventInfo.toString());
                 } else {
@@ -474,5 +470,18 @@ public class EventOverviewFragment extends Fragment {
         }
 
         return RequestBody.create(MediaType.parse("application/json"), reviewJson.toString());
+    }
+
+    private void openChatFragment() {
+        if (eventInfo.getOrganizerID() == null) {
+            Toast.makeText(getContext(), "Provider ID not available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        ChatFragment chatFragment = ChatFragment.newInstance(eventInfo.getOrganizerID());
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main, chatFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

@@ -33,6 +33,7 @@ import com.example.myapplication.fragments.event.edit_event.EventEditFragment;
 import com.example.myapplication.services.EventService;
 import com.example.myapplication.services.ReviewService;
 import com.example.myapplication.utilities.JwtTokenUtil;
+import com.google.android.material.button.MaterialButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -96,6 +97,9 @@ public class EventOverviewFragment extends Fragment {
         Button submitComment = view.findViewById(R.id.submitCommentButton);
         submitComment.setOnClickListener(v -> submitComment());
 
+        MaterialButton chatButton = view.findViewById(R.id.chatButton);
+        chatButton.setOnClickListener(v -> openChatFragment());
+
         getEventById(eventId, view);
 
         Button openInMapButton = view.findViewById(R.id.mapButton);
@@ -125,11 +129,6 @@ public class EventOverviewFragment extends Fragment {
 
     private void organizerClicked() {
         replaceFragment(new ProfileInfoFragment(UUID.fromString(eventInfo.getOrganizerID())));
-    }
-
-    private void openChatFragment() {
-        ChatFragment chatFragment = ChatFragment.newInstance(eventInfo.getOrganizerID());
-        replaceFragment(chatFragment);
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -311,5 +310,18 @@ public class EventOverviewFragment extends Fragment {
         }
 
         return RequestBody.create(MediaType.parse("application/json"), reviewJson.toString());
+    }
+
+    private void openChatFragment() {
+        if (eventInfo.getOrganizerID() == null) {
+            Toast.makeText(getContext(), "Provider ID not available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        ChatFragment chatFragment = ChatFragment.newInstance(eventInfo.getOrganizerID());
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main, chatFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

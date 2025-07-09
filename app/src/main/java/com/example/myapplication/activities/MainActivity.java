@@ -8,10 +8,14 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.View;
 import android.view.WindowInsets;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -29,11 +33,17 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.myapplication.R;
+import com.example.myapplication.domain.Asset;
 import com.example.myapplication.domain.enumerations.Role;
+import com.example.myapplication.fragments.CreateEventTypeFragment;
 import com.example.myapplication.fragments.HomePageFragment;
 import com.example.myapplication.fragments.LoginFragment;
 import com.example.myapplication.fragments.StartupFragment;
+import com.example.myapplication.fragments.asset.AssetCategoriesFragment;
+import com.example.myapplication.fragments.asset.CreateAssetFragment;
+import com.example.myapplication.fragments.event.create_event.CreateEventFragment;
 import com.example.myapplication.utilities.JwtTokenUtil;
+import com.example.myapplication.utilities.PopupHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.File;
@@ -217,24 +227,60 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
         } else if (role == Role.PROVIDER){
             bottomNavigationView.inflateMenu(R.menu.home_menu_provider);
             navGraph = navController.getNavInflater().inflate(R.navigation.home_provider_navigation);
+        }else if (role == Role.ADMIN){
+            bottomNavigationView.inflateMenu(R.menu.home_menu_admin);
+            navGraph = navController.getNavInflater().inflate(R.navigation.home_admin_navigation);
         } else {
             return; // Handle unexpected roles
         }
         navController.setGraph(navGraph);
 
-        NavigationUI.setupWithNavController(bottomNavigationView, navController);
-    }
+        if (role == Role.USER){
+            NavigationUI.setupWithNavController(bottomNavigationView, navController);
+        }else if(role == Role.ADMIN){
+            bottomNavigationView.setOnItemSelectedListener(item -> {
+                int itemId = item.getItemId();
 
-    public String getRealPathFromURI(Uri contentUri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = getContentResolver().query(contentUri, projection, null, null, null);
-        if (cursor != null) {
-            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            String filePath = cursor.getString(columnIndex);
-            cursor.close();
-            return filePath;
+                if (itemId == R.id.createFragment) {
+                    PopupHelper.showPopup(this,new CreateEventTypeFragment(),new AssetCategoriesFragment(),
+                                         R.drawable.add_event_type,R.drawable.add_asset_categories,
+                                         "Create Event Type", "Create Asset Category");
+                    return true;
+                } else {
+                    navController.navigate(itemId);
+                    return true;
+                }
+            });
+        }else if (role == Role.ORGANIZER){
+            bottomNavigationView.setOnItemSelectedListener(item -> {
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.createEventFragment) {
+                    PopupHelper.showPopup(this,new CreateEventTypeFragment(),new CreateEventFragment(),
+                                        R.drawable.add_event_type,R.drawable.add_event,
+                            "Create Event Type", "Create Event");
+                    return true;
+                } else {
+                    navController.navigate(itemId);
+                    return true;
+                }
+            });
+        }else if(role == Role.PROVIDER){
+            bottomNavigationView.setOnItemSelectedListener(item -> {
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.createAssetFragment) {
+                    PopupHelper.showPopup(this,new AssetCategoriesFragment(),new CreateAssetFragment(),
+                            R.drawable.add_asset_categories,R.drawable.add_asset,
+                             "Create Asset Category","Create Asset");
+                    return true;
+                } else {
+                    navController.navigate(itemId);
+                    return true;
+                }
+            });
         }
-        return null;
+
+
     }
 }

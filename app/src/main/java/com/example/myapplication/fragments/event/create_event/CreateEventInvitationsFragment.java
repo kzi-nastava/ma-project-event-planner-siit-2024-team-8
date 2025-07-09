@@ -98,7 +98,7 @@ public class CreateEventInvitationsFragment extends Fragment implements Invitati
         invitations = guests.stream()
                     .map(Invitation::new)  // Create Invitation for each guest
                     .collect(Collectors.toList());;
-        invitationsAdapter = new InvitationsAdapter(invitations,this);
+        invitationsAdapter = new InvitationsAdapter(invitations,this,true,true);
 
         recyclerView.setAdapter(invitationsAdapter);
 
@@ -148,4 +148,7 @@ public class CreateEventInvitationsFragment extends Fragment implements Invitati
         invitations.add(invitation);
         invitationsAdapter.notifyItemInserted(invitations.size() - 1);
     }
+
+    @Override
+    public void onInvitationClickedUser(String userId) {}
 }

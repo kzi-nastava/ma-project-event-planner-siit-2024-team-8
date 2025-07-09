@@ -1,5 +1,6 @@
 package com.example.myapplication.viewmodels;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -12,9 +13,12 @@ import com.example.myapplication.domain.Location;
 import com.example.myapplication.domain.PagedResponse;
 import com.example.myapplication.domain.dto.CreateEventRequest;
 import com.example.myapplication.domain.dto.EventCardResponse;
+import com.example.myapplication.domain.dto.EventInfoResponse;
+import com.example.myapplication.domain.dto.GuestResponse;
 import com.example.myapplication.domain.dto.SearchEventsRequest;
 import com.example.myapplication.services.ClientUtils;
 import com.example.myapplication.services.EventService;
+import com.example.myapplication.utilities.JwtTokenUtil;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -26,7 +30,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class EventViewModel extends ViewModel {
-    private final MutableLiveData<Event> event = new MutableLiveData<>();
+    private final MutableLiveData<EventInfoResponse> currentEvent = new MutableLiveData<>();
 
     private final MutableLiveData<CreateEventRequest> createEventRequest = new MutableLiveData<>();
 
@@ -37,24 +41,21 @@ public class EventViewModel extends ViewModel {
     private final MutableLiveData<List<EventCardResponse>> currentEvents = new MutableLiveData<>();
 
     private final MutableLiveData<SearchEventsRequest> currentFilters = new MutableLiveData<>();
+
+    private final MutableLiveData<List<EventInfoResponse>> userEvents = new MutableLiveData<>();
     private MutableLiveData<Long> totalElements = new MutableLiveData<>();
 
     private MutableLiveData<Integer> totalPages = new MutableLiveData<>();
     public EventViewModel(){
-        event.setValue(new Event());
         createEventRequest.setValue(new CreateEventRequest());
         createLocationRequest.setValue(new Location());
         top5Events.setValue(new ArrayList<>());
         currentFilters.setValue(new SearchEventsRequest());
     }
 
-    public LiveData<Event> getEvent(){
-        return event;
+    public LiveData<EventInfoResponse> getEvent(){
+        return currentEvent;
     }
-    public List<Activity> getActivities(){
-        return this.event.getValue().getActivities();
-    }
-
     public LiveData<CreateEventRequest> getCreateEventRequest() {return createEventRequest;}
     public List<Activity> getRequestActivities() {return createEventRequest.getValue().getAgenda();}
 
@@ -67,18 +68,16 @@ public class EventViewModel extends ViewModel {
     public LiveData<Long> getTotalElements() {return totalElements;}
     public LiveData<Integer> getTotalPages() {return totalPages;}
 
+    public LiveData<List<EventInfoResponse>> getUserEvents() {return userEvents;}
+
     public LiveData<List<EventCardResponse>> getTop5(){
         return top5Events;
     }
 
-    public void setActivities(List<Activity> activities){
-        this.event.getValue().setActivities(activities);
+    public void setCurrentEvent(EventInfoResponse event){
+        currentEvent.setValue(event);
     }
 
-    public void saveEvent(){
-        Event event = this.event.getValue();
-
-    }
 
     public void setCurrentFilters(SearchEventsRequest request){
         this.currentFilters.setValue(request);
@@ -158,5 +157,30 @@ public class EventViewModel extends ViewModel {
                 Log.d("error fetching events", Objects.requireNonNull(t.getMessage()));
             }
         });
+    }
+
+    public void fetchUserEvents(Context context) {
+        Call<List<EventInfoResponse>> call = ClientUtils.eventAPIService.fetchUserEvents(JwtTokenUtil.getUserId());
+        call.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<List<EventInfoResponse>> call, Response<List<EventInfoResponse>> response) {
+                if (response.isSuccessful()) {
+                    userEvents.setValue(response.body());
+                    Log.d("SUCCESS","SUCCESSFULLY");
+                }
+                Log.d("SUCCESS","SUCCESSFULLY");
+            }
+
+            @Override
+            public void onFailure(Call<List<EventInfoResponse>> call, Throwable t) {
+                Log.d("FAILED", Objects.requireNonNull(t.getMessage()));
+            }
+        });
+
+    }
+
+    public void fetchGuestList(Callback<List<GuestResponse>> callback) {
+        Call <List<GuestResponse>> call = ClientUtils.eventAPIService.fetchGuestList(currentEvent.getValue().getId());
+        call.enqueue(callback);
     }
 }

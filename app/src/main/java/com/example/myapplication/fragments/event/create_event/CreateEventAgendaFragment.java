@@ -46,7 +46,7 @@ public class CreateEventAgendaFragment extends Fragment implements ActivitiesAda
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         activityList = eventViewModel.getRequestActivities();
-        activitiesAdapter = new ActivitiesAdapter(activityList,this);
+        activitiesAdapter = new ActivitiesAdapter(activityList,this,true);
         recyclerView.setAdapter(activitiesAdapter);
 
         Button next = binding.createEventNextButton3;

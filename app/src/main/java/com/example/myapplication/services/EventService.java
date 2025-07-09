@@ -9,6 +9,7 @@ import com.example.myapplication.domain.dto.EventCardResponse;
 import com.example.myapplication.domain.dto.EventInfoResponse;
 import com.example.myapplication.domain.dto.EventSignupRequest;
 import com.example.myapplication.domain.dto.EventUpdateRequest;
+import com.example.myapplication.domain.dto.GuestResponse;
 import com.example.myapplication.utilities.RetrofitClient;
 
 import java.util.List;
@@ -174,5 +175,12 @@ public class EventService {
 
             }
         });
+    }
+
+    public void signUserUpToEvent(EventSignupRequest request, Callback<String> callback){
+        apiService.signUserUpToEvent(request).enqueue(callback);
+    }
+    public void leaveEvent(EventSignupRequest request,Callback<String> callback){
+        apiService.leaveEvent(request).enqueue(callback);
     }
 }

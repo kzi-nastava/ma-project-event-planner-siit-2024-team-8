@@ -120,13 +120,23 @@ public class BudgetItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         public void bind(BudgetItem budgetItem) {
             final AssetCategory[] category = new AssetCategory[1];
+            this.item = budgetItem;
+
             assetCategoryService.getCategoryById(JwtTokenUtil.getToken(), budgetItem.getCategory(), new Callback<AssetCategory>() {
                 @Override
-                public void onResponse(retrofit2.Call<AssetCategory> call, Response<AssetCategory> response) {
+                public void onResponse(Call<AssetCategory> call, Response<AssetCategory> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         AssetCategory fetchedCategory = response.body();
-                        category[0] = fetchedCategory;
-                        Log.e("AssetCategory", "Succes fetching category for budget items");
+                        Log.e("AssetCategory", "Success fetching category for budget items");
+
+                        // Now safe to use fetchedCategory
+                        if ("UTILITY".equals(fetchedCategory.getType())) {
+                            utilityButton.setChecked(true);
+                        } else {
+                            productButton.setChecked(true);
+                        }
+
+                        bindAssetCategory(assetCategorySpinner, fetchedCategory, fetchedCategory.getType(), null);
                     } else {
                         Log.e("AssetCategory", "Failed to fetch category for utility");
                     }
@@ -137,15 +147,6 @@ public class BudgetItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     Log.e("AssetCategory", "Category request failed: " + t.getMessage(), t);
                 }
             });
-            this.item = budgetItem;
-            if (budgetItem.getCategory() != null){
-                if (Objects.equals(category[0].getType(), "UTILITY")){
-                    utilityButton.setChecked(true);
-                }else{
-                    productButton.setChecked(true);
-                }
-                bindAssetCategory(assetCategorySpinner, category[0], category[0].getType(), null);
-            }
             plannedAmmount.setText(budgetItem.getPlannedAmount().toString());
 
             assetCategoryRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {

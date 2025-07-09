@@ -25,11 +25,17 @@ public class InvitationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private OnNewInvitationsListener newInvitationListener;
 
+    private Boolean isMyEvent = null;
+
+    private Boolean isPrivate = null;
+
 
     // Constructor
-    public InvitationsAdapter(List<Invitation> invitations, OnNewInvitationsListener listener) {
+    public InvitationsAdapter(List<Invitation> invitations, OnNewInvitationsListener listener,Boolean isMyEvent,Boolean isPrivate) {
         this.invitations = invitations;
         this.newInvitationListener = listener;
+        this.isMyEvent = isMyEvent;
+        this.isPrivate = isPrivate;
     }
 
     @Override
@@ -130,10 +136,14 @@ public class InvitationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         public void onInvitationClicked(){
-            Invitation updatedInvitation = new Invitation( LocalDate.now(),invitationEmailTextView.getText().toString(),true);
-            int position = getAdapterPosition();
-            invitations.set(position, updatedInvitation);
-            notifyItemChanged(position);
+            if (isMyEvent && isPrivate){
+                Invitation updatedInvitation = new Invitation( LocalDate.now(),invitationEmailTextView.getText().toString(),true);
+                int position = getAdapterPosition();
+                invitations.set(position, updatedInvitation);
+                notifyItemChanged(position);
+            }else{
+                newInvitationListener.onInvitationClickedUser(invitations.get(getAdapterPosition()).getUserId());
+            }
         }
 
         public void bind(Invitation invitation){
@@ -143,7 +153,13 @@ public class InvitationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     }
 
+    public void setInvitations(List<Invitation> invitations){
+        this.invitations = invitations;
+        notifyDataSetChanged();
+    }
+
     public interface OnNewInvitationsListener {
         void onCreateNewInvitation();
+        void onInvitationClickedUser(String userId);
     }
 }

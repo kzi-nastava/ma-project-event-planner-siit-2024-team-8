@@ -29,17 +29,22 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private List<Activity> activitiesList;
     private OnNewActivityListener newActivityListener;
 
+    private Boolean isMyEvent;
+
     // Constructor
-    public ActivitiesAdapter(List<Activity> activitiesList, OnNewActivityListener newActivityListener) {
+    public ActivitiesAdapter(List<Activity> activitiesList, OnNewActivityListener newActivityListener,Boolean isMyEvent) {
         this.activitiesList = activitiesList;
         this.newActivityListener = newActivityListener;
+        this.isMyEvent = isMyEvent;
         // Add "Create New Activity" as the last item
-        this.activitiesList.add(new Activity("Create New Activity", "", "", "", ""));
+        if (isMyEvent){
+            this.activitiesList.add(new Activity("Create New Activity", "", "", "", ""));
+        }
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == activitiesList.size() - 1) {
+        if (position == activitiesList.size() - 1 && isMyEvent) {
             return VIEW_TYPE_CREATE_NEW;
         }
 
@@ -247,6 +252,7 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         public void onActivityClicked(){
+            if(!isMyEvent){return;}
             String title = activityTitle.getText().toString();
             String location = activityLocation.getText().toString();
             String time = activityTime.getText().toString();
@@ -256,12 +262,20 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             int position = getAdapterPosition();
 
-            Activity updatedActivity = new Activity(title, location, description, "","", true);
+            Activity updatedActivity = new Activity(title, location, description, startTime,endTime, true);
 
             activitiesList.set(position, updatedActivity);
 
             notifyItemChanged(position);
         }
+    }
+
+    public void setActivities(List<Activity> activitiesList){
+        this.activitiesList = activitiesList;
+        if (isMyEvent){
+            this.activitiesList.add(new Activity("Create New Activity", "", "", "", ""));
+        }
+        notifyDataSetChanged();
     }
 
     // Interface for handling "Create New Activity" card clicks

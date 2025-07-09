@@ -103,7 +103,7 @@ public class CreateEventFragment extends Fragment {
         Fragment current = getChildFragmentManager().findFragmentById(R.id.createEventLayout);
         if (current instanceof CreateEventBasicInfoFragment){
             getParentFragmentManager().popBackStack();
-        }else if ((current instanceof CreateEventLocationFragment && !eventViewModel.getEvent().getValue().isPrivate())
+        }else if ((current instanceof CreateEventLocationFragment && !eventViewModel.getCreateEventRequest().getValue().isPrivate())
                     || current instanceof CreateEventInvitationsFragment){
             CreateEventBasicInfoFragment stepOneFragment = new CreateEventBasicInfoFragment();
             getChildFragmentManager().beginTransaction()

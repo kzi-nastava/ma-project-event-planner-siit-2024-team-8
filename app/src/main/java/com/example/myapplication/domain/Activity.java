@@ -1,5 +1,7 @@
 package com.example.myapplication.domain;
 
+import com.example.myapplication.domain.dto.ActivityUpdateRequest;
+
 import java.time.format.DateTimeFormatter;
 
 public class Activity {
@@ -27,6 +29,15 @@ public class Activity {
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
+    }
+
+    public Activity(ActivityUpdateRequest request){
+        this.name = request.getName();
+        this.place = request.getPlace();
+        this.startTime = request.getStartTime();
+        this.endTime = request.getEndTime();
+        this.description = request.getDescription();
+        this.input = false;
     }
 
     public Activity(){}

@@ -211,4 +211,23 @@ public class UserViewModel extends ViewModel {
             }
         });
     }
+
+    public void suspendUser(String reportId,Context context){
+        Call<ApiResponse> call = ClientUtils.reportAPIService.suspendUser(reportId);
+        call.enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                if (response.isSuccessful()){
+                    NotificationsUtils.getInstance().showSuccessToast(context,"User suspended.");
+                }else{
+                    NotificationsUtils.getInstance().showErrToast(context,response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+
+            }
+        });
+    }
 }

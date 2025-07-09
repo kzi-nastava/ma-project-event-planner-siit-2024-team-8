@@ -1,5 +1,8 @@
 package com.example.myapplication.domain.dto;
 
+
+import com.example.myapplication.domain.enumerations.Role;
+
 public class UserInfoResponse {
     public String firstName;
     public String lastName;
@@ -7,5 +10,6 @@ public class UserInfoResponse {
     public String number;
     public String profileImage;
     public String address;
+    public Role role;
     public Boolean isActive;
 }

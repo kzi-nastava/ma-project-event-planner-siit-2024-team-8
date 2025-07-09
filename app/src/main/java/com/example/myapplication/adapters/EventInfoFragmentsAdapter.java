@@ -12,6 +12,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.fragments.ToDoFragment;
 import com.example.myapplication.fragments.event.event_info.BudgetFragment;
+import com.example.myapplication.fragments.event.event_info.EventAgendaOverview;
+import com.example.myapplication.fragments.event.event_info.EventGuestsFragment;
 import com.example.myapplication.fragments.event.event_info.EventOverviewFragment;
 import com.example.myapplication.utilities.JwtTokenUtil;
 
@@ -47,11 +49,11 @@ public class EventInfoFragmentsAdapter extends FragmentStateAdapter {
 
             case 1:
                 // make GuestsFragment
-                return new ToDoFragment();
+                return new EventGuestsFragment();
 
             case 2:
                 // make agenda fragment
-                return new ToDoFragment();
+                return new EventAgendaOverview();
 
             case 3:
                 BudgetFragment budgetFragment = new BudgetFragment();

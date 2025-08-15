@@ -34,6 +34,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.myapplication.R;
 import com.example.myapplication.domain.Asset;
+import com.example.myapplication.domain.Notification;
+import com.example.myapplication.domain.dto.NotificationResponse;
 import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.fragments.CreateEventTypeFragment;
 import com.example.myapplication.fragments.HomePageFragment;
@@ -42,7 +44,10 @@ import com.example.myapplication.fragments.StartupFragment;
 import com.example.myapplication.fragments.asset.AssetCategoriesFragment;
 import com.example.myapplication.fragments.asset.CreateAssetFragment;
 import com.example.myapplication.fragments.event.create_event.CreateEventFragment;
+import com.example.myapplication.services.NotificationForegroundService;
+import com.example.myapplication.services.NotificationService;
 import com.example.myapplication.utilities.JwtTokenUtil;
+import com.example.myapplication.utilities.NotificationsUtils;
 import com.example.myapplication.utilities.PopupHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -73,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
     private HomePageFragment homePageFragment;
 
     private int backStackCount;
+
 
 
     public boolean checkPermission() {
@@ -125,6 +131,9 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
                 Toast.makeText(this, "Permission denied!", Toast.LENGTH_SHORT).show();
             }
         }
+        if (requestCode == 101 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            startNotificationService();
+        }
     }
 
     @Override
@@ -143,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
 
         try {
             JwtTokenUtil.setSharedPreferences(this);
@@ -180,12 +190,23 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
                     .addToBackStack(null)
                     .commit();
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
+            }
+        }
 
 
         /*loginFragment = new LoginFragment();
         FragmentTransaction loginTransaction = getSupportFragmentManager().beginTransaction();
         loginTransaction.replace(R.id.mainLayout,loginFragment)
                 .commit();*/
+    }
+
+    private void startNotificationService() {
+        Intent serviceIntent = new Intent(this, NotificationForegroundService.class);
+        serviceIntent.putExtra("token", JwtTokenUtil.getToken());
+        ContextCompat.startForegroundService(this, serviceIntent);
     }
 
     private void checkBackStack() {

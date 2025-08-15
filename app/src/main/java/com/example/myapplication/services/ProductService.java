@@ -2,6 +2,7 @@ package com.example.myapplication.services;
 
 import com.example.myapplication.domain.Product;
 import com.example.myapplication.domain.Review;
+import com.example.myapplication.domain.dto.asset.ProductResponse;
 import com.example.myapplication.utilities.RetrofitClient;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -23,8 +24,8 @@ public class ProductService {
         call.enqueue(callback);
     }
 
-    public void getProductById(String token, String id, Callback<Product> callback) {
-        Call<Product> call = apiService.getProductById(token, id);
+    public void getProductById(String token, String id, Callback<ProductResponse> callback) {
+        Call<ProductResponse> call = apiService.getProductById(token, id);
         call.enqueue(callback);
     }
 

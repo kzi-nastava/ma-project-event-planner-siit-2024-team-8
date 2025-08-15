@@ -1,6 +1,7 @@
 package com.example.myapplication.fragments.asset;
 
 import android.app.DatePickerDialog;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,30 +15,39 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.domain.Product;
+import com.example.myapplication.adapters.ImageAdapter;
 import com.example.myapplication.domain.Utility;
+import com.example.myapplication.domain.dto.asset.ProductResponse;
+import com.example.myapplication.domain.dto.asset.UtilityResponse;
+import com.example.myapplication.fragments.HomePageFragment;
 import com.example.myapplication.services.ProductService;
 import com.example.myapplication.services.UtilityService;
 import com.example.myapplication.utilities.JwtTokenUtil;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class EditAssetFragment extends Fragment {
+public class EditAssetFragment extends Fragment implements ImageAdapter.OnImageClickedListener {
     private String assetId;
     private String assetType;
     private LinearLayout utilityDetailsLayout;
 
     private EditText assetNameEditText, descriptionEditText, priceEditText, discountEditText, durationEditText;
     private Switch visibilitySwitch, availabilitySwitch;
-    private TextView bookingDeadlineTextView, cancellationDeadlineTextView;
+    private TextInputEditText bookingDeadlineTextView, cancellationDeadlineTextView;
 
     private RadioButton confirmationMethodAutomatic, confirmationMethodManual;
 
@@ -45,6 +55,12 @@ public class EditAssetFragment extends Fragment {
 
     private UtilityService utilityService;
     private ProductService productService;
+
+    private List<Uri> selectedImageUris = new ArrayList<>();
+
+    private RecyclerView imagesRecyclerView;
+    private ImageAdapter imageAdapter;
+
 
     public static EditAssetFragment newInstance(String assetId, String assetType) {
         EditAssetFragment fragment = new EditAssetFragment();
@@ -84,8 +100,18 @@ public class EditAssetFragment extends Fragment {
                 saveAsset(authHeader);
             }
         });
+        setupRecyclerView(view);
+
 
         return view;
+    }
+
+    private void setupRecyclerView(View view) {
+        imagesRecyclerView = view.findViewById(R.id.imagesRecyclerView);
+        imageAdapter = new ImageAdapter(selectedImageUris,this);
+        int spanCount = 2;
+        imagesRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
+        imagesRecyclerView.setAdapter(imageAdapter);
     }
 
     private void initializeViews(View view) {
@@ -97,11 +123,9 @@ public class EditAssetFragment extends Fragment {
         durationEditText = view.findViewById(R.id.assetDurationEditText);
         visibilitySwitch = view.findViewById(R.id.visibilitySwitch);
         availabilitySwitch = view.findViewById(R.id.availabilitySwitch);
-        bookingDeadlineTextView = view.findViewById(R.id.bookingDateTextView);
-        cancellationDeadlineTextView = view.findViewById(R.id.cancellationDateTextView);
+        bookingDeadlineTextView = view.findViewById(R.id.bookingTermEditText);
+        cancellationDeadlineTextView = view.findViewById(R.id.cancellationTermEditText);
         saveButton = view.findViewById(R.id.saveButton);
-        bookingDeadlineTextView.setOnClickListener(v -> showDatePickerDialog(bookingDeadlineTextView));
-        cancellationDeadlineTextView.setOnClickListener(v -> showDatePickerDialog(cancellationDeadlineTextView));
         confirmationMethodAutomatic = view.findViewById(R.id.confirmationMethodAutomatic);
         confirmationMethodManual = view.findViewById(R.id.confirmationMethodManual);
         cancelButton = view.findViewById(R.id.cancelButton);
@@ -176,12 +200,16 @@ public class EditAssetFragment extends Fragment {
         return true;
     }
 
-    private void navigateToAssetInfoFragment() {
-        AssetInfoFragment assetInfoFragment = AssetInfoFragment.newInstance(this.assetId, this.assetType, true);
+    private void navigateToHomeFragment() {
+        HomePageFragment homePageFragment = new HomePageFragment();
 
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.main, assetInfoFragment);
-        transaction.addToBackStack(null);
+        // Clear entire back stack
+        FragmentManager fragmentManager = getParentFragmentManager();
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+        // Navigate to the fragment
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.main, homePageFragment);
         transaction.commit();
     }
 
@@ -205,7 +233,7 @@ public class EditAssetFragment extends Fragment {
                         public void onResponse(Call<Utility> call, Response<Utility> response) {
                             if (response.isSuccessful()) {
                                 Toast.makeText(getContext(), "Utility updated successfully.", Toast.LENGTH_SHORT).show();
-                                navigateToAssetInfoFragment();
+                                navigateToHomeFragment();
                             } else {
                                 Toast.makeText(getContext(), "Failed to update utility.", Toast.LENGTH_SHORT).show();
                             }
@@ -213,7 +241,8 @@ public class EditAssetFragment extends Fragment {
 
                         @Override
                         public void onFailure(Call<Utility> call, Throwable t) {
-                            Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Utility updated successfully.", Toast.LENGTH_SHORT).show();
+                            navigateToHomeFragment();
                         }
                     });
         } else if ("PRODUCT".equals(assetType)) {
@@ -222,7 +251,7 @@ public class EditAssetFragment extends Fragment {
                 public void onResponse(Call<Object> call, Response<Object> response) {
                     if (response.isSuccessful()) {
                         Toast.makeText(getContext(), "Product updated successfully.", Toast.LENGTH_SHORT).show();
-                        navigateToAssetInfoFragment();
+                        navigateToHomeFragment();
                     } else {
                         Toast.makeText(getContext(), "Failed to update product.", Toast.LENGTH_SHORT).show();
                     }
@@ -237,38 +266,39 @@ public class EditAssetFragment extends Fragment {
     }
 
     private void getUtilityById(String token, String id) {
-        utilityService.getUtilityById(token, id, new Callback<Utility>() {
+        utilityService.getUtilityById(token, id, new Callback<UtilityResponse>() {
             @Override
-            public void onResponse(Call<Utility> call, Response<Utility> response) {
+            public void onResponse(Call<UtilityResponse> call, Response<UtilityResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     populateUtilityData(response.body());
+
                 }
             }
 
             @Override
-            public void onFailure(Call<Utility> call, Throwable t) {
+            public void onFailure(Call<UtilityResponse> call, Throwable t) {
                 Log.e("EditAssetFragment", "Error fetching utility: " + t.getMessage());
             }
         });
     }
 
     private void getProductById(String token, String id) {
-        productService.getProductById(token, id, new Callback<Product>() {
+        productService.getProductById(token, id, new Callback<ProductResponse>() {
             @Override
-            public void onResponse(Call<Product> call, Response<Product> response) {
+            public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     populateProductData(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<Product> call, Throwable t) {
+            public void onFailure(Call<ProductResponse> call, Throwable t) {
                 Log.e("EditAssetFragment", "Error fetching product: " + t.getMessage());
             }
         });
     }
 
-    private void populateUtilityData(Utility utility) {
+    private void populateUtilityData(UtilityResponse utility) {
         utilityDetailsLayout.setVisibility(View.VISIBLE);
         assetNameEditText.setText(utility.getName());
         descriptionEditText.setText(utility.getDescription());
@@ -276,26 +306,26 @@ public class EditAssetFragment extends Fragment {
         discountEditText.setText(String.valueOf(utility.getDiscount()));
         durationEditText.setText(String.valueOf(utility.getDuration()));
 
-        visibilitySwitch.setChecked(utility.isVisible());
-        availabilitySwitch.setChecked(utility.isAvailable());
+        visibilitySwitch.setChecked(utility.getVisible());
+        availabilitySwitch.setChecked(utility.getAvailable());
 
-        bookingDeadlineTextView.setText(utility.getReservationTerm());
-        cancellationDeadlineTextView.setText(utility.getCancellationTerm());
+        bookingDeadlineTextView.setText(utility.getReservationTerm().toString());
+        cancellationDeadlineTextView.setText(utility.getCancellationTerm().toString());
 
-        if (utility.isManuelConfirmation()) {
+        if (utility.getManuelConfirmation()) {
             confirmationMethodManual.setChecked(true);
         } else {
             confirmationMethodAutomatic.setChecked(true);
         }
     }
 
-    private void populateProductData(Product product) {
+    private void populateProductData(ProductResponse product) {
         assetNameEditText.setText(product.getName());
         descriptionEditText.setText(product.getDescription());
         priceEditText.setText(String.valueOf(product.getPrice()));
         discountEditText.setText(String.valueOf(product.getDiscount()));
-        visibilitySwitch.setChecked(product.isVisible());
-        availabilitySwitch.setChecked(product.isAvailable());
+        visibilitySwitch.setChecked(product.getVisible());
+        availabilitySwitch.setChecked(product.getAvailable());
         utilityDetailsLayout.setVisibility(View.GONE);
     }
 
@@ -311,5 +341,10 @@ public class EditAssetFragment extends Fragment {
                 }, year, month, day);
 
         datePickerDialog.show();
+    }
+
+    @Override
+    public void onRemove(Uri imageUri) {
+
     }
 }

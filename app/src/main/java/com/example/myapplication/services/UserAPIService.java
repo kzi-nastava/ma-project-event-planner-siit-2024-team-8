@@ -1,12 +1,12 @@
 package com.example.myapplication.services;
 
 import com.example.myapplication.domain.ApiResponse;
-import com.example.myapplication.domain.dto.ProviderInfoResponse;
-import com.example.myapplication.domain.dto.UpdateUserRequest;
-import com.example.myapplication.domain.dto.UserCreateRequest;
-import com.example.myapplication.domain.dto.UserInfoResponse;
+import com.example.myapplication.domain.dto.event.EventInfoResponse;
+import com.example.myapplication.domain.dto.user.BlockedUserResponse;
+import com.example.myapplication.domain.dto.user.ProviderInfoResponse;
+import com.example.myapplication.domain.dto.user.UserInfoResponse;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 import okhttp3.MultipartBody;
@@ -41,6 +41,12 @@ public interface UserAPIService {
 
     @GET("users/{email}")
     Call<UUID> getUserIdByEmail(@Path("email") String email);
+
+    @GET("users/blocked/{id}")
+    Call<List<BlockedUserResponse>> getBlockedUsers(@Path("id") String id);
+
+    @GET("users/fetch-favs/{userId}")
+    Call<List<EventInfoResponse>> fetchFavoriteEvents(@Path("userId") String userId);
     @Multipart
     @PUT("users/update")
     Call<String> updateUser(
@@ -57,5 +63,31 @@ public interface UserAPIService {
     @PUT("users/block/{id}")
     Call<ApiResponse> blockUser(
             @Path("id") UUID id);
+
+    @PUT("users/blocked/{id}")
+    Call<ApiResponse> updateBlockedUsers(
+            @Path("id") String id,
+            @Body List<String> blockedUsers
+    );
+
+    @Multipart
+    @POST("providers/register/mobile")
+    Call<ApiResponse> registerProvider(
+            @Part("user") RequestBody user,
+            @Part MultipartBody.Part image,
+            @Part List<MultipartBody.Part> companyImages
+    );
+
+    @POST("users/is-favorite/{userId}")
+    Call<Boolean> checkFavorite(@Path("userId") String userId,
+                                @Body RequestBody eventId);
+
+    @PUT("users/favorite/{userId}")
+    Call<String> favoriteEvent(@Path("userId") String userId,
+                               @Body RequestBody eventId);
+
+    @PUT("users/unfavorite/{userId}")
+    Call<String> unfavoriteEvent(@Path("userId") String userId,
+                                 @Body RequestBody eventId);
 
 }

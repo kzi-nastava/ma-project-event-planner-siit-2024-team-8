@@ -33,10 +33,12 @@ import com.example.myapplication.domain.AssetCategory;
 import com.example.myapplication.domain.Event;
 import com.example.myapplication.domain.EventType;
 import com.example.myapplication.services.AssetCategoryService;
+import com.example.myapplication.services.EventService;
 import com.example.myapplication.services.EventTypeService;
 import com.example.myapplication.utilities.JwtTokenUtil;
 import com.example.myapplication.viewmodels.AssetCategoryViewModel;
 import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.w3c.dom.Text;
 
@@ -169,8 +171,10 @@ public class CreateEventTypeFragment extends Fragment implements EventTypesAdapt
                 });
             } else {
                 if (checked) {
+                    binding.createEventTypeButton.setVisibility(View.VISIBLE);
                     loadActiveEventTypes(false);
                 } else {
+                    binding.createEventTypeButton.setVisibility(View.GONE);
                     loadInactiveEventTypes();
                 }
             }
@@ -302,7 +306,6 @@ public class CreateEventTypeFragment extends Fragment implements EventTypesAdapt
 
         EditText nameEditText = dialog.findViewById(R.id.eventTypeNameEditText);
         nameEditText.setVisibility(View.GONE);
-        nameEditText.setText("");
 
         TextView id = dialog.findViewById(R.id.eventTypeId);
         UUID currentID = UUID.fromString(id.getText().toString());
@@ -318,13 +321,16 @@ public class CreateEventTypeFragment extends Fragment implements EventTypesAdapt
         newEventType.setAssetCategories(selected);
 
         if (!isNew){
-            Optional<EventType> oldEventType = eventTypes.stream()
+            EventType oldEventType = eventTypes.stream()
                     .filter(et -> et.getId().equals(currentID))
-                    .findFirst();
-            eventTypes.set(eventTypes.indexOf(oldEventType.get()),newEventType);
-            adapter.notifyDataSetChanged();
+                    .findFirst().get();
+            oldEventType.setDescription(description.getText().toString());
+            oldEventType.setName(isNew ? nameEditText.getText().toString() : name.getText().toString());
+            oldEventType.setAssetCategories(selected);
+            adapter.notifyItemChanged(eventTypes.indexOf(oldEventType));
         }else{
             eventTypes.add(newEventType);
+            adapter.updateData(true, eventTypes);
             adapter.notifyItemInserted(eventTypes.size() - 1);
         }
 
@@ -354,20 +360,34 @@ public class CreateEventTypeFragment extends Fragment implements EventTypesAdapt
 
     @Override
     public void onCreateNewEventType() {
-        onAssetCategoryRequested(new ArrayList<>());
-        EditText name = dialog.findViewById(R.id.eventTypeNameEditText);
-        name.setVisibility(View.VISIBLE);
+        onAssetCategoryRequested(new ArrayList<>()); // This loads categories with none selected
+
+
+        TextInputLayout nameLayout = dialog.findViewById(R.id.nameLayout);
+        nameLayout.setVisibility(View.VISIBLE);
+        EditText nameEdit = dialog.findViewById(R.id.eventTypeNameEditText);
+        nameEdit.setVisibility(View.VISIBLE);
+        nameEdit.setText("");
 
         TextView nameTextView = dialog.findViewById(R.id.eventTypeTextView);
         nameTextView.setVisibility(View.GONE);
+        nameTextView.setText("");
+
+        EditText description = dialog.findViewById(R.id.eventTypeDescriptionEditText);
+        description.setText("");
 
         TextView id = dialog.findViewById(R.id.eventTypeId);
-        id.setText(UUID.randomUUID().toString());
+        id.setText(UUID.randomUUID().toString()); // new ID
 
-        //Deactivation/activation button hide
+        RecyclerView categoriesView = dialog.findViewById(R.id.assetCategoriesRecyclerView);
+        categoriesView.setAdapter(new MultiSelectAdapter(new ArrayList<>(), new ArrayList<>()));
+
         Button activationButton = dialog.findViewById(R.id.activationButton);
         activationButton.setVisibility(View.GONE);
+
         dialog.show();
+
+
     }
 
     @Override

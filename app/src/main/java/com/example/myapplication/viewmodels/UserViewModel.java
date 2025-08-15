@@ -2,7 +2,6 @@ package com.example.myapplication.viewmodels;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -10,12 +9,14 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.myapplication.callbacks.UserRegisterCallBack;
 import com.example.myapplication.domain.ApiResponse;
+import com.example.myapplication.domain.dto.event.EventInfoResponse;
+import com.example.myapplication.domain.dto.user.BlockedUserResponse;
 import com.example.myapplication.domain.dto.CreateReportRequest;
-import com.example.myapplication.domain.dto.ProviderInfoResponse;
-import com.example.myapplication.domain.dto.UserCreateRequest;
-import com.example.myapplication.domain.dto.UserInfoResponse;
+import com.example.myapplication.domain.dto.NotificationResponse;
+import com.example.myapplication.domain.dto.user.ProviderInfoResponse;
+import com.example.myapplication.domain.dto.user.UserCreateRequest;
+import com.example.myapplication.domain.dto.user.UserInfoResponse;
 import com.example.myapplication.domain.enumerations.Role;
-import com.example.myapplication.fragments.ProfileEditFragment;
 import com.example.myapplication.services.ClientUtils;
 import com.example.myapplication.services.UserService;
 import com.example.myapplication.utilities.JwtTokenUtil;
@@ -23,6 +24,7 @@ import com.example.myapplication.utilities.NotificationsUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -40,6 +42,12 @@ public class UserViewModel extends ViewModel {
 
     private final MutableLiveData<ProviderInfoResponse> currentProviderInfo = new MutableLiveData<>();
 
+    private final MutableLiveData<List<NotificationResponse>> currentNotifications = new MutableLiveData<>();
+
+    private final MutableLiveData<List<BlockedUserResponse>> blockedUsers = new MutableLiveData<>();
+
+    private final MutableLiveData<List<EventInfoResponse>> favoriteEvents = new MutableLiveData<>();
+
     private UserService userService;
 
     public UserViewModel() {
@@ -56,6 +64,12 @@ public class UserViewModel extends ViewModel {
 
     public LiveData<ProviderInfoResponse> getProviderInfo(){return currentProviderInfo;}
 
+    public LiveData<List<NotificationResponse>> getNotifications(){return  currentNotifications;}
+
+    public LiveData<List<BlockedUserResponse>> getBlockedUsers() {return blockedUsers;}
+
+    public LiveData<List<EventInfoResponse>> getFavoriteEvents() {return favoriteEvents;}
+
     public void onUserTypeChanged(){
     }
 
@@ -63,16 +77,19 @@ public class UserViewModel extends ViewModel {
         userService.createUser(userLiveData.getValue(), imageFile, new UserRegisterCallBack() {
             @Override
             public void onSuccess() {
+
                 callBack.onSuccess();
             }
 
             @Override
             public void onServerError(String errorMessage) {
+
                 callBack.onServerError(errorMessage);
             }
 
             @Override
             public void onNetworkError(Throwable t) {
+
                 callBack.onNetworkError(t);
             }
         });
@@ -226,6 +243,79 @@ public class UserViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<ApiResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void getUserNotifications(){
+        Call <List<NotificationResponse>> call = ClientUtils.notifcationsAPIService.getNotificationsForUser(UUID.fromString(JwtTokenUtil.getUserId()));
+        call.enqueue(new Callback<List<NotificationResponse>>() {
+            @Override
+            public void onResponse(Call<List<NotificationResponse>> call, Response<List<NotificationResponse>> response) {
+                if(response.isSuccessful()){
+                    currentNotifications.setValue(response.body());
+                }else{
+                    Log.d("FAILURE",response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<NotificationResponse>> call, Throwable t) {
+                Log.d("FAILURE",t.getMessage().toString());
+
+            }
+        });
+    }
+    public void fetchBlockedUsers(){
+        Call<List<BlockedUserResponse>> call = ClientUtils.userService.getBlockedUsers(JwtTokenUtil.getUserId());
+        call.enqueue(new Callback<List<BlockedUserResponse>>() {
+            @Override
+            public void onResponse(Call<List<BlockedUserResponse>> call, Response<List<BlockedUserResponse>> response) {
+                if (response.isSuccessful()){
+                    blockedUsers.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<BlockedUserResponse>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void registerProvider(File imageFile, Callback<ApiResponse> callback,Context context) {
+        userService.registerProvider(userLiveData.getValue(), imageFile,callback,context);
+    }
+
+    public void fetchFavoriteEvents(){
+        String userId = JwtTokenUtil.getUserId();
+        ClientUtils.userService.fetchFavoriteEvents(userId).enqueue(new Callback<List<EventInfoResponse>>() {
+            @Override
+            public void onResponse(Call<List<EventInfoResponse>> call, Response<List<EventInfoResponse>> response) {
+                if (response.isSuccessful()){
+                    favoriteEvents.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<EventInfoResponse>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void markAllAsRead() {
+        ClientUtils.notifcationsAPIService.markAllAsSeen(JwtTokenUtil.getUserId()).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (!response.isSuccessful()){
+                    Log.d("Err",response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
 
             }
         });

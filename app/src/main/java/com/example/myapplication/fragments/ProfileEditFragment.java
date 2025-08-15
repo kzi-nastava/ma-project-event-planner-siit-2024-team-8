@@ -13,12 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.myapplication.R;
-import com.example.myapplication.domain.dto.ProviderInfoResponse;
-import com.example.myapplication.domain.dto.UpdateUserRequest;
-import com.example.myapplication.domain.dto.UserInfoResponse;
+import com.example.myapplication.domain.dto.user.ProviderInfoResponse;
+import com.example.myapplication.domain.dto.user.UserInfoResponse;
 import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.services.UserService;
 import com.example.myapplication.utilities.JwtTokenUtil;
@@ -29,9 +27,6 @@ import java.io.File;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.

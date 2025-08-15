@@ -1,8 +1,6 @@
 package com.example.myapplication.fragments.event.event_info;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,22 +23,17 @@ import com.example.myapplication.R;
 import com.example.myapplication.adapters.InvitationsAdapter;
 import com.example.myapplication.domain.ApiResponse;
 import com.example.myapplication.domain.Invitation;
-import com.example.myapplication.domain.dto.ActivityUpdateRequest;
-import com.example.myapplication.domain.dto.AgendaUpdateRequest;
-import com.example.myapplication.domain.dto.EventInfoResponse;
+import com.example.myapplication.domain.dto.event.EventInfoResponse;
 import com.example.myapplication.domain.dto.GuestResponse;
-import com.example.myapplication.domain.dto.GuestlistUpdateRequest;
-import com.example.myapplication.domain.dto.InvitationUpdateRequest;
+import com.example.myapplication.domain.dto.event.InvitationUpdateRequest;
 import com.example.myapplication.fragments.ProfileInfoFragment;
 import com.example.myapplication.services.ClientUtils;
-import com.example.myapplication.utilities.FileUtils;
 import com.example.myapplication.utilities.HashUtils;
 import com.example.myapplication.utilities.JwtTokenUtil;
 import com.example.myapplication.utilities.NotificationsUtils;
 import com.example.myapplication.viewmodels.EventViewModel;
 import com.google.android.material.button.MaterialButton;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDate;
@@ -130,22 +123,24 @@ public class EventGuestsFragment extends Fragment implements InvitationsAdapter.
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
-        isMyEvent = Objects.equals(Objects.requireNonNull(eventViewModel.getEvent().getValue()).getOrganizerID(), JwtTokenUtil.getUserId());
-        isPrivateEvent = eventViewModel.getEvent().getValue().getPrivate();
-        Button addGuest = view.findViewById(R.id.addGuestButton);
-        if (isMyEvent && isPrivateEvent) {addGuest.setVisibility(View.VISIBLE);}
-        addGuest.setOnClickListener( v -> {
-            onCreateNewInvitation();
+        eventViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
+            isMyEvent = Objects.equals(event.getOrganizerID(), JwtTokenUtil.getUserId());
+            isPrivateEvent = event.getPrivate();
+            Button addGuest = view.findViewById(R.id.addGuestButton);
+            if (isMyEvent && isPrivateEvent) {addGuest.setVisibility(View.VISIBLE);}
+            addGuest.setOnClickListener( v -> {
+                onCreateNewInvitation();
+            });
+            setupRecyclerView(view);
+            fetchGuests();
+            setupPdfClick(view);
         });
-        setupRecyclerView(view);
-        fetchGuests();
-        setupPdfClick(view);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (!isMyEvent){return;}
+        if (isMyEvent == null || !isMyEvent){return;}
         List<GuestResponse> list = invitations.stream().map(GuestResponse::new).collect(Collectors.toList());
         String currentHash = HashUtils.hashGuestList(list);
         if (!currentHash.equals(initialHash)){

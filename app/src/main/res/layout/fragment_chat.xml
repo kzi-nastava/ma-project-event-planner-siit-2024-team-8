@@ -12,12 +12,11 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:padding="8dp">
-        
+
         <ImageButton
             android:id="@+id/backButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:backgroundTint="@color/light_gray"
             android:scaleX="1.2"
             android:scaleY="1.2"
@@ -27,9 +26,12 @@
             android:id="@+id/chatTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="8dp"
+            android:fontFamily="@font/poppins_black"
+            android:gravity="center"
             android:text="Chat"
-            android:textSize="18sp"
-            android:layout_marginStart="8dp"/>
+            android:textSize="18sp" />
     </LinearLayout>
 
     <ScrollView
@@ -56,24 +58,29 @@
             android:id="@+id/messageInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.7"
-            android:hint="Type a message"
-            android:padding="10dp"
-            android:background="@drawable/rounded_edittext"
             android:layout_gravity="center_vertical"
+            android:layout_weight="0.7"
+            android:background="@drawable/rounded_edittext"
+            android:enabled="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:enabled="true" />
+            android:fontFamily="@font/poppins_semibold"
+            android:hint="Type a message"
+            android:padding="10dp"
+            android:textColor="@color/background" />
 
         <Button
             android:id="@+id/sendMessageButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.2"
+            android:layout_marginStart="10dp"
             android:layout_marginBottom="1dp"
+            android:layout_weight="0.2"
+            android:backgroundTint="@color/black90"
+            android:fontFamily="@font/poppins_bold"
+            android:gravity="center"
+            android:padding="10dp"
             android:text="Send"
-            android:backgroundTint="@color/olive"
-            android:textColor="@android:color/white"
-            android:gravity="center" />
+            android:textColor="@color/olive" />
     </LinearLayout>
 </LinearLayout>

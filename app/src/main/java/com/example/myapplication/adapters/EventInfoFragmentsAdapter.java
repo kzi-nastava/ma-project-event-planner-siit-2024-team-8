@@ -38,28 +38,24 @@ public class EventInfoFragmentsAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
+        Bundle args = new Bundle();
+        args.putString("eventId", eventId);
+
         switch (position) {
             case 0:
-                // Pass the eventId to EventOverviewFragment
                 EventOverviewFragment eventOverviewFragment = new EventOverviewFragment();
-                Bundle overviewBundle = new Bundle();
-                overviewBundle.putString("eventId", eventId);
-                eventOverviewFragment.setArguments(overviewBundle);
+                eventOverviewFragment.setArguments(args);
                 return eventOverviewFragment;
 
             case 1:
-                // make GuestsFragment
                 return new EventGuestsFragment();
 
             case 2:
-                // make agenda fragment
                 return new EventAgendaOverview();
 
             case 3:
                 BudgetFragment budgetFragment = new BudgetFragment();
-                Bundle budgetBundle = new Bundle();
-                budgetBundle.putString("eventId", eventId);
-                budgetFragment.setArguments(budgetBundle);
+                budgetFragment.setArguments(args);
                 return budgetFragment;
 
             default:

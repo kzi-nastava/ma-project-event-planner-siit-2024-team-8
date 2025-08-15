@@ -1,15 +1,12 @@
 package com.example.myapplication.domain;
 
-import com.example.myapplication.domain.dto.BudgetItemCreateRequest;
-
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class BudgetItem {
 
     private String id;
     private String assetCategoryId;
-
     private Double plannedAmount;
     private Double actualAmount;
 

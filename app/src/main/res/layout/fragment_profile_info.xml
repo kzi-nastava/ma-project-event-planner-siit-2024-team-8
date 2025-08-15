@@ -46,19 +46,6 @@
                 app:layout_constraintStart_toEndOf="@+id/backButton"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageButton
-                android:id="@+id/imageButton2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="7dp"
-                android:background="@android:color/transparent"
-                android:scaleX="0.8"
-                android:scaleY="0.8"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/chat_icon" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ScrollView
@@ -424,18 +411,16 @@
                 </LinearLayout>
 
                 <Button
-                    android:id="@+id/logOutButton"
-                    android:layout_width="150dp"
+                    android:id="@+id/blockedUsersButton"
+                    android:layout_width="200dp"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/olive"
-                    android:fontFamily="@font/poppins_bolditalic"
-                    android:text="Log Out"
-                    android:textColor="@color/light_gray"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="@color/black90"
+                    android:text="Blocked Users"
+                    android:visibility="visible"
                     app:cornerRadius="5dp"
-                    app:icon="@drawable/baseline_arrow_back_24"
-                    app:iconTint="@color/design_default_color_surface"
-                    app:rippleColor="@color/olive"
-                    app:strokeColor="@color/olive" />
+                    app:icon="@drawable/account_circle_35dp_000000_fill0_wght600_grad0_opsz40"
+                    app:iconTint="@color/deactivate_color" />
 
                 <Button
                     android:id="@+id/blockUserButton"
@@ -449,6 +434,31 @@
                     app:iconTint="@color/deactivate_color" />
 
                 <Button
+                    android:id="@+id/favoriteEventsButton"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="@color/black90"
+                    android:text="Favorite Events"
+                    android:visibility="visible"
+                    app:cornerRadius="5dp"
+                    app:icon="@drawable/baseline_favorite_24"
+                    app:iconTint="@color/olive" />
+
+                <Button
+                    android:id="@+id/viewEventStats"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="@color/black90"
+                    android:text="View Stats"
+                    android:visibility="gone"
+                    app:cornerRadius="5dp"
+                    app:icon="@drawable/baseline_show_chart_24"
+                    app:iconSize="24dp"
+                    app:iconTint="@color/olive" />
+
+                <Button
                     android:id="@+id/reportButton"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
@@ -459,6 +469,21 @@
                     app:cornerRadius="5dp"
                     app:icon="@drawable/baseline_warning_24"
                     app:iconTint="#FF9800" />
+
+                <Button
+                    android:id="@+id/logOutButton"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:backgroundTint="@color/olive"
+                    android:fontFamily="@font/poppins_bolditalic"
+                    android:text="Log Out"
+                    android:textColor="@color/light_gray"
+                    app:cornerRadius="5dp"
+                    app:icon="@drawable/baseline_arrow_back_24"
+                    app:iconTint="@color/design_default_color_surface"
+                    app:rippleColor="@color/olive"
+                    app:strokeColor="@color/olive" />
 
             </LinearLayout>
         </ScrollView>

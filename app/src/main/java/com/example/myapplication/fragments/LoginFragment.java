@@ -153,7 +153,7 @@ public class LoginFragment extends Fragment {
                         if (errorResponse != null) {
                             NotificationsUtils.getInstance().showErrToast(requireContext(), errorResponse.getMessage());
                         } else {
-                            NotificationsUtils.getInstance().showErrToast(requireContext(), "Forbidden");
+                            NotificationsUtils.getInstance().showErrToast(requireContext(), "Accout has not been activated");
                         }
                     } else {
                         NotificationsUtils.getInstance().showErrToast(requireContext(), "Forbidden");

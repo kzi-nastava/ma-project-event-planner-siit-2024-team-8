@@ -2,8 +2,9 @@ package com.example.myapplication.fragments.asset;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,37 +15,59 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.ReviewLiveAdapter;
+import com.example.myapplication.domain.Asset;
 import com.example.myapplication.domain.AssetCategory;
 import com.example.myapplication.domain.Product;
 import com.example.myapplication.domain.Review;
 import com.example.myapplication.domain.Utility;
-import com.example.myapplication.domain.dto.ProviderInfoResponse;
+import com.example.myapplication.domain.dto.asset.ProductResponse;
+import com.example.myapplication.domain.dto.asset.UtilityResponse;
+import com.example.myapplication.domain.dto.event.EventInfoResponse;
+import com.example.myapplication.domain.dto.user.AssetResponse;
+import com.example.myapplication.domain.dto.user.ProviderInfoResponse;
+import com.example.myapplication.domain.enumerations.AssetType;
 import com.example.myapplication.fragments.ChatFragment;
 import com.example.myapplication.services.AssetCategoryService;
+import com.example.myapplication.services.BudgetService;
 import com.example.myapplication.services.EventService;
 import com.example.myapplication.services.ProductService;
 import com.example.myapplication.services.ReviewService;
 import com.example.myapplication.services.UserService;
 import com.example.myapplication.services.UtilityService;
 import com.example.myapplication.utilities.JwtTokenUtil;
+import com.example.myapplication.utilities.NetworkUtils;
+import com.example.myapplication.utilities.NotificationsUtils;
+import com.example.myapplication.viewmodels.AssetViewModel;
+import com.example.myapplication.viewmodels.EventViewModel;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.UUID;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+import okhttp3.internal.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -68,11 +91,17 @@ public class AssetOverviewFragment extends Fragment {
 
     private TextView assetCancellationDeadlineTextView;
 
+    private final List<ImageView> assetImages = new ArrayList<>();
+
     private MaterialButton loadReviewsButton;
     private RecyclerView reviewsRecyclerView;
     private Button submitCommentButton;
     private MaterialButton providerName;
     private MaterialButton chatButton;
+
+    private MaterialButton buyProductButton;
+
+    private MaterialButton reserveUtilityButton;
 
     private UtilityService utilityService;
     private ProductService productService;
@@ -85,20 +114,33 @@ public class AssetOverviewFragment extends Fragment {
 
     private TextView availableTextView;
 
+    private MaterialCardView reservationCard;
+
     private String providerId;
 
+    private String eventId;
+
     private ImageButton backButton;
+
+    private AssetViewModel assetVM;
+
+    private EventViewModel eventVM;
+
+    private String eventStartDate;
+
+    private String reservationId = null;
 
 
     public AssetOverviewFragment() {
         // Required empty public constructor
     }
 
-    public static AssetOverviewFragment newInstance(String assetId, String assetType) {
+    public static AssetOverviewFragment newInstance(String assetId, String assetType,String eventId) {
         AssetOverviewFragment fragment = new AssetOverviewFragment();
         Bundle args = new Bundle();
         args.putString("asset_id", assetId);
         args.putString("asset_type", assetType);
+        args.putString("event_id",eventId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -109,6 +151,7 @@ public class AssetOverviewFragment extends Fragment {
         if (getArguments() != null) {
             assetId = getArguments().getString("asset_id");
             assetType = getArguments().getString("asset_type");
+            eventId = getArguments().getString("event_id");
         }
 
         utilityService = new UtilityService();
@@ -122,7 +165,12 @@ public class AssetOverviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_asset_overview, container, false);
-
+        assetVM = new ViewModelProvider(requireActivity()).get(AssetViewModel.class);
+        eventVM = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
+        eventVM.getEvent().observe(getViewLifecycleOwner(),eventInfoResponse -> {
+            eventStartDate = eventInfoResponse.getStartDate();
+        });
+        eventVM.fetchEvent(eventId);
         assetNameTextView = view.findViewById(R.id.assetNameTextView);
         assetTypeTextView = view.findViewById(R.id.assetTypeTextView);
         assetCategoryTextView = view.findViewById(R.id.assetCategoryTextView);
@@ -136,10 +184,13 @@ public class AssetOverviewFragment extends Fragment {
         assetCancellationDeadlineTextView = view.findViewById(R.id.assetCancellationDeadlineTextView);
         availableTextView = view.findViewById(R.id.available);
         providerName = view.findViewById(R.id.providerNameButton);
+        assetImages.add(view.findViewById(R.id.image1));
+        assetImages.add(view.findViewById(R.id.image2));
+        assetImages.add(view.findViewById(R.id.image3));
         chatButton = view.findViewById(R.id.chatButton);
-        backButton = view.findViewById(R.id.backButton);
+        buyProductButton = view.findViewById(R.id.buyProductButton);
+        reserveUtilityButton = view.findViewById(R.id.reserveUtilityButton);
 
-        backButton.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
         loadReviewsButton = view.findViewById(R.id.loadReviewsButton);
         reviewsRecyclerView = view.findViewById(R.id.reviewsRecyclerView);
         reviewsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -147,7 +198,10 @@ public class AssetOverviewFragment extends Fragment {
         submitCommentButton.setOnClickListener(v -> submitComment());
         chatButton.setOnClickListener(v -> openChatFragment());
 
-        String authHeader = "Bearer " + JwtTokenUtil.getToken();
+        reservationCard = view.findViewById(R.id.reservationCard);
+
+
+        String authHeader = JwtTokenUtil.getToken() != null ? "Bearer " + JwtTokenUtil.getToken() : null;
         Log.e("debug", assetId + " i ovo je type " + assetType);
         if ("UTILITY".equals(assetType)) {
             getUtilityById(authHeader, assetId);
@@ -157,6 +211,68 @@ public class AssetOverviewFragment extends Fragment {
         loadReviewsButton.setOnClickListener(v -> fetchReviews());
 
         return view;
+    }
+
+
+    //SETTING UP RESERVATION (IF THERE IS ONE) WHEN ORGANIZER IS ACCESSING THIS FRAGMENT THROUGH BOUGHT ASSETS
+    private void setupReservationData(View view) {
+        TextView resDateTV = view.findViewById(R.id.resDateTV);
+        TextView resTimeTV = view.findViewById(R.id.resTimeTV);
+        assetVM.getCurrentReservation().observe(getViewLifecycleOwner(),reservationResponse -> {
+            resDateTV.setText(reservationResponse.getDate());
+            resTimeTV.setText(reservationResponse.getTime());
+            reservationId = reservationResponse.getId().toString();
+        });
+        assetVM.fetchReservation(eventId,assetId);
+    }
+
+    private void setupCancelReservationButton(UtilityResponse response) {
+        Button cancelReservationButton = getView().findViewById(R.id.cancelReservationButton);
+        cancelReservationButton.setVisibility(isAfterCancellatioDeadline(response) ? View.GONE : View.VISIBLE);
+        cancelReservationButton.setOnClickListener(v -> {
+            showCancellationDialog();
+        });
+    }
+
+    private void showCancellationDialog() {
+        BudgetService budgetService = new BudgetService();
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Reservation")
+                .setMessage("Do you really want to cancel this reservation?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    // Accept reservation
+                    budgetService.cancelReservation(eventId,assetId);
+                    NotificationsUtils.getInstance().showNotification(getContext(),"Reservation cancelled.");
+                    getParentFragment().getParentFragmentManager().popBackStack();
+                    dialog.dismiss();
+                })
+                .setNegativeButton("No", (dialog, which) -> {
+                    // Deny reservation
+                    dialog.dismiss();
+                })
+                .setNeutralButton("Cancel", (dialog, which) -> {
+                    Log.d("Reservation", "Dialog closed without action");
+                    dialog.dismiss();
+                })
+                .show();
+    }
+
+    private boolean isAfterCancellatioDeadline(UtilityResponse response){
+        try{
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            Date startDate = sdf.parse(eventStartDate);
+
+            Calendar lastCancellationDate = Calendar.getInstance();
+            lastCancellationDate.setTime(startDate);
+            lastCancellationDate.add(Calendar.DATE, -response.getCancellationTerm());
+
+            Date now = new Date();
+
+            return now.after(lastCancellationDate.getTime());
+        }catch (ParseException e){
+            Log.d("Err","parse Err");
+        }
+        return true;
     }
 
     private void openChatFragment() {
@@ -233,13 +349,18 @@ public class AssetOverviewFragment extends Fragment {
     }
 
     private void getUtilityById(String token, String id) {
-        utilityService.getUtilityById(token, id, new Callback<Utility>() {
+        utilityService.getUtilityVersionById( id, new Callback<UtilityResponse>() {
             @Override
-            public void onResponse(Call<Utility> call, Response<Utility> response) {
+            public void onResponse(Call<UtilityResponse> call, Response<UtilityResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Utility utility = response.body();
+                    UtilityResponse utility = response.body();
                     Log.d("AssetOverviewFragment", "Received utility: " + utility.getName());
                     populateUtilityData(utility);
+                    if(eventId != null){
+                        reservationCard.setVisibility(View.VISIBLE);
+                        setupReservationData(getView());
+                        setupCancelReservationButton(response.body());
+                    }
                 } else {
                     try {
                         String errorBody = response.errorBody() != null ? response.errorBody().string() : "No error body";
@@ -251,18 +372,18 @@ public class AssetOverviewFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<Utility> call, Throwable t) {
+            public void onFailure(Call<UtilityResponse> call, Throwable t) {
                 Log.e("AssetOverviewFragment", "Request failed: " + t.getMessage(), t);
             }
         });
     }
 
     private void getProductById(String token, String id) {
-        productService.getProductById(token, id, new Callback<Product>() {
+        productService.getProductById(token, id, new Callback<ProductResponse>() {
             @Override
-            public void onResponse(Call<Product> call, Response<Product> response) {
+            public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Product product = response.body();
+                    ProductResponse product = response.body();
                     Log.d("AssetOverviewFragment", "Received product: " + product.getName());
                     populateProductData(product);
                 } else {
@@ -271,37 +392,20 @@ public class AssetOverviewFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<Product> call, Throwable t) {
+            public void onFailure(Call<ProductResponse> call, Throwable t) {
+                Log.d("ERR", Objects.requireNonNull(t.getMessage()));
             }
         });
     }
 
-    private void populateUtilityData(Utility utility) {
+    private void populateUtilityData(UtilityResponse utility) {
         assetNameTextView.setText(utility.getName());
         assetTypeTextView.setText("Utility");
-        loadProviderInfo(utility.getProviderId());
-        this.providerId = utility.getProviderId();
+        loadProviderInfo(utility.getProviderId().toString());
+        this.providerId = utility.getProviderId().toString();
 
-        String categoryId = utility.getCategory();
-        String authHeader = "Bearer " + JwtTokenUtil.getToken();
-        AssetCategoryService categoryService = new AssetCategoryService();
-        categoryService.getCategoryById(authHeader, categoryId, new Callback<AssetCategory>() {
-            @Override
-            public void onResponse(Call<AssetCategory> call, Response<AssetCategory> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    AssetCategory category = response.body();
-                    assetCategoryTextView.setText("Category: " + category.getName());  // Set category name
-                } else {
-                    Log.e("AssetOverviewFragment", "Failed to fetch category for utility");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<AssetCategory> call, Throwable t) {
-                Log.e("AssetOverviewFragment", "Category request failed: " + t.getMessage(), t);
-            }
-        });
-
+        String categoryName = utility.getCategory().getName();
+        assetCategoryTextView.setText(categoryName);
         assetDescriptionTextView.setText(utility.getDescription());
         double price = utility.getPrice();
         double discount = utility.getDiscount();
@@ -310,11 +414,33 @@ public class AssetOverviewFragment extends Fragment {
         assetDiscountTextView.setText(discount + "%");
         assetActualPriceTextView.setText(String.format("%.2f", actualPrice));
         utilityDetailsLayout.setVisibility(View.VISIBLE);
-        assetDurationTextView.setText(utility.getDuration() + " hours");
-        assetBookingDeadlineTextView.setText(utility.getReservationTerm());
-        assetCancellationDeadlineTextView.setText(utility.getCancellationTerm());
-        availableTextView.setText(String.valueOf(utility.isAvailable()));
+        assetDurationTextView.setText(utility.getDuration() + " minutes");
+        assetBookingDeadlineTextView.setText(String.format("%s days before Event start", utility.getReservationTerm()));
+        assetCancellationDeadlineTextView.setText(String.format("%s days before Event start", utility.getCancellationTerm()));
+        availableTextView.setText(String.valueOf(utility.getAvailable()));
+        fillImageViews(utility);
+        setupButtonVisibility(utility);
     }
+
+    private void fillImageViews(AssetResponse asset) {
+        int i = 0;
+        for(String image : asset.getImages()){
+            ImageView currImg = assetImages.get(i);
+            Glide.with(requireContext())
+                    .load(NetworkUtils.replaceLocalhostWithDeviceIp(image))
+                    .placeholder(R.drawable.placeholder_asset)
+                    .error(R.drawable.placeholder_asset)// Optional placeholder while loading// Optional error image
+                    .into(currImg);
+            i++;
+        }
+        for (int j = i + 1; j<assetImages.size(); j++){
+            assetImages.get(j).setVisibility(View.GONE);
+        }
+        if (i == 0){
+            assetImages.get(i).setImageResource(R.drawable.placeholder_asset);
+        }
+    }
+
     private void loadProviderInfo(String providerId) {
         new UserService().loadProviderInfo(UUID.fromString(providerId), new Callback<ProviderInfoResponse>() {
             @Override
@@ -334,32 +460,12 @@ public class AssetOverviewFragment extends Fragment {
             }
         });
     }
-    private void populateProductData(Product product) {
+    private void populateProductData(ProductResponse product) {
         assetNameTextView.setText(product.getName());
         assetTypeTextView.setText("Product");
-        loadProviderInfo(product.getProviderId());
-        this.providerId = product.getProviderId();
-
-        String categoryId = product.getCategory();
-        String authHeader = "Bearer " + JwtTokenUtil.getToken();
-        AssetCategoryService categoryService = new AssetCategoryService();
-        categoryService.getCategoryById(authHeader, categoryId, new Callback<AssetCategory>() {
-            @Override
-            public void onResponse(Call<AssetCategory> call, Response<AssetCategory> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    AssetCategory category = response.body();
-                    assetCategoryTextView.setText("Category " + category.getName());
-                } else {
-                    Log.e("AssetOverviewFragment", "Failed to fetch category for product");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<AssetCategory> call, Throwable t) {
-                Log.e("AssetOverviewFragment", "Category request failed: " + t.getMessage(), t);
-            }
-        });
-
+        loadProviderInfo(product.getProviderId().toString());
+        this.providerId = product.getProviderId().toString();
+        assetCategoryTextView.setText(product.getCategory().getName());
         assetDescriptionTextView.setText(product.getDescription());
         double price = product.getPrice();
         double discount = product.getDiscount();
@@ -368,8 +474,28 @@ public class AssetOverviewFragment extends Fragment {
         assetDiscountTextView.setText(discount + "%");
         assetActualPriceTextView.setText(String.format("%.2f", actualPrice));
         utilityDetailsLayout.setVisibility(View.GONE);
-        availableTextView.setText(String.valueOf(product.isAvailable()));
+        availableTextView.setText(String.valueOf(product.getAvailable()));
+        fillImageViews(product);
+        setupButtonVisibility(product);
+
     }
+    private void setupButtonVisibility(AssetResponse asset) {
+        boolean isProvider = asset.getProviderId().toString().equals(JwtTokenUtil.getUserId());
+        chatButton.setVisibility(isProvider ? View.GONE : View.VISIBLE);
+        buyProductButton.setVisibility(asset instanceof ProductResponse && ((ProductResponse) asset).getAvailable()  && !isProvider  ? View.VISIBLE : View.GONE);
+        reserveUtilityButton.setVisibility(asset instanceof UtilityResponse && !isProvider ? View.VISIBLE  : View.GONE);
+        reserveUtilityButton.setOnClickListener(v-> {
+            assert asset instanceof UtilityResponse;
+            buyAsset((UtilityResponse) asset);
+        });
+        buyProductButton.setOnClickListener(v -> buyAsset(null));
+    }
+
+    private void buyAsset(UtilityResponse assetResponse) {
+        BuyAssetFragment buyAssetFragment = BuyAssetFragment.newInstance(String.valueOf(assetResponse == null ? null : assetResponse.getReservationTerm()),assetId);
+        buyAssetFragment.show(getParentFragmentManager(),null);
+    }
+
     private void submitComment() {
         EditText reviewCommentEditText = getView().findViewById(R.id.reviewCommentEditText);
         RatingBar reviewRatingBar = getView().findViewById(R.id.reviewRatingBar);

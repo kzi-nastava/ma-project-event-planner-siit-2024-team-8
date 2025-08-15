@@ -1,9 +1,7 @@
 package com.example.myapplication.fragments.event.create_event;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
@@ -15,23 +13,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.BudgetItemAdapter;
-import com.example.myapplication.databinding.FragmentCreateEventBinding;
 import com.example.myapplication.databinding.FragmentCreateEventBudgetBinding;
-import com.example.myapplication.databinding.FragmentCreateEventTypeBinding;
 import com.example.myapplication.domain.ApiResponse;
 import com.example.myapplication.domain.AssetCategory;
 import com.example.myapplication.domain.BudgetItem;
 import com.example.myapplication.domain.EventType;
-import com.example.myapplication.domain.dto.BudgetItemCreateRequest;
+import com.example.myapplication.domain.dto.event.BudgetItemCreateRequest;
 import com.example.myapplication.fragments.HomePageFragment;
 import com.example.myapplication.services.EventService;
 import com.example.myapplication.utilities.JwtTokenUtil;
 import com.example.myapplication.utilities.NotificationsUtils;
-import com.example.myapplication.viewmodels.AssetCategoryViewModel;
 import com.example.myapplication.viewmodels.EventViewModel;
 import java.util.ArrayList;
 import java.util.List;
@@ -152,8 +146,8 @@ public class CreateEventBudgetFragment extends Fragment implements BudgetItemAda
                     public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                         if (response.isSuccessful() || response.body() != null){
                             NotificationsUtils.getInstance().showSuccessToast(getContext(), "Succesfully created an Event!");
-                            getParentFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                            getParentFragmentManager().beginTransaction().replace(R.id.main, new HomePageFragment()).commit();
+                            getParentFragment().getParentFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                            getParentFragment().getParentFragmentManager().beginTransaction().replace(R.id.main, new HomePageFragment()).commit();
 
                         }else{
                             NotificationsUtils.getInstance().showErrToast(getContext(), response.message());

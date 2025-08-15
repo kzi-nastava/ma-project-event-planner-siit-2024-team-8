@@ -11,20 +11,21 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.myapplication.R;
 import com.example.myapplication.domain.BudgetItem;
 import com.example.myapplication.domain.AssetCategory;
-import com.example.myapplication.domain.dto.BudgetItemCreateRequest;
-import com.example.myapplication.fragments.event.event_info.BudgetFragment;
+import com.example.myapplication.domain.dto.event.BudgetItemCreateRequest;
+import com.example.myapplication.domain.dto.event.BudgetItemResponse;
 import com.example.myapplication.services.AssetCategoryService;
 import com.example.myapplication.services.BudgetService;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,6 +44,25 @@ public class AddBudgetItemDialogFragment extends DialogFragment {
 
     public AddBudgetItemDialogFragment() {
         // Required empty public constructor
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getDialog() != null && getDialog().getWindow() != null) {
+            // Make dialog width match parent
+            int widthInDp = 350;
+            float scale = getResources().getDisplayMetrics().density;
+            int widthInPx = (int) (widthInDp * scale + 0.5f);
+
+
+            getDialog().getWindow().setLayout(
+                    widthInPx,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            getDialog().getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
     }
 
     @Override
@@ -139,17 +159,17 @@ public class AddBudgetItemDialogFragment extends DialogFragment {
     }
 
     private void updateCategorySpinner(List<AssetCategory> categories) {
-        ArrayAdapter<AssetCategory> adapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_spinner_dropdown_item, categories);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_spinner_dropdown_item, categories.stream().map(AssetCategory::getName).collect(Collectors.toList()));
         assetCategoriesSpinner.setAdapter(adapter);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     }
 
     private void addBudgetItem(BudgetItemCreateRequest budgetItemCreateRequest) {
-        budgetService.addBudgetItem(this.eventId, budgetItemCreateRequest, new Callback<BudgetItem>() {
+        budgetService.addBudgetItem(this.eventId, budgetItemCreateRequest, new Callback<BudgetItemResponse>() {
             @Override
-            public void onResponse(Call<BudgetItem> call, Response<BudgetItem> response) {
+            public void onResponse(Call<BudgetItemResponse> call, Response<BudgetItemResponse> response) {
                 if (response.isSuccessful()) {
                     dismiss();
 
@@ -173,7 +193,7 @@ public class AddBudgetItemDialogFragment extends DialogFragment {
             }
 
             @Override
-            public void onFailure(Call<BudgetItem> call, Throwable t) {
+            public void onFailure(Call<BudgetItemResponse> call, Throwable t) {
                 // Log the failure details (network error, etc.)
                 Log.e("AddBudgetItem", "Network Failure: " + t.getMessage());
                 Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();

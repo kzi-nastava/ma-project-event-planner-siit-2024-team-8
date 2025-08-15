@@ -1,7 +1,6 @@
 package com.example.myapplication.fragments;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,7 +18,7 @@ import androidx.fragment.app.Fragment;
 import com.example.myapplication.R;
 import com.example.myapplication.domain.Message;
 import com.example.myapplication.domain.dto.MarkSeenRequest;
-import com.example.myapplication.domain.dto.UserInfoResponse;
+import com.example.myapplication.domain.dto.user.UserInfoResponse;
 import com.example.myapplication.services.ChatAPIService;
 import com.example.myapplication.services.ChatService;
 import com.example.myapplication.services.UserAPIService;

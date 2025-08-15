@@ -22,7 +22,7 @@ public interface AssetCategoryAPIService {
     Call<List<AssetCategory>> getActiveCategories(@Header("Authorization") String token);
 
     @GET("asset-categories/active")
-    Future<List<AssetCategory>> getAllActiveCategories(@Header("Authorization") String token);
+    Call<List<AssetCategory>> getAllActiveCategories();
     @GET("asset-categories/pending")
     Call<List<AssetCategory>> getPendingCategories(@Header("Authorization") String token);
 

@@ -1,14 +1,11 @@
 package com.example.myapplication.utilities;
 
 import com.example.myapplication.domain.Activity;
-import com.example.myapplication.domain.Invitation;
-import com.example.myapplication.domain.dto.ActivityUpdateRequest;
 import com.example.myapplication.domain.dto.GuestResponse;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
-import java.util.Comparator;
 import java.util.List;
 
 public class HashUtils {

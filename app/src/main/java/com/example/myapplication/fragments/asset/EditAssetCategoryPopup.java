@@ -17,6 +17,8 @@ import com.example.myapplication.R;
 import com.example.myapplication.domain.AssetCategory;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.UUID;
+
 public class EditAssetCategoryPopup extends DialogFragment {
 
     private TextInputEditText nameEditText;
@@ -159,7 +161,7 @@ public class EditAssetCategoryPopup extends DialogFragment {
             String description = descriptionEditText.getText().toString();
             String type = productRadioButton.isChecked() ? "Product" : "Utility";
 
-            AssetCategory updatedCategory = new AssetCategory(category.getId(), name, description, type, category.getActive());
+            AssetCategory updatedCategory = new AssetCategory(category != null ? category.getId() : UUID.randomUUID().toString(), name, description, type, category == null || category.getActive());
 
             if (isAddMode) {
                 if (listener != null) {

@@ -2,7 +2,6 @@ package com.example.myapplication.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +13,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
-import com.example.myapplication.domain.Asset;
-import com.example.myapplication.domain.dto.AssetResponse;
+import com.example.myapplication.domain.dto.user.AssetResponse;
+import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.fragments.asset.AssetInfoFragment;
-import com.example.myapplication.fragments.asset.AssetOverviewFragment;
 import com.example.myapplication.utilities.JwtTokenUtil;
+import com.example.myapplication.utilities.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,11 +44,11 @@ public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.View
 
     public void SetOnClick(Activity activity, FragmentManager manager){
         this.setItemClickListener(asset -> {
-            boolean isMine = currentUserId.equals(asset.getProviderId());
             AssetInfoFragment assetInfoFragment = AssetInfoFragment.newInstance(
                     asset.getId().toString(),
-                    asset.getCategory().getType(),
-                    true
+                    asset.getType().toString(),
+                    JwtTokenUtil.getUserId() != null && JwtTokenUtil.getRole() == Role.PROVIDER && asset.getProviderId().toString().equals(JwtTokenUtil.getUserId()),
+                    null
             );
             if (activity != null) {
                 manager.beginTransaction()
@@ -70,19 +69,21 @@ public class AssetCardAdapter extends RecyclerView.Adapter<AssetCardAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         AssetResponse asset = assets.get(position);
-
-        holder.txtName.setText(asset.getName());
-        holder.txtAssetType.setText(asset.getCategory().getType() != null ? asset.getCategory().getType() : "Unknown");
+            holder.txtName.setText(asset.getName());
+        holder.txtAssetType.setText(asset.getType() != null ? asset.getType().toString() : "Unknown");
 
         String imageUrl = !asset.getImages().isEmpty() ? asset.getImages().get(0) : null;
         if (imageUrl != null) {
             Glide.with(context)
-                    .asBitmap()
-                    .load(imageUrl)
+                    .load(NetworkUtils.replaceLocalhostWithDeviceIp(imageUrl))
+                    .placeholder(R.drawable.placeholder_asset)
+                    .error(R.drawable.placeholder_asset)
                     .into(holder.imageView);
         } else {
-            holder.imageView.setImageResource(R.drawable.profile_placeholder);
+            // ✨ Reset image when there's no image
+            holder.imageView.setImageResource(R.drawable.placeholder_asset);
         }
+
 
         holder.itemView.setOnClickListener(v -> {
             if (itemClickListener != null) {

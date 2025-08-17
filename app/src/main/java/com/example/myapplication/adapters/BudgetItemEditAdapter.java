@@ -14,8 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.R;
 import com.example.myapplication.domain.AssetCategory;
 import com.example.myapplication.domain.BudgetItem;
+import com.example.myapplication.domain.dto.event.BudgetItemResponse;
 import com.example.myapplication.services.AssetCategoryService;
 import com.example.myapplication.utilities.JwtTokenUtil;
+import com.google.android.material.button.MaterialButton;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,17 +26,19 @@ import retrofit2.Response;
 import java.util.List;
 
 public class BudgetItemEditAdapter extends RecyclerView.Adapter<BudgetItemEditAdapter.BudgetItemEditViewHolder> {
-    private final List<BudgetItem> budgetItems;
+    private final List<BudgetItemResponse> budgetItems;
     private final OnBudgetItemClickListener listener;
     private static final AssetCategoryService assetCategoryService = new AssetCategoryService();
 
     public interface OnBudgetItemClickListener {
-        void onItemClicked(BudgetItem item);
-        void onItemUpdated(BudgetItem item);
-        void onItemDeleted(BudgetItem item);
+        void onItemClicked(BudgetItemResponse item);
+        void onItemUpdated(BudgetItemResponse item);
+        void onItemDeleted(BudgetItemResponse item);
+
+        void onShowBoughtAssets(BudgetItemResponse item,AssetCategory category);
     }
 
-    public BudgetItemEditAdapter(List<BudgetItem> budgetItems, OnBudgetItemClickListener listener) {
+    public BudgetItemEditAdapter(List<BudgetItemResponse> budgetItems, OnBudgetItemClickListener listener) {
         this.budgetItems = budgetItems;
         this.listener = listener;
     }
@@ -49,7 +53,7 @@ public class BudgetItemEditAdapter extends RecyclerView.Adapter<BudgetItemEditAd
 
     @Override
     public void onBindViewHolder(@NonNull BudgetItemEditViewHolder holder, int position) {
-        BudgetItem item = budgetItems.get(position);
+        BudgetItemResponse item = budgetItems.get(position);
         holder.bind(item, listener);
     }
 
@@ -65,6 +69,12 @@ public class BudgetItemEditAdapter extends RecyclerView.Adapter<BudgetItemEditAd
         private final ImageButton deleteButton;
         private final TextView categoryTypeText;
 
+        private final MaterialButton showBoughtAssets;
+
+        private AssetCategory category = null;
+
+
+
         public BudgetItemEditViewHolder(@NonNull View itemView) {
             super(itemView);
             itemName = itemView.findViewById(R.id.titleText);
@@ -72,16 +82,18 @@ public class BudgetItemEditAdapter extends RecyclerView.Adapter<BudgetItemEditAd
             plannedAmountEditText = itemView.findViewById(R.id.plannedBudgetEditText);
             spentBudgetText = itemView.findViewById(R.id.spentBudgetText);
             deleteButton = itemView.findViewById(R.id.removeButton);
+            showBoughtAssets = itemView.findViewById(R.id.showBoughtAssetsButton);
         }
 
-        public void bind(BudgetItem item, OnBudgetItemClickListener listener) {
-            assetCategoryService.getCategoryById(JwtTokenUtil.getToken(), item.getCategory(), new Callback<AssetCategory>() {
+        public void bind(BudgetItemResponse item, OnBudgetItemClickListener listener) {
+            assetCategoryService.getCategoryById(JwtTokenUtil.getToken(), item.getAssetCategoryId().toString(), new Callback<AssetCategory>() {
                 @Override
                 public void onResponse(Call<AssetCategory> call, Response<AssetCategory> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        AssetCategory category = response.body();
+                        category = response.body();
                         itemName.setText(category.getName());
                         categoryTypeText.setText(category.getType());
+
                     } else {
                         Log.e("AssetCategory", "Failed to fetch category for budget item");
                     }
@@ -110,6 +122,7 @@ public class BudgetItemEditAdapter extends RecyclerView.Adapter<BudgetItemEditAd
 
             itemView.setOnClickListener(v -> listener.onItemClicked(item));
             deleteButton.setOnClickListener(v -> listener.onItemDeleted(item));
+            showBoughtAssets.setOnClickListener(v -> listener.onShowBoughtAssets(item,category));
         }
     }
 }

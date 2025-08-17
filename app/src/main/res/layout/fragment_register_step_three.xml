@@ -141,8 +141,7 @@
         android:layout_marginEnd="16dp"
         android:popupBackground="@color/white"
         android:spinnerMode="dropdown"
-        app:userType="@={userVM.user.userType}"
-        app:userTypeAttrChanged="@{userVM::onUserTypeChanged}"/>
+        app:userType="@={userVM.user.userType}" />
     <Button
         android:id="@+id/registerNextButton3"
         android:layout_width="match_parent"

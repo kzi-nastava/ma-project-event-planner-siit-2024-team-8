@@ -28,16 +28,14 @@ import com.example.myapplication.R;
 import com.example.myapplication.activities.MainActivity;
 import com.example.myapplication.adapters.AssetCardAdapter;
 import com.example.myapplication.adapters.EventCardAdapter;
-import com.example.myapplication.domain.dto.SearchAssetRequest;
+import com.example.myapplication.domain.dto.user.SearchAssetRequest;
 import com.example.myapplication.domain.enumerations.OfferingType;
-import com.example.myapplication.domain.dto.SearchEventsRequest;
-import com.example.myapplication.utilities.JwtTokenUtil;
+import com.example.myapplication.domain.dto.event.SearchEventsRequest;
 import com.example.myapplication.viewmodels.AssetViewModel;
 import com.example.myapplication.viewmodels.EventViewModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.UUID;
 
 public class AllSolutionsFragment extends Fragment implements FilterBottomSheetFragment.FilterListener, AssetsFilterFragmentBottomSheet.AssetsFilterListener {
 

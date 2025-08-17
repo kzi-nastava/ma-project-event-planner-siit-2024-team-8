@@ -23,7 +23,7 @@
         tools:layout="@layout/fragment_inbox" />
     <fragment
         android:id="@+id/notificationsFragment"
-        android:name="com.example.myapplication.fragments.ToDoFragment"
+        android:name="com.example.myapplication.fragments.NotificationsFragment"
         android:label="Notifications"
         tools:layout="@layout/fragment_to_do" />
 </navigation>

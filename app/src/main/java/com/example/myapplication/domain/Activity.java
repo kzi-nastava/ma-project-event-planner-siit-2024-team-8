@@ -1,6 +1,6 @@
 package com.example.myapplication.domain;
 
-import com.example.myapplication.domain.dto.ActivityUpdateRequest;
+import com.example.myapplication.domain.dto.event.ActivityUpdateRequest;
 
 import java.time.format.DateTimeFormatter;
 

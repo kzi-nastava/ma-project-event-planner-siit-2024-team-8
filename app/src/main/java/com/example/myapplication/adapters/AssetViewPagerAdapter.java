@@ -16,28 +16,27 @@ public class AssetViewPagerAdapter extends FragmentStateAdapter {
 
     private final boolean isProvider;
 
-    public AssetViewPagerAdapter(@NonNull AssetInfoFragment fragmentActivity, String assetId, String assetType, boolean isProvider) {
+    private final String eventId;
+
+    public AssetViewPagerAdapter(@NonNull AssetInfoFragment fragmentActivity, String assetId, String assetType, boolean isProvider,String eventId) {
         super(fragmentActivity);
         this.assetId = assetId;
         this.assetType = assetType;
         this.isProvider = isProvider;
+        this.eventId = eventId;
     }
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        if (isProvider) {
-            switch (position) {
-                case 0:
-                    return AssetOverviewFragment.newInstance(assetId, assetType);
-                case 1:
-                    return AssetDetailsFragment.newInstance(assetId, assetType);
-                default:
-                    throw new IllegalArgumentException("Invalid position");
-            }
-        } else {
-        return AssetOverviewFragment.newInstance(assetId, assetType);
-    }
+        switch (position) {
+            case 0:
+                return AssetOverviewFragment.newInstance(assetId, assetType,eventId);
+            case 1:
+                return AssetDetailsFragment.newInstance(assetId, assetType);
+            default:
+                throw new IllegalArgumentException("Invalid position");
+        }
     }
 
     @Override

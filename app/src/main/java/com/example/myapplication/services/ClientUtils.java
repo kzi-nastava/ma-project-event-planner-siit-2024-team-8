@@ -2,6 +2,7 @@ package com.example.myapplication.services;
 
 import com.example.myapplication.utilities.HttpInterceptor;
 import com.example.myapplication.utilities.RetrofitClient;
+import com.example.myapplication.services.NotificationsAPIService;
 
 import java.util.concurrent.TimeUnit;
 
@@ -28,4 +29,5 @@ public class ClientUtils {
     public static AssetAPIService assetAPIService = RetrofitClient.getRetrofitInstance().create(AssetAPIService.class);
     public static ReportAPIService reportAPIService = RetrofitClient.getRetrofitInstance().create(ReportAPIService.class);
 
+    public static NotificationsAPIService notifcationsAPIService = RetrofitClient.getRetrofitInstance().create(NotificationsAPIService.class);
 }

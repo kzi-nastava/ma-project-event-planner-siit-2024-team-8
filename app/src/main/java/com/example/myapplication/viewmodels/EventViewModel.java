@@ -7,15 +7,15 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.auth0.android.jwt.JWT;
 import com.example.myapplication.domain.Activity;
-import com.example.myapplication.domain.Event;
 import com.example.myapplication.domain.Location;
 import com.example.myapplication.domain.PagedResponse;
-import com.example.myapplication.domain.dto.CreateEventRequest;
-import com.example.myapplication.domain.dto.EventCardResponse;
-import com.example.myapplication.domain.dto.EventInfoResponse;
+import com.example.myapplication.domain.dto.event.CreateEventRequest;
+import com.example.myapplication.domain.dto.event.EventCardResponse;
+import com.example.myapplication.domain.dto.event.EventInfoResponse;
 import com.example.myapplication.domain.dto.GuestResponse;
-import com.example.myapplication.domain.dto.SearchEventsRequest;
+import com.example.myapplication.domain.dto.event.SearchEventsRequest;
 import com.example.myapplication.services.ClientUtils;
 import com.example.myapplication.services.EventService;
 import com.example.myapplication.utilities.JwtTokenUtil;
@@ -24,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,6 +44,8 @@ public class EventViewModel extends ViewModel {
     private final MutableLiveData<SearchEventsRequest> currentFilters = new MutableLiveData<>();
 
     private final MutableLiveData<List<EventInfoResponse>> userEvents = new MutableLiveData<>();
+
+
     private MutableLiveData<Long> totalElements = new MutableLiveData<>();
 
     private MutableLiveData<Integer> totalPages = new MutableLiveData<>();
@@ -182,5 +185,64 @@ public class EventViewModel extends ViewModel {
     public void fetchGuestList(Callback<List<GuestResponse>> callback) {
         Call <List<GuestResponse>> call = ClientUtils.eventAPIService.fetchGuestList(currentEvent.getValue().getId());
         call.enqueue(callback);
+    }
+
+    public void refreshCurrentEvent() {
+        currentEvent.setValue(currentEvent.getValue());
+    }
+
+    public void fetchEvent(String eventId) {
+        EventService eventService = new EventService();
+        eventService.getEventById(eventId, new Callback<EventInfoResponse>() {
+            @Override
+            public void onResponse(Call<EventInfoResponse> call, Response<EventInfoResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    currentEvent.setValue(response.body());
+                } else {
+                    Log.e("EventFragment", "Failed to retrieve event: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EventInfoResponse> call, Throwable t) {
+                Log.e("EventFragment", "API call failed", t);
+            }
+        });
+    }
+
+    public void fetchOrganizerEvents(Context context) {
+        ClientUtils.eventAPIService.fetchOrganizerEvents(UUID.fromString(JwtTokenUtil.getUserId())).enqueue(new Callback<List<EventInfoResponse>>() {
+            @Override
+            public void onResponse(Call<List<EventInfoResponse>> call, Response<List<EventInfoResponse>> response) {
+                if (response.isSuccessful()){
+                    userEvents.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<EventInfoResponse>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void fetchAllPublicEvents() {
+        ClientUtils.eventAPIService.fetchAllPublic().enqueue(new Callback<List<EventInfoResponse>>() {
+            @Override
+            public void onResponse(Call<List<EventInfoResponse>> call, Response<List<EventInfoResponse>> response) {
+                if (response.isSuccessful()){
+                    userEvents.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<EventInfoResponse>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void resetUserEvents() {
+        userEvents.setValue(new ArrayList<>());
     }
 }

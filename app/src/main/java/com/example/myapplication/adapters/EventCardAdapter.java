@@ -1,7 +1,6 @@
 package com.example.myapplication.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.activities.MainActivity;
-import com.example.myapplication.domain.dto.EventCardResponse;
+import com.example.myapplication.domain.dto.event.EventCardResponse;
 import com.example.myapplication.fragments.event.event_info.EventInfoFragment;
-import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.List;

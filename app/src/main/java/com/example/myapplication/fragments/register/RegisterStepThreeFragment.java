@@ -18,9 +18,13 @@ import com.example.myapplication.activities.MainActivity;
 import com.example.myapplication.callbacks.UserRegisterCallBack;
 import com.example.myapplication.databinding.FragmentRegisterStepThreeBinding;
 import com.example.myapplication.domain.enumerations.Role;
-import com.example.myapplication.domain.dto.UserCreateRequest;
+import com.example.myapplication.domain.dto.user.UserCreateRequest;
 import com.example.myapplication.utilities.NotificationsUtils;
 import com.example.myapplication.viewmodels.UserViewModel;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -78,11 +82,7 @@ public class RegisterStepThreeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentRegisterStepThreeBinding.inflate(inflater,container,false);
-
-
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
-
-
         binding.setUserVM(userViewModel);
         binding.setLifecycleOwner(getViewLifecycleOwner());
 
@@ -95,11 +95,11 @@ public class RegisterStepThreeFragment extends Fragment {
     private void onNextButtonClick() {
         RegisterFragment parentFragment = (RegisterFragment) getParentFragment();
         //retrieve data and continue if everything ok:
-        if (!retrieveData(parentFragment.userCreateRequest)) {
-            Toast.makeText(getContext(), "All fields are required and must be properly filled.", Toast.LENGTH_SHORT).show();
+        if (!isDataValid()) {
             return;
         }
-        if (parentFragment.userCreateRequest.getUserType().equals(Role.PROVIDER)) {
+        assert  parentFragment != null;
+        if (Objects.requireNonNull(userViewModel.getUser().getValue()).getUserType().equals(Role.PROVIDER)) {
             ProviderRegisterFragment providerRegister = new ProviderRegisterFragment();
             assert parentFragment != null;
             parentFragment.getChildFragmentManager().beginTransaction()
@@ -143,15 +143,47 @@ public class RegisterStepThreeFragment extends Fragment {
             });
         }
     }
+    private boolean isDataValid() {
+        View view = getView();
+        if (view == null) return false;
 
-    private boolean retrieveData(UserCreateRequest userCreateRequest) {
-        String email = ((EditText)this.getView().findViewById(R.id.editTextEmail)).getText().toString();
-        String password = ((EditText)this.getView().findViewById(R.id.editTextPassword)).getText().toString();
-        String passwordConfirm = ((EditText)this.getView().findViewById(R.id.editTextPasswordConfirm)).getText().toString();
-        Spinner spinner = this.getView().findViewById(R.id.option_picker_spinner);
-        if (email.isBlank() || email.isEmpty() || password.isBlank() || password.isEmpty() || passwordConfirm.isEmpty() || passwordConfirm.isBlank() || !password.equals(passwordConfirm)) {
-            return false;
+        UserCreateRequest user = userViewModel.getUser().getValue();
+
+        TextInputLayout emailLayout = view.findViewById(R.id.textInputEmail);
+        TextInputLayout passwordLayout = view.findViewById(R.id.textInputPassword);
+        TextInputLayout passwordConfirmLayout = view.findViewById(R.id.textInputPasswordConfirm);
+
+        TextInputEditText passwordConfirm = view.findViewById(R.id.editTextPasswordConfirm);
+
+
+        assert user!=null;
+
+
+        boolean valid = true;
+
+        String emailPattern = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+
+        if (user.getEmail().isEmpty()) {
+            emailLayout.setError("Email is required");
+            valid = false;
+        }else if (!user.getEmail().matches(emailPattern)) {
+            emailLayout.setError("Invalid email format");
+            valid = false;
         }
-        return true;
+        if (user.getPassword().isEmpty()) {
+            passwordLayout.setError("Password is required");
+            valid = false;
+        }
+
+        if (passwordConfirm.getText().toString().isEmpty()) {
+            passwordConfirmLayout.setError("Please confirm your password");
+            valid = false;
+        } else if (!user.getPassword().equals(passwordConfirm.getText().toString())) {
+            passwordConfirmLayout.setError("Passwords do not match");
+            valid = false;
+        }
+
+        return valid;
     }
+
 }

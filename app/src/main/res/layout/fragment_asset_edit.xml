@@ -84,15 +84,16 @@
             android:id="@+id/utilityDetailsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="vertical"
-            android:visibility="gone"
-            android:layout_marginTop="10dp">
+            android:visibility="visible">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/assetDurationInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/assetDurationEditText"
                     android:layout_width="match_parent"
@@ -107,15 +108,16 @@
                 android:id="@+id/confirmationMethodText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="Confirmation Method"
-                android:textSize="18sp"
                 android:textColor="#000000"
-                android:layout_marginTop="16dp" />
+                android:textSize="18sp" />
 
             <RadioGroup
                 android:id="@+id/confirmationMethodGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
+
                 <RadioButton
                     android:id="@+id/confirmationMethodManual"
                     android:layout_width="wrap_content"
@@ -123,6 +125,7 @@
                     android:text="Manual"
                     android:textColor="#000000"
                     android:textSize="18sp" />
+
                 <RadioButton
                     android:id="@+id/confirmationMethodAutomatic"
                     android:layout_width="wrap_content"
@@ -132,41 +135,60 @@
                     android:textSize="18sp" />
             </RadioGroup>
 
-            <TextView
-                android:id="@+id/bookingDateTextView"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Select Booking Date"
-                android:textSize="18sp"
-                android:padding="12dp"
-                android:textColor="#000000"
-                android:clickable="true"
-                android:focusable="true"
-                android:layout_marginTop="16dp" />
+                android:visibility="visible">
 
-            <TextView
-                android:id="@+id/cancellationDateTextView"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/bookingTermEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:hint="Booking date term (in days before Event start)"
+                    android:padding="12dp"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Select Cancellation Date"
-                android:textSize="18sp"
-                android:padding="12dp"
-                android:textColor="#000000"
-                android:clickable="true"
-                android:focusable="true"
-                android:layout_marginTop="16dp" />
+                android:layout_marginTop="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/cancellationTermEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:hint="Cancellation date term (in days before Event start)"
+                    android:padding="12dp"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
         </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/imagesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/saveButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save Changes"
-            android:textSize="18sp"
-            android:layout_marginTop="16dp"
-            android:textColor="@android:color/white"
+            android:layout_margin="15dp"
             android:backgroundTint="@color/olive"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:text="Save Changes"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/cancelButton"

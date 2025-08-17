@@ -91,6 +91,10 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return activitiesList.size();
     }
 
+    public void setIsMyEvent(Boolean isMyEvent) {
+        this.isMyEvent = isMyEvent;
+    }
+
     // ViewHolder for "Create New Activity" card
     public class CreateNewBudgetItemViewHolder extends RecyclerView.ViewHolder {
 

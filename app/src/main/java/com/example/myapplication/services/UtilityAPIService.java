@@ -2,8 +2,11 @@ package com.example.myapplication.services;
 
 import com.example.myapplication.domain.Review;
 import com.example.myapplication.domain.Utility;
+import com.example.myapplication.domain.dto.asset.UtilityResponse;
+
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -15,27 +18,30 @@ public interface UtilityAPIService {
     Call<List<Utility>> getAllUtilities(@Header("Authorization") String token);
 
     @GET("utilities/{id}")
-    Call<Utility> getUtilityById(@Header("Authorization") String token, @Path("id") String id);
+    Call<UtilityResponse> getUtilityById(@Header("Authorization") String token, @Path("id") String id);
+
+    @GET("utilities/utility-versions/{id}")
+    Call<UtilityResponse> getUtilityVersionById(@Path("id") String id);
 
     @Multipart
     @POST("utilities")
-    Call<Utility> createUtility(@Header("Authorization") String token,
-                                @Part("name") RequestBody name,
-                                @Part("description") RequestBody description,
-                                @Part("price") RequestBody price,
-                                @Part("discount") RequestBody discount,
-                                @Part("visible") RequestBody visible,
-                                @Part("available") RequestBody available,
-                                @Part("duration") RequestBody duration,
-                                @Part("reservationTerm") RequestBody reservationTerm,
-                                @Part("cancellationTerm") RequestBody cancellationTerm,
-                                @Part("manuelConfirmation") RequestBody manuelConfirmation,
-                                @Part List<MultipartBody.Part> images,
-                                @Part("suggestedCategoryName") RequestBody suggestedCategoryName,
-                                @Part("suggestedCategoryDesc") RequestBody suggestedCategoryDesc,
-                                @Part("category") RequestBody category,
-                                @Part("provider") RequestBody providerId);
-
+    Call<ResponseBody> createUtility(@Header("Authorization") String token,
+                                     @Part("name") RequestBody name,
+                                     @Part("description") RequestBody description,
+                                     @Part("price") RequestBody price,
+                                     @Part("discount") RequestBody discount,
+                                     @Part("visible") RequestBody visible,
+                                     @Part("available") RequestBody available,
+                                     @Part("duration") RequestBody duration,
+                                     @Part("reservationTerm") RequestBody reservationTerm,
+                                     @Part("cancellationTerm") RequestBody cancellationTerm,
+                                     @Part("manuelConfirmation") RequestBody manuelConfirmation,
+                                     @Part List<MultipartBody.Part> images,
+                                     @Part("suggestedCategoryName") RequestBody suggestedCategoryName,
+                                     @Part("suggestedCategoryDesc") RequestBody suggestedCategoryDesc,
+                                     @Part("category") RequestBody category,
+                                     @Part("provider") RequestBody providerId);
+    @Multipart
     @PUT("utilities/{id}")
     Call<Utility> updateUtility(@Header("Authorization") String token, @Path("id") String id,
                                 @Part("name") RequestBody name,

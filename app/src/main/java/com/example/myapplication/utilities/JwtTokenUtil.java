@@ -8,11 +8,16 @@ import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKey;
 
 import com.auth0.android.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.JWTVerifier;
 import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.services.ClientUtils;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -119,24 +124,25 @@ public class JwtTokenUtil {
         JWT token = new JWT(jwtToken);
         return Role.valueOf(token.getClaim("role").asString().toUpperCase());
     }
-
     public static boolean isUserLoggedIn() {
         try {
-            if (getToken() == null) {
+            String jwtToken = getToken();
+            if (jwtToken == null) {
                 return false;
             }
 
-            String jwtToken = getToken();
-            if (jwtToken != null) {
-                JWT token = new JWT(jwtToken);
-                if(token.isExpired(1000*60*60)){
-                    JwtTokenUtil.removeToken();
-                    return false;
-                }
+            DecodedJWT jwt = com.auth0.jwt.JWT.decode(jwtToken);
+
+            Date expiration = jwt.getExpiresAt(); // UTC
+            if (expiration == null || expiration.before(new Date())) {
+                JwtTokenUtil.removeToken();
+                return false;
             }
+
             return true;
+
         } catch (Exception e) {
-            Log.e("JwtTokenUtil", "Error checking login state", e);
+            JwtTokenUtil.removeToken();
             return false;
         }
     }

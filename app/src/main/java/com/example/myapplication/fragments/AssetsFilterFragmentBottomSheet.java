@@ -1,9 +1,11 @@
 package com.example.myapplication.fragments;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,16 +21,12 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 
 import com.example.myapplication.R;
-import com.example.myapplication.adapters.EventTypeCheckboxAdapter;
 import com.example.myapplication.adapters.MultiSelectAdapter;
 import com.example.myapplication.databinding.FragmentAssetsFilterBottomSheetBinding;
 import com.example.myapplication.domain.AssetCategory;
-import com.example.myapplication.domain.EventType;
-import com.example.myapplication.domain.dto.SearchAssetRequest;
-import com.example.myapplication.domain.dto.SearchEventsRequest;
+import com.example.myapplication.domain.dto.user.SearchAssetRequest;
 import com.example.myapplication.domain.enumerations.AssetType;
 import com.example.myapplication.services.AssetCategoryService;
-import com.example.myapplication.services.EventTypeService;
 import com.example.myapplication.utilities.JwtTokenUtil;
 import com.example.myapplication.viewmodels.AssetViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -36,9 +34,14 @@ import com.google.android.material.slider.RangeSlider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -68,6 +71,8 @@ public class AssetsFilterFragmentBottomSheet extends BottomSheetDialogFragment {
     }
     private AssetsFilterListener listener;
 
+    private List<AssetCategory> assetCategories;
+
 
     public AssetsFilterFragmentBottomSheet() {
         // Required empty public constructor
@@ -90,7 +95,16 @@ public class AssetsFilterFragmentBottomSheet extends BottomSheetDialogFragment {
         fragment.setArguments(args);
         return fragment;
     }
-
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        Fragment parentFragment = getParentFragment();
+        if (parentFragment instanceof AssetsFilterListener) {
+            listener = (AssetsFilterListener) parentFragment;
+        } else {
+            throw new ClassCastException("Parent fragment must implement FilterListener");
+        }
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,8 +128,11 @@ public class AssetsFilterFragmentBottomSheet extends BottomSheetDialogFragment {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.UTILITY){
                     assetViewModel.getCurrentFilters().getValue().setAssetType(AssetType.UTILITY);
+                    adapter.updateData(assetCategories.stream().filter(category -> {return Objects.equals(category.getType(), AssetType.UTILITY.toString());}).collect(Collectors.toList()));
                 }else{
                     assetViewModel.getCurrentFilters().getValue().setAssetType(AssetType.PRODUCT);
+                    adapter.updateData(assetCategories.stream().filter(category -> {return Objects.equals(category.getType(), AssetType.PRODUCT.toString());}).collect(Collectors.toList()));
+
                 }
             }
         });
@@ -162,26 +179,33 @@ public class AssetsFilterFragmentBottomSheet extends BottomSheetDialogFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
 
-
-       return binding.getRoot();
+        loadAssetCategories();
+        return binding.getRoot();
     }
 
     private void loadAssetCategories() {
+        assetCategoryService.getAllActiveCategories(new Callback<List<AssetCategory>>() {
+            @Override
+            public void onResponse(Call<List<AssetCategory>> call, Response<List<AssetCategory>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<AssetCategory> categories = response.body();
+                    requireActivity().runOnUiThread(() -> {
+                        assetCategories = categories;
+                    });
+                } else {
+                    requireActivity().runOnUiThread(() -> {
+                        Log.e("AssetCategories", "Response error: " + response.code());
+                    });
+                }
+            }
 
-        new Thread(() -> {
-            try {
-                Future<List<AssetCategory>> future = assetCategoryService.getAllActiveCategories(JwtTokenUtil.getToken());
-                 List<AssetCategory> categories = future.get();
-
+            @Override
+            public void onFailure(Call<List<AssetCategory>> call, Throwable t) {
                 requireActivity().runOnUiThread(() -> {
-                    adapter.updateData(categories);
-                });
-            } catch (InterruptedException | ExecutionException e) {
-                requireActivity().runOnUiThread(() -> {
-                    Log.d("error", "Failed to fetch event types: " + e.getMessage());
+                    Log.e("AssetCategories", "Failure: " + t.getMessage());
                 });
             }
-        }).start();
+        });
     }
 
     private void applyButtonClicked() {

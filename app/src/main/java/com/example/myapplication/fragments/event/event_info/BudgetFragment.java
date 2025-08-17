@@ -20,8 +20,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.BudgetItemEditAdapter;
 import com.example.myapplication.databinding.AddBudgetItemDialogBinding;
+import com.example.myapplication.domain.AssetCategory;
 import com.example.myapplication.domain.Budget;
 import com.example.myapplication.domain.BudgetItem;
+import com.example.myapplication.domain.dto.event.BudgetItemResponse;
+import com.example.myapplication.domain.dto.event.BudgetResponse;
 import com.example.myapplication.services.BudgetService;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -42,7 +45,7 @@ public class BudgetFragment extends Fragment {
     private String budgetId = "";
     private RecyclerView budgetRecyclerView;
     private BudgetItemEditAdapter budgetItemEditAdapter;
-    private List<BudgetItem> budgetItems = new ArrayList<>();
+    private List<BudgetItemResponse> budgetItems = new ArrayList<>();
     private TextView totalPlannedBudget, totalSpentBudget;
 
     public BudgetFragment() {
@@ -72,15 +75,15 @@ public class BudgetFragment extends Fragment {
 
         budgetItemEditAdapter = new BudgetItemEditAdapter(budgetItems, new BudgetItemEditAdapter.OnBudgetItemClickListener() {
             @Override
-            public void onItemClicked(BudgetItem item) {
+            public void onItemClicked(BudgetItemResponse item) {
                 Toast.makeText(getContext(), "Item clicked: " + item.getId(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onItemUpdated(BudgetItem item) {
-                budgetService.updateBudgetItem(item.getId(), item.getPlannedAmount(), new Callback<BudgetItem>() {
+            public void onItemUpdated(BudgetItemResponse item) {
+                budgetService.updateBudgetItem(item.getId().toString(), item.getPlannedAmount(), new Callback<BudgetItemResponse>() {
                     @Override
-                    public void onResponse(Call<BudgetItem> call, Response<BudgetItem> response) {
+                    public void onResponse(Call<BudgetItemResponse> call, Response<BudgetItemResponse> response) {
                         if (response.isSuccessful()) {
                             showToast("Budget item updated");
                             updateBudgetTotals();
@@ -90,15 +93,15 @@ public class BudgetFragment extends Fragment {
                     }
 
                     @Override
-                    public void onFailure(Call<BudgetItem> call, Throwable t) {
+                    public void onFailure(Call<BudgetItemResponse> call, Throwable t) {
                         showToast("Error: " + t.getMessage());
                     }
                 });
             }
 
             @Override
-            public void onItemDeleted(BudgetItem item) {
-                budgetService.deleteBudgetItem(item.getId(), new Callback<Void>() {
+            public void onItemDeleted(BudgetItemResponse item) {
+                budgetService.deleteBudgetItem(item.getId().toString(), new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         if (response.isSuccessful()) {
@@ -117,6 +120,12 @@ public class BudgetFragment extends Fragment {
                     }
                 });
             }
+
+            @Override
+            public void onShowBoughtAssets(BudgetItemResponse item, AssetCategory category) {
+                BoughtAssetsFragment boughtAssetsFragment = BoughtAssetsFragment.newInstance(item.getAssetVersionIds().toString(),category.getName(),eventId);
+                boughtAssetsFragment.show(getParentFragmentManager(),null);
+            }
         });
 
         budgetRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -128,13 +137,13 @@ public class BudgetFragment extends Fragment {
     }
 
     public void loadBudgetData() {
-        budgetService.getBudgetByEventId(eventId, new Callback<Budget>() {
+        budgetService.getBudgetByEventId(eventId, new Callback<BudgetResponse>() {
             @Override
-            public void onResponse(Call<Budget> call, Response<Budget> response) {
+            public void onResponse(Call<BudgetResponse> call, Response<BudgetResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Budget budget = response.body();
+                    BudgetResponse budget = response.body();
                     budgetItems.clear();
-                    budgetItems.addAll(budget.getBudgetItems());
+                    budgetItems.addAll(budget.getItems());
                     budgetId = String.valueOf(budget.getId());
                     budgetItemEditAdapter.notifyDataSetChanged();
                     budgetRecyclerView.setVisibility(View.VISIBLE);
@@ -145,7 +154,7 @@ public class BudgetFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<Budget> call, Throwable t) {
+            public void onFailure(Call<BudgetResponse> call, Throwable t) {
                 showToast("Error: " + t.getMessage());
             }
         });
@@ -155,7 +164,7 @@ public class BudgetFragment extends Fragment {
         double totalPlanned = 0.0;
         double totalSpent = 0.0;
 
-        for (BudgetItem item : budgetItems) {
+        for (BudgetItemResponse item : budgetItems) {
             totalPlanned += item.getPlannedAmount();
             totalSpent += item.getActualAmount();
         }

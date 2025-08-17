@@ -16,10 +16,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
-import com.example.myapplication.domain.Location;
-import com.example.myapplication.domain.dto.EventInfoResponse;
-import com.example.myapplication.domain.dto.EventLocationDTO;
-import com.example.myapplication.domain.dto.EventUpdateRequest;
+import com.example.myapplication.domain.dto.event.EventInfoResponse;
+import com.example.myapplication.domain.dto.event.EventLocationDTO;
+import com.example.myapplication.domain.dto.event.EventUpdateRequest;
 import com.example.myapplication.fragments.HomePageFragment;
 import com.example.myapplication.services.EventService;
 

@@ -1,5 +1,6 @@
 package com.example.myapplication.fragments.asset;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.myapplication.R;
 import com.example.myapplication.domain.Product;
 import com.example.myapplication.domain.Utility;
+import com.example.myapplication.domain.dto.asset.ProductResponse;
+import com.example.myapplication.domain.dto.asset.UtilityResponse;
 import com.example.myapplication.fragments.HomePageFragment;
 import com.example.myapplication.services.ProductService;
 import com.example.myapplication.services.UtilityService;
@@ -90,7 +93,6 @@ public class AssetDetailsFragment extends Fragment {
         utilityDetailsLayout = view.findViewById(R.id.utilityDetailsLayout);
         assetNameTextView = view.findViewById(R.id.assetNameTextView);
         assetTypeTextView = view.findViewById(R.id.assetTypeTextView);
-        assetDescriptionTextView = view.findViewById(R.id.assetDescriptionTextView);
         assetPriceTextView = view.findViewById(R.id.assetPriceTextView);
         assetDiscountTextView = view.findViewById(R.id.assetDiscountTextView);
         assetActualPriceTextView = view.findViewById(R.id.assetActualPriceTextView);
@@ -102,8 +104,6 @@ public class AssetDetailsFragment extends Fragment {
         assetCancellationDeadlineTextView = view.findViewById(R.id.assetCancellationDeadlineTextView);
         editButton = view.findViewById(R.id.editButton);
         deleteButton = view.findViewById(R.id.deleteButton);
-        backButton = view.findViewById(R.id.backButton);
-        backButton.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
     }
 
     private void navigateToEditFragment() {
@@ -179,68 +179,66 @@ public class AssetDetailsFragment extends Fragment {
     }
 
     private void getUtilityById(String token, String id) {
-        utilityService.getUtilityById(token, id, new Callback<Utility>() {
+        utilityService.getUtilityById(token, id, new Callback<UtilityResponse>() {
             @Override
-            public void onResponse(Call<Utility> call, Response<Utility> response) {
+            public void onResponse(Call<UtilityResponse> call, Response<UtilityResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     populateUtilityData(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<Utility> call, Throwable t) {
+            public void onFailure(Call<UtilityResponse> call, Throwable t) {
                 Log.e("AssetDetailsFragment", "Error: " + t.getMessage());
             }
         });
     }
 
     private void getProductById(String token, String id) {
-        productService.getProductById(token, id, new Callback<Product>() {
+        productService.getProductById(token, id, new Callback<ProductResponse>() {
             @Override
-            public void onResponse(Call<Product> call, Response<Product> response) {
+            public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     populateProductData(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<Product> call, Throwable t) {
+            public void onFailure(Call<ProductResponse> call, Throwable t) {
                 Log.e("AssetDetailsFragment", "Error: " + t.getMessage());
             }
         });
     }
 
-    private void populateUtilityData(Utility utility) {
+    private void populateUtilityData(UtilityResponse utility) {
         utilityDetailsLayout.setVisibility(View.VISIBLE);
         assetNameTextView.setText(utility.getName());
         assetTypeTextView.setText("Type: Utility");
-        assetDescriptionTextView.setText("Description: " + utility.getDescription());
         double price = utility.getPrice();
         double discount = utility.getDiscount();
         double actualPrice = price - (price * discount / 100);
         assetPriceTextView.setText("Price: $" + price);
         assetDiscountTextView.setText("Discount: " + discount + "%");
         assetActualPriceTextView.setText("Actual Price: $" + String.format("%.2f", actualPrice));
-        assetVisibilityTextView.setText("Visibility: " + utility.isVisible());
-        assetAvailabilityTextView.setText("Available: " + utility.isAvailable());
-        assetConfirmationTextView.setText("Manuel Confirmation: " + utility.isManuelConfirmation());
-        assetDurationTextView.setText("Duration: " + utility.getDuration());
-        assetBookingDeadlineTextView.setText("Booking Deadline: " + utility.getReservationTerm());
-        assetCancellationDeadlineTextView.setText("Cancellation Deadline: " + utility.getCancellationTerm());
+        assetVisibilityTextView.setText("Visibility: " + utility.getVisible());
+        assetAvailabilityTextView.setText("Available: " + utility.getAvailable());
+        assetConfirmationTextView.setText(String.format("Manuel Confirmation: %s", utility.getManuelConfirmation()));
+        assetDurationTextView.setText(String.format("%d minutes", utility.getDuration()));
+        assetBookingDeadlineTextView.setText(String.format("%s days before Event start", utility.getReservationTerm()));
+        assetCancellationDeadlineTextView.setText(String.format("%s days before Event start", utility.getCancellationTerm()));
     }
 
-    private void populateProductData(Product product) {
+    private void populateProductData(ProductResponse product) {
         utilityDetailsLayout.setVisibility(View.GONE);
         assetNameTextView.setText(product.getName());
         assetTypeTextView.setText("Type: Product");
-        assetDescriptionTextView.setText("Description: " + product.getDescription());
         double price = product.getPrice();
         double discount = product.getDiscount();
         double actualPrice = price - (price * discount / 100);
         assetPriceTextView.setText("Price: $" + price);
         assetDiscountTextView.setText("Discount: " + discount + "%");
         assetActualPriceTextView.setText("Actual Price: $" + String.format("%.2f", actualPrice));
-        assetVisibilityTextView.setText("Visibility: " + product.isVisible());
-        assetAvailabilityTextView.setText("Available: " + product.isAvailable());
+        assetVisibilityTextView.setText("Visibility: " + product.getVisible());
+        assetAvailabilityTextView.setText("Available: " + product.getAvailable());
     }
 }

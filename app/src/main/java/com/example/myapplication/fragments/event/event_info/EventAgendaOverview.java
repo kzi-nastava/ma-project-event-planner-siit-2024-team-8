@@ -19,13 +19,11 @@ import android.widget.Toast;
 
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.ActivitiesAdapter;
-import com.example.myapplication.adapters.InvitationsAdapter;
 import com.example.myapplication.domain.Activity;
 import com.example.myapplication.domain.ApiResponse;
-import com.example.myapplication.domain.Invitation;
-import com.example.myapplication.domain.dto.ActivityUpdateRequest;
-import com.example.myapplication.domain.dto.AgendaUpdateRequest;
-import com.example.myapplication.domain.dto.EventInfoResponse;
+import com.example.myapplication.domain.dto.event.ActivityUpdateRequest;
+import com.example.myapplication.domain.dto.event.AgendaUpdateRequest;
+import com.example.myapplication.domain.dto.event.EventInfoResponse;
 import com.example.myapplication.services.ClientUtils;
 import com.example.myapplication.utilities.HashUtils;
 import com.example.myapplication.utilities.JwtTokenUtil;
@@ -98,36 +96,33 @@ public class EventAgendaOverview extends Fragment implements ActivitiesAdapter.O
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_event_agenda_overview, container, false);
+        View view = inflater.inflate(R.layout.fragment_event_agenda_overview, container, false);
+        eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
+        eventViewModel.getEvent().observe(getViewLifecycleOwner(),event ->{
+            isMyEvent = Objects.equals(event.getOrganizerID(), JwtTokenUtil.getUserId());
+            setupRecyclerView(view);
+            fetchActivities();
+            setupPdfClick(view);
+            adapter.setIsMyEvent(isMyEvent);
+        });
+        return view;
+
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
-        isMyEvent = Objects.equals(Objects.requireNonNull(eventViewModel.getEvent().getValue()).getOrganizerID(), JwtTokenUtil.getUserId());
-        setupRecyclerView(view);
-        fetchActivities();
-        setupPdfClick(view);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (!isMyEvent){return;}
+        if (isMyEvent == null || !isMyEvent){return;}
         String currentHash = HashUtils.hashActivityList(activityList);
         if (!currentHash.equals(initialHash)){
             activityList.remove(activityList.size()-1);

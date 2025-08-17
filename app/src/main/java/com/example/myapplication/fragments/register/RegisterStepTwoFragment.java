@@ -15,7 +15,8 @@ import android.widget.Toast;
 
 import com.example.myapplication.R;
 import com.example.myapplication.activities.MainActivity;
-import com.example.myapplication.domain.dto.UserCreateRequest;
+import com.example.myapplication.domain.dto.user.UserCreateRequest;
+import com.example.myapplication.utilities.NotificationsUtils;
 
 import java.io.File;
 
@@ -95,7 +96,7 @@ public class RegisterStepTwoFragment extends Fragment {
     private void onNextButtonClick() {
         RegisterFragment parentFragment = (RegisterFragment) getParentFragment();
         if (!retrieveData(parentFragment.userCreateRequest)) {
-            Toast.makeText(getContext(), "Something went cataclysmically wrong.", Toast.LENGTH_SHORT).show();
+            NotificationsUtils.getInstance().showErrToast(getContext(),"Image retrive failed!\n Please select image!");
             return;
         }
         //continue if everythink ok

@@ -23,26 +23,21 @@ import android.widget.TextView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.EventTypeCheckboxAdapter;
-import com.example.myapplication.adapters.EventTypesAdapter;
 import com.example.myapplication.databinding.FragmentFilterBottomSheetBinding;
 import com.example.myapplication.domain.EventType;
-import com.example.myapplication.domain.dto.SearchEventsRequest;
-import com.example.myapplication.services.EventService;
+import com.example.myapplication.domain.dto.event.SearchEventsRequest;
 import com.example.myapplication.services.EventTypeService;
 import com.example.myapplication.viewmodels.EventViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.slider.RangeSlider;
-import com.google.android.material.slider.Slider;
-import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;

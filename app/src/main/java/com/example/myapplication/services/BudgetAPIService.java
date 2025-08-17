@@ -2,9 +2,13 @@ package com.example.myapplication.services;
 
 import com.example.myapplication.domain.Budget;
 import com.example.myapplication.domain.BudgetItem;
-import com.example.myapplication.domain.dto.BudgetItemCreateRequest;
+import com.example.myapplication.domain.dto.ReservationResponse;
+import com.example.myapplication.domain.dto.asset.CreateReservationRequest;
+import com.example.myapplication.domain.dto.event.BudgetItemCreateRequest;
+import com.example.myapplication.domain.dto.event.BudgetItemResponse;
+import com.example.myapplication.domain.dto.event.BudgetResponse;
 
-import java.util.concurrent.Future;
+import java.util.UUID;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -17,20 +21,31 @@ import retrofit2.http.Query;
 
 public interface BudgetAPIService {
     @GET("event/budget/{id}")
-    Call<Budget> getBudgetByEventId(@Path("id") String id);
+    Call<BudgetResponse> getBudgetByEventId(@Path("id") String id);
 
     @PUT("event/budget/item/{budgetItemId}")
-    Call<BudgetItem> updateBudgetItem(@Path("budgetItemId") String budgetItemId, @Query("plannedAmount") String plannedAmount);
+    Call<BudgetItemResponse> updateBudgetItem(@Path("budgetItemId") String budgetItemId, @Query("plannedAmount") String plannedAmount);
 
     @POST("event/budget/item/{budgetId}")
-    Call<BudgetItem> addBudgetItem(@Path("budgetId") String budgetId, @Body BudgetItemCreateRequest budgetItem);
+    Call<BudgetItemResponse> addBudgetItem(@Path("budgetId") String budgetId, @Body BudgetItemCreateRequest budgetItem);
 
     @DELETE("event/budget/item/{budgetItemId}")
     Call<Void> deleteBudgetItem(@Path("budgetItemId") String budgetItemId);
 
     @POST("event/budget/{eventId}/buy-product/{productId}")
-    Call<BudgetItem> buyProduct(@Path("eventId") String eventId, @Path("productId") String productId);
+    Call<BudgetItemResponse> buyProduct(@Path("eventId") String eventId, @Path("productId") String productId);
 
-    @POST("event/budget/{eventId}/reserve-utility/{utilityId}")
-    Call<BudgetItem> reserveUtility(@Path("eventId") String eventId, @Path("utilityId") String utilityId);
+    @POST("event/budget/reserve-utility")
+    Call<BudgetItemResponse> reserveUtility(@Body CreateReservationRequest request);
+
+    @GET("event/budget/reservation/{eventId}/{utilityId}")
+    Call<ReservationResponse> fetchReservation(@Path("eventId") String eventId,@Path("utilityId") String utilityId);
+
+    @PUT("event/budget/accept-reservation/{reservationId}")
+    Call<Void> acceptReservation(@Path("reservationId") UUID reservationId);
+
+    @PUT("event/budget/deny-reservation/{reservationId}")
+    Call<Void> denyReservation(@Path("reservationId") UUID reservationId);
+    @PUT("event/budget/{eventId}/cancel-utility/{utilityVersionId}")
+    Call<Void> cancelReservation(@Path("eventId")UUID eventId,@Path("utilityVersionId") UUID utilityVersionId);
 }

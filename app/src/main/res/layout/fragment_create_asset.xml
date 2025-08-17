@@ -179,7 +179,7 @@
                     android:id="@+id/assetDurationEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Duration (hours)"
+                    android:hint="Duration (minutes)"
                     android:inputType="number"
                     android:textColor="#000000"
                     android:textSize="18sp" />
@@ -213,29 +213,34 @@
                     android:textColor="#000000" />
             </RadioGroup>
 
-            <TextView
-                android:id="@+id/bookingDateTextView"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/assetBookingDeadLineLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Select Booking Date"
-                android:textSize="18sp"
-                android:padding="12dp"
-                android:textColor="#000000"
-                android:clickable="true"
-                android:focusable="true"
-                android:layout_marginTop="16dp" />
-
-            <TextView
-                android:id="@+id/cancellationDateTextView"
+                android:layout_marginTop="16dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/assetBookingDeadLineEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Booking deadline (in days before Event Start)"
+                    android:inputType="number"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/assetCancellationDeadLineLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Select Cancellation Date"
-                android:textSize="18sp"
-                android:padding="12dp"
-                android:textColor="#000000"
-                android:clickable="true"
-                android:focusable="true"
-                android:layout_marginTop="16dp" />
+                android:layout_marginTop="16dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/assetCancellationEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Cancellation deadline (in days before Event Start)"
+                    android:inputType="number"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton

@@ -4,12 +4,11 @@ import android.util.Log;
 
 import com.example.myapplication.domain.ApiResponse;
 import com.example.myapplication.domain.PagedResponse;
-import com.example.myapplication.domain.dto.CreateEventRequest;
-import com.example.myapplication.domain.dto.EventCardResponse;
-import com.example.myapplication.domain.dto.EventInfoResponse;
-import com.example.myapplication.domain.dto.EventSignupRequest;
-import com.example.myapplication.domain.dto.EventUpdateRequest;
-import com.example.myapplication.domain.dto.GuestResponse;
+import com.example.myapplication.domain.dto.event.CreateEventRequest;
+import com.example.myapplication.domain.dto.event.EventCardResponse;
+import com.example.myapplication.domain.dto.event.EventInfoResponse;
+import com.example.myapplication.domain.dto.event.EventSignupRequest;
+import com.example.myapplication.domain.dto.event.EventUpdateRequest;
 import com.example.myapplication.utilities.RetrofitClient;
 
 import java.util.List;

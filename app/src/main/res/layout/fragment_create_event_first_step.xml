@@ -185,37 +185,45 @@
                     android:layout_marginTop="40dp"
                     android:layout_marginEnd="40dp"
                     android:backgroundTint="@color/olive"
-                    android:text="Open Date Range Picker"
+                    android:text="Choose event start/end dates"
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     app:cornerRadius="10dp" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputDateRange"
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:textColorHint="@color/top_card"
-                    android:textSize="16sp"
-                    app:boxCornerRadiusBottomEnd="10dp"
-                    app:boxCornerRadiusBottomStart="10dp"
-                    app:boxCornerRadiusTopEnd="10dp"
-                    app:boxCornerRadiusTopStart="10dp"
-                    app:boxStrokeWidth="1dp">
+                    android:layout_margin="15dp"
+                    app:strokeColor="@color/olive">
 
-                    <TextView
-                        android:id="@+id/dateRangeTextView"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/textInputDateRange"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:gravity="center_horizontal"
-                        android:text="Selected Date Range"
-                        android:textSize="16sp" />
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:ems="10"
+                        android:gravity="center"
+                        android:textColorHint="@color/top_card"
+                        android:textSize="16sp"
+                        app:boxCornerRadiusBottomEnd="10dp"
+                        app:boxCornerRadiusBottomStart="10dp"
+                        app:boxCornerRadiusTopEnd="10dp"
+                        app:boxCornerRadiusTopStart="10dp"
+                        app:boxStrokeWidth="1dp">
 
-                </com.google.android.material.textfield.TextInputLayout>
+                        <TextView
+                            android:id="@+id/dateRangeTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="20dp"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:gravity="center|center_horizontal"
+                            android:text="Selected Date Range"
+                            android:textSize="16sp" />
 
-
+                    </com.google.android.material.textfield.TextInputLayout>
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
             <Button

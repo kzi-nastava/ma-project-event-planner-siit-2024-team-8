@@ -1,9 +1,7 @@
 package com.example.myapplication.adapters;
 
 import static com.example.myapplication.adapters.BindingAdapters.bindAssetCategory;
-import static com.example.myapplication.adapters.BindingAdapters.bindAssetCategoryByType;
 
-import android.annotation.SuppressLint;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -18,19 +16,16 @@ import android.widget.RadioGroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatSpinner;
-import androidx.databinding.InverseBindingListener;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.domain.AssetCategory;
 import com.example.myapplication.domain.BudgetItem;
-import com.example.myapplication.domain.dto.BudgetItemCreateRequest;
 import com.example.myapplication.services.AssetCategoryService;
 import com.example.myapplication.utilities.JwtTokenUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -127,6 +122,7 @@ public class BudgetItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 public void onResponse(Call<AssetCategory> call, Response<AssetCategory> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         AssetCategory fetchedCategory = response.body();
+                        category[0] = fetchedCategory;
                         Log.e("AssetCategory", "Success fetching category for budget items");
 
                         // Now safe to use fetchedCategory
@@ -160,7 +156,7 @@ public class BudgetItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             assetCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    AssetCategory selectedCategory = (AssetCategory) view.getTag();
+                    AssetCategory selectedCategory = (AssetCategory) parent.getTag();
 
                     if (selectedCategory != null) {
                         budgetItem.setCategory(selectedCategory.getId());

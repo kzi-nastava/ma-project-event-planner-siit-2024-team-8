@@ -11,12 +11,15 @@ import com.example.myapplication.domain.AssetCategory;
 import com.example.myapplication.domain.PagedResponse;
 import com.example.myapplication.domain.Product;
 import com.example.myapplication.domain.Utility;
-import com.example.myapplication.domain.dto.AssetResponse;
-import com.example.myapplication.domain.dto.SearchAssetRequest;
+import com.example.myapplication.domain.dto.ReservationResponse;
+import com.example.myapplication.domain.dto.user.AssetResponse;
+import com.example.myapplication.domain.dto.user.SearchAssetRequest;
 import com.example.myapplication.services.AssetCategoryService;
+import com.example.myapplication.services.BudgetService;
 import com.example.myapplication.services.ClientUtils;
 import com.example.myapplication.services.ProductService;
 import com.example.myapplication.services.UtilityService;
+import com.example.myapplication.utilities.NotificationsUtils;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -40,6 +43,10 @@ public class AssetViewModel extends ViewModel {
     private final MutableLiveData<SearchAssetRequest> currentFilters = new MutableLiveData<>();
 
     private final MutableLiveData<List<AssetResponse>> top5Assets = new MutableLiveData<>();
+
+    private final MutableLiveData<List<AssetResponse>> boughtAssets = new MutableLiveData<>();
+
+    private final MutableLiveData<ReservationResponse> currentReservation = new MutableLiveData<>();
 
     private MutableLiveData<Long> totalElements = new MutableLiveData<>();
 
@@ -65,6 +72,8 @@ public class AssetViewModel extends ViewModel {
 
     public LiveData<SearchAssetRequest> getCurrentFilters() {return currentFilters;}
 
+    public LiveData<List<AssetResponse>> getBoughtAssets() {return boughtAssets;}
+
     public LiveData<List<Asset>> getAssetsLiveData() {
         return assetsLiveData;
     }
@@ -74,6 +83,8 @@ public class AssetViewModel extends ViewModel {
     }
 
     public LiveData<List<AssetResponse>> getTop5Assets() { return top5Assets;}
+
+    public LiveData<ReservationResponse> getCurrentReservation() {return currentReservation;}
 
     public void fetchAssets(String token) {
         isLoading.setValue(true);
@@ -219,6 +230,41 @@ public class AssetViewModel extends ViewModel {
             @Override
             public void onFailure(Call<List<AssetResponse>> call, Throwable t) {
                 Log.d("ERROR LOADING TOP ASSETS" , t.getMessage());
+            }
+        });
+    }
+
+    public void fetchBoughtAssets(List<String> assetVersionIds){
+        ClientUtils.assetAPIService.getBoughtAssets(assetVersionIds).enqueue(new Callback<List<AssetResponse>>() {
+            @Override
+            public void onResponse(Call<List<AssetResponse>> call, Response<List<AssetResponse>> response) {
+                if (response.isSuccessful()){
+                    boughtAssets.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<AssetResponse>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void fetchReservation(String eventId, String utilityId){
+        BudgetService budgetService = new BudgetService();
+        budgetService.fetchReservation(eventId, utilityId, new Callback<ReservationResponse>() {
+            @Override
+            public void onResponse(Call<ReservationResponse> call, Response<ReservationResponse> response) {
+                if (response.isSuccessful()){
+                    currentReservation.setValue(response.body());
+                }else{
+                    Log.d("Err",response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReservationResponse> call, Throwable t) {
+
             }
         });
     }

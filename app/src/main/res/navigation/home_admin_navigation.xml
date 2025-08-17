@@ -24,12 +24,12 @@
         tools:layout="@layout/fragment_create_event"/>
     <fragment
         android:id="@+id/inboxFragment"
-        android:name="com.example.myapplication.fragments.ToDoFragment"
+        android:name="com.example.myapplication.fragments.InboxFragment"
         android:label="Inbox"
         tools:layout="@layout/fragment_to_do" />
     <fragment
         android:id="@+id/notificationsFragment"
-        android:name="com.example.myapplication.fragments.ToDoFragment"
+        android:name="com.example.myapplication.fragments.NotificationsFragment"
         android:label="Notifications"
         tools:layout="@layout/fragment_to_do" />
 

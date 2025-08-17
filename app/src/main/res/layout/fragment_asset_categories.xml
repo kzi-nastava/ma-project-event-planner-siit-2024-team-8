@@ -54,11 +54,16 @@
         android:id="@+id/fabAddCategory"
         android:layout_width="56dp"
         android:layout_height="56dp"
+        android:layout_marginBottom="20dp"
         android:contentDescription="Add Category"
+        android:padding="10dp"
+        android:tint="@color/black"
         app:backgroundTint="@color/olive"
-        app:srcCompat="@android:drawable/ic_input_add"
+        app:fabCustomSize="56dp"
+        app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@android:drawable/ic_input_add" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

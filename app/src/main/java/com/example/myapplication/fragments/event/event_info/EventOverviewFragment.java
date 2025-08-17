@@ -2,8 +2,6 @@ package com.example.myapplication.fragments.event.event_info;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -16,8 +14,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.SpannableString;
-import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,18 +26,16 @@ import android.widget.Toast;
 
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.ReviewLiveAdapter;
-import com.example.myapplication.domain.ApiResponse;
-import com.example.myapplication.domain.Event;
 import com.example.myapplication.domain.Review;
-import com.example.myapplication.domain.dto.EventInfoResponse;
-import com.example.myapplication.domain.dto.EventSignupRequest;
-import com.example.myapplication.domain.dto.EventUpdateRequest;
+import com.example.myapplication.domain.dto.event.EventInfoResponse;
+import com.example.myapplication.domain.dto.event.EventSignupRequest;
 import com.example.myapplication.fragments.ChatFragment;
 import com.example.myapplication.fragments.ProfileInfoFragment;
-import com.example.myapplication.domain.dto.EventSignupRequest;
 import com.example.myapplication.fragments.event.edit_event.EventEditFragment;
+import com.example.myapplication.services.ClientUtils;
 import com.example.myapplication.services.EventService;
 import com.example.myapplication.services.ReviewService;
+import com.example.myapplication.services.UserService;
 import com.example.myapplication.utilities.JwtTokenUtil;
 import com.example.myapplication.utilities.NotificationsUtils;
 import com.example.myapplication.viewmodels.EventViewModel;
@@ -50,20 +44,17 @@ import com.google.android.material.button.MaterialButton;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.List;
-import java.util.Objects;
-
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -88,6 +79,7 @@ public class EventOverviewFragment extends Fragment {
 
     private Boolean isUserSignedUp;
 
+    private Boolean hasInFavorites;
     public EventOverviewFragment() {
         // Required empty public constructor
     }
@@ -122,6 +114,7 @@ public class EventOverviewFragment extends Fragment {
 
         getEventById(eventId, view);
 
+
         Button openInMapButton = view.findViewById(R.id.mapButton);
         openInMapButton.setOnClickListener(v -> {
             double longitude = 0;
@@ -142,6 +135,7 @@ public class EventOverviewFragment extends Fragment {
 
         eventVM = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
 
+        eventVM.fetchEvent(eventId);
 
 
         Button eOrg = view.findViewById(R.id.eOrg);
@@ -159,26 +153,73 @@ public class EventOverviewFragment extends Fragment {
             isMyEvent = Objects.equals(eventVM.getEvent().getValue().getOrganizerID(), JwtTokenUtil.getUserId());
             isPrivate = eventVM.getEvent().getValue().getPrivate();
             isUserSignedUp(view);
+            hasInFavorites(view);
+        });
+    }
+
+    private void hasInFavorites(View view) {
+        String userId = jwtTokenUtil.getUserId();
+        RequestBody body = RequestBody.create(
+                MediaType.parse("text/plain"),
+                eventId
+        );
+        ClientUtils.userService.checkFavorite(userId,body).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful()){
+                    hasInFavorites = response.body();
+                    if (isUserSignedUp != null){
+                        setupEventButtons(view);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+
+            }
         });
     }
 
     private void setupEventButtons(View view){
         MaterialButton editButton = view.findViewById(R.id.editEventButton);
         MaterialButton chatButton = view.findViewById(R.id.chatButton);
+        MaterialButton favoriteButton = view.findViewById(R.id.favoriteEventsButton);
         if(isMyEvent){
             editButton.setVisibility(View.VISIBLE);
             chatButton.setVisibility(View.GONE);
         }
         MaterialButton signUpButton = view.findViewById(R.id.signUpButton);
-        if (!isMyEvent && !isPrivate){signUpButton.setVisibility(View.VISIBLE);}
+        if (!isMyEvent && !isPrivate && !isEventOver()){signUpButton.setVisibility(View.VISIBLE);}
+        if (!isMyEvent){favoriteButton.setVisibility(View.VISIBLE);}
+        if(hasInFavorites){
+            favoriteButton.setIcon(ContextCompat.getDrawable(requireContext(),R.drawable.baseline_favorite_24));
+            favoriteButton.setText("Unfavorite Event");
+        }
         if(isUserSignedUp){
             signUpButton.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.deactivate_color));
             signUpButton.setIcon(ContextCompat.getDrawable(requireContext(),R.drawable.leave_icon));
             signUpButton.setText("Leave Event");
         }
         signUpButton.setOnClickListener(v -> signUserUpToEvent(view));
-        ;
 
+        favoriteButton.setOnClickListener(v -> favoriteEvent());
+
+    }
+
+
+    private boolean isEventOver() {
+        if (eventInfo == null || eventInfo.getEndDate() == null) {
+            return false;
+        }
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            Date endDate = sdf.parse(eventInfo.getEndDate());
+            return endDate != null && endDate.before(new Date());
+        } catch (ParseException e) {
+            Log.e("EventTime", "Error parsing date", e);
+            return false;
+        }
     }
 
     private void signUserUpToEvent(View view) {
@@ -196,14 +237,14 @@ public class EventOverviewFragment extends Fragment {
                 .setMessage("Are you sure you want to join this event?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        eventService.signUserUpToEvent(new EventSignupRequest(userId, eventId), new Callback<String>() {
+                        NotificationsUtils.getInstance().showSuccessToast(getContext(),
+                                String.format("Joined event %s", eventInfo.getName()));
+                        isUserSignedUp = true;
+                        setupJoinButton(getView());
+                        assert getParentFragment() != null;
+                        getParentFragment().getParentFragmentManager().popBackStack();                        eventService.signUserUpToEvent(new EventSignupRequest(userId, eventId), new Callback<String>() {
                             @Override
                             public void onResponse(Call<String> call, Response<String> response) {
-                                if(response.isSuccessful()){
-                                    NotificationsUtils.getInstance().showSuccessToast(getContext(),String.format("Joined event %s",eventInfo.getName()));
-                                    isUserSignedUp = true;
-                                    setupJoinButton(getView());
-                                }
                             }
 
                             @Override
@@ -222,7 +263,7 @@ public class EventOverviewFragment extends Fragment {
     }
 
     private void setupJoinButton(View view) {
-        MaterialButton signUpButton = view.findViewById(R.id.signUpButton);
+        MaterialButton signUpButton = view.findViewById(R.id.favoriteEventsButton);
         signUpButton.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.olive));
         signUpButton.setIcon(ContextCompat.getDrawable(requireContext(),R.drawable.baseline_supervised_user_circle_24));
         signUpButton.setText("Join Event");
@@ -234,14 +275,17 @@ public class EventOverviewFragment extends Fragment {
                 .setMessage("Are you sure you want to leave this event?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        NotificationsUtils.getInstance().showNotification(
+                                requireContext(),
+                                String.format("Event %s left.", eventInfo.getName())
+                        );
+                        isUserSignedUp = false;
+                        setupLeaveButton(requireView());
+                        assert getParentFragment() != null;
+                        getParentFragment().getParentFragmentManager().popBackStack();
                         eventService.leaveEvent(new EventSignupRequest(userId, eventId), new Callback<String>() {
                             @Override
                             public void onResponse(Call<String> call, Response<String> response) {
-                                if (response.isSuccessful()){
-                                    NotificationsUtils.getInstance().showSuccessToast(getContext(),String.format("Event %s left.",eventInfo.getName()));
-                                    isUserSignedUp = false;
-                                    setupLeaveButton(getView());
-                                }
                             }
 
                             @Override
@@ -260,11 +304,24 @@ public class EventOverviewFragment extends Fragment {
     }
 
     private void setupLeaveButton(View view) {
-        MaterialButton signUpButton = view.findViewById(R.id.signUpButton);
+        MaterialButton signUpButton = view.findViewById(R.id.favoriteEventsButton);
         signUpButton.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.deactivate_color));
         signUpButton.setIcon(ContextCompat.getDrawable(requireContext(),R.drawable.leave_icon));
         signUpButton.setText("Leave Event");
     }
+
+    private void favoriteEvent() {
+        UserService userService = new UserService();
+        if (!hasInFavorites){
+            userService.favoriteEvent(eventId,getContext());
+            NotificationsUtils.getInstance().showSuccessToast(getContext(),"Event added to favorites!");
+        }else{
+            userService.unfavoriteEvent(eventId,getContext());
+            NotificationsUtils.getInstance().showSuccessToast(getContext(),"Event removed from favorites!");
+        }
+        getParentFragment().getParentFragmentManager().popBackStack();
+    }
+
 
     private void organizerClicked() {
         replaceFragment(new ProfileInfoFragment(UUID.fromString(eventInfo.getOrganizerID())));
@@ -385,7 +442,10 @@ public class EventOverviewFragment extends Fragment {
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 if (response.isSuccessful()){
                     isUserSignedUp = response.body();
-                    setupEventButtons(view);
+                    if(hasInFavorites != null){
+                        setupEventButtons(view);
+                    }
+
                 }else{
                     NotificationsUtils.getInstance().showErrToast(getContext(),response.message());
                 }

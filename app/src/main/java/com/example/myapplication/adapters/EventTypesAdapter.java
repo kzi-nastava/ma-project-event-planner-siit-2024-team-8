@@ -19,6 +19,7 @@ import com.example.myapplication.R;
 import com.example.myapplication.domain.AssetCategory;
 import com.example.myapplication.domain.EventType;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +83,7 @@ public class EventTypesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         this.eventTypes = eventTypes;
         this.currentTypes = new ArrayList<>();
         this.currentTypes.addAll(eventTypes);
+        notifyDataSetChanged();
     }
 
 
@@ -93,6 +95,7 @@ public class EventTypesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         private final TextView nameTextView,idTextView;
         private final MaterialCardView materialCardView;
+        private final TextInputLayout nameLayout;
         private List<AssetCategory> selected;
 
         boolean active;
@@ -106,6 +109,7 @@ public class EventTypesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             materialCardView = view.findViewById(R.id.eventTypeMaterialCard);
             descriptionEditText = dialog.findViewById(R.id.eventTypeDescriptionEditText);
             nameTextView = dialog.findViewById(R.id.eventTypeTextView);
+            nameLayout = dialog.findViewById(R.id.nameLayout);
             idTextView = dialog.findViewById(R.id.eventTypeId);
             activationButton = dialog.findViewById(R.id.activationButton);
 
@@ -126,11 +130,13 @@ public class EventTypesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 activationButton.setBackgroundColor(ContextCompat.getColor(itemView.getContext(),R.color.olive));
                 activationButton.setText("Activate");
             }
+            activationButton.setVisibility(View.VISIBLE);
 
             dialog.show();
             assetCategoryRequestListener.onAssetCategoryRequested(selected);
             nameTextView.setText(name.getText());
             nameTextView.setVisibility(View.VISIBLE);
+            nameLayout.setVisibility(View.GONE);
             descriptionEditText.setText(description.getText());
             idTextView.setText(getIdTextView.getText());
         }

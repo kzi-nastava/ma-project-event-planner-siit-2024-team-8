@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.myapplication.R;
+import com.example.myapplication.domain.Notification;
 
 public final class NotificationsUtils {
     private static final NotificationsUtils INSTANCE = new NotificationsUtils();
@@ -36,8 +37,8 @@ public final class NotificationsUtils {
         vibratePhone(context);
     }
 
-    public void showInformationToast(Context context, String message) {
-        showToast(context, message, R.drawable.baseline_info_24);
+    public void showNotification(Context context, String message) {
+        showToast(context, message, R.drawable.outline_notifications_none_24);
         vibratePhone(context);
     }
 
@@ -55,6 +56,27 @@ public final class NotificationsUtils {
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.setView(layout);
         toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 100);
+        toast.show();
+    }
+
+    public void showServerNotification(Context context,Notification notification){
+        showNotificationToast(context,notification);
+        vibratePhone(context);
+    }
+
+    public void showNotificationToast(Context context, Notification notification) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        android.view.View layout = inflater.inflate(R.layout.server_notification_item, null);
+
+        TextView textTitle = layout.findViewById(R.id.text_title);
+        TextView textBody = layout.findViewById(R.id.text_body);
+        textBody.setText(notification.getBody());
+        textTitle.setText(notification.getTitle());
+
+        Toast toast = new Toast(context);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100);
         toast.show();
     }
 

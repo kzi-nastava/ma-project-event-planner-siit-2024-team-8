@@ -2,6 +2,7 @@ package com.example.myapplication.services;
 
 import com.example.myapplication.domain.Product;
 import com.example.myapplication.domain.Review;
+import com.example.myapplication.domain.dto.asset.ProductResponse;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -16,7 +17,9 @@ public interface ProductAPIService {
     Call<List<Product>> getAllProducts(@Header("Authorization") String token);
 
     @GET("products/{id}")
-    Call<Product> getProductById(@Header("Authorization") String token, @Path("id") String id);
+    Call<ProductResponse> getProductById(@Header("Authorization") String token, @Path("id") String id);
+
+
 
     @Multipart
     @POST("products")
@@ -57,4 +60,5 @@ public interface ProductAPIService {
 
     @POST("products/{id}/review")
     Call<String> submitReview(@Header("Authorization") String token, @Path("id") String productId, @Body RequestBody reviewData);
+
 }

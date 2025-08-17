@@ -1,14 +1,13 @@
 package com.example.myapplication.services;
 
 import com.example.myapplication.domain.PagedResponse;
-import com.example.myapplication.domain.dto.AssetResponse;
-import com.example.myapplication.domain.enumerations.AssetSortParameter;
+import com.example.myapplication.domain.dto.user.AssetResponse;
 import com.example.myapplication.domain.enumerations.AssetType;
-import com.example.myapplication.domain.enumerations.EventSortParameter;
 
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
@@ -32,4 +31,7 @@ public interface AssetAPIService {
 
     @GET("assets/top5")
     Call<List<AssetResponse>> getTop5Assets();
+
+    @GET("assets/asset-version/bought")
+    Call<List<AssetResponse>> getBoughtAssets(@Query("assetVersionIds") List<String> assetVersionIds);
 }

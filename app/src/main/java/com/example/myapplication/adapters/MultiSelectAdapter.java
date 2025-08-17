@@ -31,6 +31,7 @@ public class MultiSelectAdapter extends RecyclerView.Adapter<MultiSelectAdapter.
 
     public void updateData(List<AssetCategory> categories){
         this.items = categories;
+        notifyDataSetChanged();
     }
 
     @Override

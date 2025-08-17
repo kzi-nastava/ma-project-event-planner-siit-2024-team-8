@@ -15,6 +15,8 @@ import com.example.myapplication.adapters.AssetViewPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.util.Objects;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link AssetInfoFragment#newInstance} factory method to
@@ -26,17 +28,20 @@ public class AssetInfoFragment extends Fragment {
     private String assetType;
     private boolean isProvider;
 
+    private String eventId = null;
+
     private ViewPager2 viewPager;
     private TabLayout tabLayout;
 
     public AssetInfoFragment() { }
 
-    public static AssetInfoFragment newInstance(String assetId, String assetType, boolean isProvider) {
+    public static AssetInfoFragment newInstance(String assetId, String assetType, boolean isProvider, String eventId) {
         AssetInfoFragment fragment = new AssetInfoFragment();
         Bundle args = new Bundle();
         args.putString("asset_id", assetId);
         args.putString("asset_type", assetType);
         args.putBoolean("is_provider", isProvider);
+        args.putString("event_id",eventId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -48,6 +53,7 @@ public class AssetInfoFragment extends Fragment {
             assetId = getArguments().getString("asset_id");
             assetType = getArguments().getString("asset_type");
             isProvider = getArguments().getBoolean("is_provider", false);
+            eventId = Objects.equals(getArguments().getString("event_id"), "null") ? null : getArguments().getString("event_id");
         }
     }
 
@@ -59,19 +65,19 @@ public class AssetInfoFragment extends Fragment {
         viewPager = view.findViewById(R.id.viewPagerAssetInfo);
         tabLayout = view.findViewById(R.id.tabLayoutAssetInfo);
 
-        AssetViewPagerAdapter adapter = new AssetViewPagerAdapter(this, assetId, assetType, isProvider);
+        AssetViewPagerAdapter adapter = new AssetViewPagerAdapter(this, assetId, assetType, isProvider,eventId);
         viewPager.setAdapter(adapter);
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-            if (isProvider) {
-                switch (position) {
-                    case 0: tab.setText("Overview"); break;
-                    case 1: tab.setText("Details"); break;
-                }
-            } else {
-                tab.setText("Overview");
+            switch (position) {
+                case 0: tab.setText("Overview"); break;
+                case 1: tab.setText("Details"); break;
             }
         }).attach();
+
+        if (!isProvider){
+            tabLayout.setVisibility(View.GONE);
+        }
 
         return view;
     }

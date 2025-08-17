@@ -29,5 +29,5 @@
         android:id="@+id/notificationsFragment"
         android:checkable="true"
         android:icon="@drawable/outline_notifications_none_24"
-        android:title="Profile" />
+        android:title="Notifications" />
 </menu>

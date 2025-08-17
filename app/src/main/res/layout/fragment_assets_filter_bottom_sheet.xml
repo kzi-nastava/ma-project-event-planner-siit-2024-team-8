@@ -148,12 +148,6 @@
                 android:textSize="16sp"
                 android:paddingBottom="8dp"/>
 
-            <com.google.android.material.materialswitch.MaterialSwitch
-                android:id="@+id/available_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="@={assetVM.currentFilters.available}"/>
-
             <!-- Apply Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/applyButton"

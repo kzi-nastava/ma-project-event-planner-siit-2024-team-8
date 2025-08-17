@@ -1,6 +1,5 @@
 package com.example.myapplication.fragments;
 
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -12,8 +11,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,27 +26,20 @@ import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
 import com.example.myapplication.activities.MainActivity;
 import com.example.myapplication.databinding.FragmentProfileInfoBinding;
-import com.example.myapplication.domain.dto.CreateReportRequest;
 import com.example.myapplication.domain.enumerations.OfferingType;
 import com.example.myapplication.domain.enumerations.Role;
-import com.example.myapplication.domain.dto.UserInfoResponse;
+import com.example.myapplication.domain.dto.user.UserInfoResponse;
 import com.example.myapplication.fragments.asset.AssetCategoriesFragment;
 import com.example.myapplication.fragments.asset.CreateAssetFragment;
 import com.example.myapplication.fragments.asset.PriceListFragment;
 import com.example.myapplication.fragments.event.create_event.CreateEventFragment;
-import com.example.myapplication.services.ClientUtils;
-import com.example.myapplication.services.UserService;
 import com.example.myapplication.utilities.JwtTokenUtil;
+import com.example.myapplication.utilities.NetworkUtils;
 import com.example.myapplication.viewmodels.UserViewModel;
 import com.google.android.material.button.MaterialButton;
 
-import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ProfileInfoFragment extends Fragment {
 
@@ -107,6 +97,8 @@ public class ProfileInfoFragment extends Fragment {
         binding.blockUserButton.setVisibility(View.VISIBLE);
         binding.logOutButton.setVisibility(View.GONE);
         binding.editButton.setVisibility(View.GONE);
+        binding.blockedUsersButton.setVisibility(View.GONE);
+        binding.favoriteEventsButton.setVisibility(View.GONE);
 
         binding.reportButton.setOnClickListener(v -> reportButtonClicked());
         binding.blockUserButton.setOnClickListener(v -> blockUserButtonClicked());
@@ -150,8 +142,18 @@ public class ProfileInfoFragment extends Fragment {
         }
         ImageButton backButton = view.findViewById(R.id.backButton);
         Button logOutButton = view.findViewById(R.id.logOutButton);
+        Button blockedUsers = view.findViewById(R.id.blockedUsersButton);
+        Button favoriteButton = view.findViewById(R.id.favoriteEventsButton);
         logOutButton.setOnClickListener(v -> logOut());
         backButton.setOnClickListener(v -> getParentFragmentManager().popBackStack());
+        blockedUsers.setOnClickListener(v -> {
+            BlockedUsersFragment fragment = new BlockedUsersFragment();
+            fragment.show(getParentFragmentManager(),null);
+        });
+        favoriteButton.setOnClickListener(v -> {
+            UserFavoriteEventsDialog favoriteEventsDialog = new UserFavoriteEventsDialog();
+            favoriteEventsDialog.show(getParentFragmentManager(),null);
+        });
         Role role = Objects.requireNonNull(JwtTokenUtil.getRole());
         switch(role) {
             case PROVIDER:
@@ -173,9 +175,11 @@ public class ProfileInfoFragment extends Fragment {
         MaterialButton viewReportsButton = binding.viewReportsButton;
         Button assetCategoriesButton = binding.assetCategoriesButtonAdmin;
         Button eventTypes = binding.eventTypesButtonAdmin;
+        setupViewStatsButton();
         assetCategoriesButton.setOnClickListener(v -> replaceFragment(new AssetCategoriesFragment()));
         eventTypes.setOnClickListener(v -> replaceFragment(new CreateEventTypeFragment()));
         viewReportsButton.setOnClickListener(v -> replaceFragment(new ReportsFragment()));
+        manageReviewsButton.setOnClickListener(v -> replaceFragment(new ReviewFragment()));
 
     }
     private void setupProviderButtons(){
@@ -193,9 +197,22 @@ public class ProfileInfoFragment extends Fragment {
         Button myEventsButton = binding.myEventsButton;
         Button createEvent = binding.createEventButton;
         Button eventTypes = binding.eventTypesButton;
+        setupViewStatsButton();
         myEventsButton.setOnClickListener(v -> replaceFragment(new AllSolutionsFragment(OfferingType.EVENT,JwtTokenUtil.getUserId())));
         createEvent.setOnClickListener(v-> replaceFragment(new CreateEventFragment()));
         eventTypes.setOnClickListener(v -> replaceFragment(new CreateEventTypeFragment()));
+    }
+
+    private void setupViewStatsButton(){
+        if(JwtTokenUtil.getRole() == Role.PROVIDER  || JwtTokenUtil.getRole() == Role.USER){
+            return;
+        }
+        Button viewStats = binding.viewEventStats;
+        viewStats.setVisibility(View.VISIBLE);
+        viewStats.setOnClickListener(v -> {
+            ViewStatsDialogFragment fragment = new ViewStatsDialogFragment();
+            fragment.show(getParentFragmentManager(),null);
+        });
     }
 
     //Remove token as well as ID from Shared Preferences memory
@@ -262,7 +279,7 @@ public class ProfileInfoFragment extends Fragment {
     private void displayUserProfile(UserInfoResponse userInfo,View view) {
         ImageView profileImage = view.findViewById(R.id.profile_picture);
         Glide.with(requireContext())
-                .load(userInfo.profileImage)
+                .load(NetworkUtils.replaceLocalhostWithDeviceIp(userInfo.profileImage))
                 .placeholder(R.drawable.profile_placeholder) // Optional placeholder while loading// Optional error image
                 .into(profileImage);
         TextView roleView = getView().findViewById(R.id.user_type);

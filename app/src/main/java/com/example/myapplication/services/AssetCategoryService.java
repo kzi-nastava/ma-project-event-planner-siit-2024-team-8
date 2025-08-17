@@ -26,8 +26,9 @@ public class AssetCategoryService {
         call.enqueue(callback);
     }
 
-    public Future<List<AssetCategory>> getAllActiveCategories(String token){
-       return apiService.getAllActiveCategories(token);
+    public void getAllActiveCategories(Callback<List<AssetCategory>> callback){
+        Call<List<AssetCategory>> call = apiService.getAllActiveCategories();
+        call.enqueue(callback);
     }
 
     public Call<AssetCategory> getAssetCategoryByName(String name,Callback<AssetCategory>  assetCategoryCallback){

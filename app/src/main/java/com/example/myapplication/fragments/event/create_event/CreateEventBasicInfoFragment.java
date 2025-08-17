@@ -14,9 +14,10 @@ import android.widget.TextView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.databinding.FragmentCreateEventFirstStepBinding;
-import com.example.myapplication.databinding.FragmentCreateEventStepTwoBinding;
-import com.example.myapplication.domain.dto.CreateEventRequest;
+import com.example.myapplication.domain.dto.event.CreateEventRequest;
 import com.example.myapplication.viewmodels.EventViewModel;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -107,6 +108,10 @@ public class CreateEventBasicInfoFragment extends Fragment {
         MaterialDatePicker.Builder<androidx.core.util.Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
         builder.setTitleText("Select Date Range");
 
+
+        CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
+        constraintsBuilder.setValidator(DateValidatorPointForward.from(System.currentTimeMillis()));
+        builder.setCalendarConstraints(constraintsBuilder.build());
         final MaterialDatePicker<Pair<Long, Long>> picker = builder.build();
 
         // Show the picker
@@ -124,7 +129,7 @@ public class CreateEventBasicInfoFragment extends Fragment {
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                     String startDateString = sdf.format(selection.first);
                     String endDateString = sdf.format(selection.second);
-                    dateRangeTextView.setText("Start: " + startDateString + "\nEnd: " + endDateString);
+                    dateRangeTextView.setText(String.format("Start: %s\nEnd: %s", startDateString, endDateString));
                 }
         );
 
@@ -168,7 +173,7 @@ public class CreateEventBasicInfoFragment extends Fragment {
 
         assert request != null;
         if (startDate == null || endDate == null){
-            name.setError("Event start date and end date are required!");
+            dateRange.setError("Event start date and end date are required!");
         }else{
             request.setStartDate(formatDate(startDate));
             request.setEndDate(formatDate(endDate));

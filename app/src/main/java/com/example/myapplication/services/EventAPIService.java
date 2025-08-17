@@ -1,21 +1,18 @@
 package com.example.myapplication.services;
 import com.example.myapplication.domain.ApiResponse;
 import com.example.myapplication.domain.PagedResponse;
-import com.example.myapplication.domain.dto.AgendaUpdateRequest;
-import com.example.myapplication.domain.dto.CreateEventRequest;
-import com.example.myapplication.domain.dto.EventCardResponse;
-import com.example.myapplication.domain.dto.EventInfoResponse;
-import com.example.myapplication.domain.dto.EventSignupRequest;
-import com.example.myapplication.domain.dto.EventUpdateRequest;
+import com.example.myapplication.domain.dto.event.AgendaUpdateRequest;
+import com.example.myapplication.domain.dto.event.CreateEventRequest;
+import com.example.myapplication.domain.dto.event.EventCardResponse;
+import com.example.myapplication.domain.dto.event.EventInfoResponse;
+import com.example.myapplication.domain.dto.event.EventSignupRequest;
+import com.example.myapplication.domain.dto.event.EventUpdateRequest;
 import com.example.myapplication.domain.dto.GuestResponse;
-import com.example.myapplication.domain.dto.GuestlistUpdateRequest;
-import com.example.myapplication.domain.dto.InvitationUpdateRequest;
-import com.example.myapplication.domain.dto.SearchEventsRequest;
-import com.example.myapplication.domain.enumerations.EventSortParameter;
+import com.example.myapplication.domain.dto.event.GuestlistUpdateRequest;
+import com.example.myapplication.domain.dto.event.InvitationUpdateRequest;
 
 import java.util.List;
-
-import javax.xml.parsers.SAXParser;
+import java.util.UUID;
 
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -23,7 +20,6 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -76,6 +72,15 @@ public interface EventAPIService {
     @Streaming
     Call<ResponseBody> fetchEventAgendaPDF(@Path("eventId") String id);
 
+    @GET("events/organizedId/{id}")
+    Call<List<EventInfoResponse>> fetchOrganizerEvents (@Path("id") UUID id);
+
+    @GET("events/publics")
+    Call<List<EventInfoResponse>> fetchAllPublic();
+
+    @GET("events/chart-reviews/{eventId}")
+    Call<ResponseBody> getChartReviews(@Path("eventId") String eventId);
+
 
     @PUT("events/update")
     Call<String> updateEvent(@Body EventUpdateRequest eventUpdateRequest);
@@ -108,4 +113,5 @@ public interface EventAPIService {
 
     @POST("events/leave")
     Call<String> leaveEvent(@Body EventSignupRequest eventSignupRequest);
+
 }

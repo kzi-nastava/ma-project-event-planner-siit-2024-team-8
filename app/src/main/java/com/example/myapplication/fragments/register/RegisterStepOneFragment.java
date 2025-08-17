@@ -14,8 +14,9 @@ import android.widget.Toast;
 
 import com.example.myapplication.R;
 import com.example.myapplication.databinding.FragmentRegisterStepOneBinding;
-import com.example.myapplication.domain.dto.UserCreateRequest;
+import com.example.myapplication.domain.dto.user.UserCreateRequest;
 import com.example.myapplication.viewmodels.UserViewModel;
+import com.google.android.material.textfield.TextInputLayout;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,10 +73,7 @@ public class RegisterStepOneFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentRegisterStepOneBinding.inflate(inflater,container,false);
-
-
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
-
         binding.setUserVM(userViewModel);
         binding.setLifecycleOwner(getViewLifecycleOwner());
 
@@ -89,8 +87,7 @@ public class RegisterStepOneFragment extends Fragment {
     private void nextButtonClicked() {
         RegisterFragment parentFragment = (RegisterFragment) getParentFragment();
         //begin user creation
-        if (!retrieveData(parentFragment.userCreateRequest)) {
-            Toast.makeText(getContext(), "First and last name are required.", Toast.LENGTH_SHORT).show();
+        if (!isDataValid()) {
             return;
         }
         //next step if everything ok
@@ -108,15 +105,31 @@ public class RegisterStepOneFragment extends Fragment {
         parentFragment.animateProgressBar(33);
     }
 
-    //persforms automatic verification as well
-    private boolean retrieveData(UserCreateRequest userCreateRequest) {
-        String firstName = ((EditText)this.getView().findViewById(R.id.editTextFirstName)).getText().toString();
-        String lastName = ((EditText)this.getView().findViewById(R.id.editTextLastName)).getText().toString();
-        String address = ((EditText)this.getView().findViewById(R.id.editTextAddress)).getText().toString();
-        String number = ((EditText)this.getView().findViewById(R.id.editTextNumber)).getText().toString();
-        if (firstName.isBlank() || firstName.isEmpty() || lastName.isEmpty() || lastName.isBlank()) {
-            return false;
+    //validation of DATA
+    private boolean isDataValid() {
+        UserCreateRequest user = userViewModel.getUser().getValue();
+        assert user != null;
+        int count = 0;
+        TextInputLayout firstName = getView().findViewById(R.id.textInputFirstName);
+        TextInputLayout lastName = getView().findViewById(R.id.textInputLastName);
+        TextInputLayout address = getView().findViewById(R.id.textInputAddress);
+        TextInputLayout phoneNumber = getView().findViewById(R.id.textInputPhone);
+        if (user.getFirstName().isEmpty()){
+            firstName.setError("Required!");
+            count++;
         }
-        return true;
+        if (user.getLastName().isEmpty()){
+            lastName.setError("Required");
+            count++;
+        }
+        if (user.getAddress().isEmpty()){
+            address.setError("Required");
+            count++;
+        }
+        if (user.getNumber().isEmpty()){
+            phoneNumber.setError("Required");
+            count++;
+        }
+        return count == 0;
     }
 }

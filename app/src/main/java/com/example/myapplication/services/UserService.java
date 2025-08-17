@@ -1,21 +1,28 @@
 package com.example.myapplication.services;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import com.example.myapplication.callbacks.UserRegisterCallBack;
 import com.example.myapplication.domain.ApiResponse;
 import com.example.myapplication.domain.dto.CreateReportRequest;
-import com.example.myapplication.domain.dto.ProviderInfoResponse;
+import com.example.myapplication.domain.dto.user.ProviderInfoResponse;
 import com.example.myapplication.domain.enumerations.Role;
-import com.example.myapplication.domain.dto.UserCreateRequest;
+import com.example.myapplication.domain.dto.user.UserCreateRequest;
+import com.example.myapplication.utilities.FileUtils;
+import com.example.myapplication.utilities.JwtTokenUtil;
 import com.example.myapplication.utilities.NotificationsUtils;
 import com.example.myapplication.utilities.RetrofitClient;
+import com.google.android.gms.common.api.Api;
 import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -113,4 +120,75 @@ public class UserService {
         });
     }
 
+    public void updateBlockedUsers(List<String> blockedIds,Context context){
+        ClientUtils.userService.updateBlockedUsers(JwtTokenUtil.getUserId(),blockedIds).enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                if (response.isSuccessful()){
+                    NotificationsUtils.getInstance().showSuccessToast(context ,"Updated blocked list succesfully");
+                }else{
+                    NotificationsUtils.getInstance().showErrToast(context ,"Error in updating blocked list");
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void registerProvider(UserCreateRequest user, File profileImageFile, Callback<ApiResponse> callback, Context context) {
+        Gson gson = new Gson();
+        String json = gson.toJson(user);
+        RequestBody userRequestBody = RequestBody.create(MediaType.parse("application/json"), json);
+
+        RequestBody mainImageRequestBody = RequestBody.create(MediaType.parse("image/*"), profileImageFile);
+        MultipartBody.Part mainImagePart = MultipartBody.Part.createFormData("image", profileImageFile.getName(), mainImageRequestBody);
+
+        List<MultipartBody.Part> companyImageParts = FileUtils.convertUrisToMultipart(context,user.getCompanyImagesURL().stream().map(Uri::parse).collect(Collectors.toList()),"companyImages");
+        ClientUtils.userService.registerProvider(userRequestBody,mainImagePart,companyImageParts).enqueue(callback);
+    }
+
+    public void favoriteEvent(String eventId,Context context){
+        RequestBody body = RequestBody.create(
+                MediaType.parse("text/plain"), // e.g. "12345"
+                eventId
+            );
+        ClientUtils.userService.favoriteEvent(JwtTokenUtil.getUserId(),body).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()){
+                    NotificationsUtils.getInstance().showSuccessToast(context,response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void unfavoriteEvent(String eventId,Context context){
+        RequestBody body = RequestBody.create(
+                MediaType.parse("text/plain"),
+                eventId
+        );
+        ClientUtils.userService.unfavoriteEvent(JwtTokenUtil.getUserId(),body).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()){
+                    NotificationsUtils.getInstance().showSuccessToast(context,response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+
+    }
 }

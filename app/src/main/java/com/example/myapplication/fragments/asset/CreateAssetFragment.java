@@ -34,10 +34,13 @@ import com.example.myapplication.services.ProductService;
 import com.example.myapplication.services.UtilityService;
 import com.example.myapplication.utilities.FileUtils;
 import com.example.myapplication.utilities.JwtTokenUtil;
+import com.example.myapplication.utilities.NotificationsUtils;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.android.material.textfield.TextInputLayout;
 
 import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -78,8 +81,8 @@ public class CreateAssetFragment extends Fragment {
 
         assetTypeGroup = view.findViewById(R.id.assetTypeGroup);
         utilitySpecificFields = view.findViewById(R.id.utilitySpecificFieldsLayout);
-        bookingDeadlineTextView = view.findViewById(R.id.bookingDateTextView);
-        cancellationDeadlineTextView = view.findViewById(R.id.cancellationDateTextView);
+        bookingDeadlineTextView = view.findViewById(R.id.assetBookingDeadLineEditText);
+        cancellationDeadlineTextView = view.findViewById(R.id.assetCancellationEditText);
         assetCategorySpinner = view.findViewById(R.id.assetCategorySpinner);
         MaterialButton cancelButton = view.findViewById(R.id.cancelButton);
         cancelButton.setOnClickListener(v -> requireActivity().onBackPressed());
@@ -108,8 +111,6 @@ public class CreateAssetFragment extends Fragment {
                 loadCategories(false); // Load product categories
             }
         });
-        bookingDeadlineTextView.setOnClickListener(v -> showDatePickerDialog(bookingDeadlineTextView));
-        cancellationDeadlineTextView.setOnClickListener(v -> showDatePickerDialog(cancellationDeadlineTextView));
     }
 
     @Override
@@ -142,7 +143,7 @@ public class CreateAssetFragment extends Fragment {
         String durationStr = ((EditText) requireView().findViewById(R.id.assetDurationEditText)).getText().toString();
 
         if (name.isEmpty() || name.length() > 30 || description.isEmpty() || priceStr.isEmpty() || discountStr.isEmpty()) {
-            showToast("Please fill in all fields properly.");
+            NotificationsUtils.getInstance().showErrToast(getContext(),"Please fill in all fields properly.");
             return false;
         }
 
@@ -150,25 +151,26 @@ public class CreateAssetFragment extends Fragment {
             Double.parseDouble(priceStr);
             Double.parseDouble(discountStr);
         } catch (NumberFormatException e) {
-            showToast("Invalid price or discount value.");
+            NotificationsUtils.getInstance().showErrToast(getContext(),"Invalid price or discount value.");
             return false;
         }
 
         if (Double.parseDouble(discountStr) < 0 || Double.parseDouble(discountStr) > 100) {
-            showToast("Discount must be between 0 and 100.");
+            NotificationsUtils.getInstance().showErrToast(getContext(),"Discount must be between 0 and 100.");
             return false;
         }
 
         if (selectedCategoryId == null || selectedCategoryId.isEmpty() || ("00000000-0000-0000-0000-000000000000".equals(selectedCategoryId) &&
                 !validateCategoryFields())) {
-            showToast("Please select a valid category.");
+            NotificationsUtils.getInstance().showErrToast(getContext(),"Please select a valid category.");
             return false;
         }
 
         if (assetTypeGroup.getCheckedRadioButtonId() == R.id.assetTypeService && (durationStr.isEmpty() || Integer.parseInt(durationStr) < 1 || Integer.parseInt(durationStr) > 999)) {
-            showToast("Duration must be between 1 and 999.");
+            NotificationsUtils.getInstance().showErrToast(getContext(),"Duration must be between 1 and 999.");
             return false;
         }
+
 
         return true;
     }
@@ -194,7 +196,7 @@ public class CreateAssetFragment extends Fragment {
         }
 
         String token = "Bearer " + JwtTokenUtil.getToken();
-        List<MultipartBody.Part> images = FileUtils.convertUrisToMultipart(requireContext(), selectedImageUris);
+        List<MultipartBody.Part> images = FileUtils.convertUrisToMultipart(requireContext(), selectedImageUris,"images");
         if (assetTypeGroup.getCheckedRadioButtonId() == R.id.assetTypeService) {
             createUtility(token, name, description, images, price, discount, visible, available, suggestedCategoryName, suggestedCategoryDesc);
         } else {
@@ -209,27 +211,47 @@ public class CreateAssetFragment extends Fragment {
     private void createUtility(String token, String name, String description, List<MultipartBody.Part> images, double price, double discount, boolean visible, boolean available, String suggestedCategoryName, String suggestedCategoryDesc) {
         String providerId = JwtTokenUtil.getUserId();
         int duration = Integer.parseInt(getFieldText(R.id.assetDurationEditText));
-        String reservationTerm = bookingDeadlineTextView.getText().toString();
-        String cancellationTerm = cancellationDeadlineTextView.getText().toString();
+        Integer reservationTerm = Integer.parseInt(bookingDeadlineTextView.getText().toString());
+        Integer cancellationTerm = Integer.parseInt(cancellationDeadlineTextView.getText().toString());
         boolean confirmationMethod = ((RadioButton) requireView().findViewById(R.id.confirmationMethodManual)).isChecked();
+        if (!isUtilityValid(reservationTerm,cancellationTerm,confirmationMethod)){
+            return;
+        }
 
         utilityService.createUtility(token, name, description, selectedCategoryId, providerId, price, discount, visible, available, duration,
-                reservationTerm, cancellationTerm, confirmationMethod, images, suggestedCategoryName, suggestedCategoryDesc, new Callback<Utility>() {
+                reservationTerm, cancellationTerm, confirmationMethod, images, suggestedCategoryName, suggestedCategoryDesc, new Callback<ResponseBody>() {
                     @Override
-                    public void onResponse(Call<Utility> call, Response<Utility> response) {
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
-                            showToast("Utility created successfully.");
+                            NotificationsUtils.getInstance().showSuccessToast(getContext(), "Utility created successfully.");
                             navigateToAllSolutionsFragment();
                         } else {
                             showToast("Failed to create utility.");
                         }
                     }
                     @Override
-                    public void onFailure(Call<Utility> call, Throwable t) {
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
                         showToast("Error: " + t.getMessage());
                         navigateToAllSolutionsFragment();
                     }
                 });
+    }
+
+    private boolean isUtilityValid(Integer bookingDeadline, Integer cancellationDeadline, boolean confirmationMethod) {
+        int count = 0;
+        TextInputLayout bookingTermLayout = getView().findViewById(R.id.assetBookingDeadLineLayout);
+        TextInputLayout cancellationTermLayout = getView().findViewById(R.id.assetCancellationDeadLineLayout);
+        if (bookingDeadline < 1 || bookingDeadline > 100){
+            bookingTermLayout.setError("Booking term must be between 1 and 100 days before event");
+            count++;
+        }if (cancellationDeadline < 1 || cancellationDeadline > 100){
+            cancellationTermLayout.setError("Cancellation term must be between 1 and 100 days before event");
+            count++;
+        }if (cancellationDeadline  > bookingDeadline){
+            cancellationTermLayout.setError("Cancellation term days must be lower or same in comparison to booking term days!");
+            count++;
+        }
+        return count==0;
     }
 
     private void createProduct(String token, String name, String description, List<MultipartBody.Part> images, double price, double discount, boolean visible, boolean available, String suggestedCategoryName, String suggestedCategoryDesc) {

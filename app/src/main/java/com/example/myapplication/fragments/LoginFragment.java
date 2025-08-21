@@ -141,6 +141,8 @@ public class LoginFragment extends Fragment {
                 }else if (response.code() == 404){
                     NotificationsUtils.getInstance().showErrToast(requireContext(),"User not found!\nEmail or password are invalid!");
                 }else if (response.code() == 403){
+                        NotificationsUtils.getInstance().showErrToast(requireContext(), "Forbidden");
+                }else if(response.code() == 400){
                     if (response.errorBody() != null) {
                         String errorJson = null;
                         try {
@@ -155,8 +157,6 @@ public class LoginFragment extends Fragment {
                         } else {
                             NotificationsUtils.getInstance().showErrToast(requireContext(), "Accout has not been activated");
                         }
-                    } else {
-                        NotificationsUtils.getInstance().showErrToast(requireContext(), "Forbidden");
                     }
                 }
             }

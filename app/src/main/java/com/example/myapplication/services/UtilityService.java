@@ -1,6 +1,8 @@
 package com.example.myapplication.services;
 
+import com.example.myapplication.domain.ApiResponse;
 import com.example.myapplication.domain.Review;
+import com.example.myapplication.domain.ReviewRequest;
 import com.example.myapplication.domain.Utility;
 import com.example.myapplication.domain.dto.asset.UtilityResponse;
 import com.example.myapplication.utilities.RetrofitClient;
@@ -104,8 +106,8 @@ public class UtilityService {
         call.enqueue(callback);
     }
 
-    public void submitReview(String token, String utilityId, RequestBody reviewData, Callback<String> callback) {
-        Call<String> call = apiService.submitReview(token, utilityId, reviewData);
+    public void submitReview(String token, String utilityId, ReviewRequest reviewData, Callback<ApiResponse> callback) {
+        Call<ApiResponse> call = apiService.submitReview(token, utilityId, reviewData);
         call.enqueue(callback);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.myapplication.services;
 import com.example.myapplication.domain.ApiResponse;
 import com.example.myapplication.domain.PagedResponse;
+import com.example.myapplication.domain.ReviewRequest;
 import com.example.myapplication.domain.dto.event.AgendaUpdateRequest;
 import com.example.myapplication.domain.dto.event.CreateEventRequest;
 import com.example.myapplication.domain.dto.event.EventCardResponse;
@@ -100,7 +101,7 @@ public interface EventAPIService {
     Call<String> deleteEvent(@Path("id") String id);
 
     @POST("events/{eventId}/review")
-    Call<String> submitReview(@Path("eventId") String eventId, @Body RequestBody reviewData);
+    Call<ApiResponse> submitReview(@Path("eventId") String eventId, @Body ReviewRequest reviewData);
 
     @GET("events/check-asset")
     Call<Boolean> checkAssetInOrganizedEvents(@Query("userId") String userId, @Query("assetId") String assetId);

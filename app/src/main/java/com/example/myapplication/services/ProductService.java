@@ -1,7 +1,9 @@
 package com.example.myapplication.services;
 
+import com.example.myapplication.domain.ApiResponse;
 import com.example.myapplication.domain.Product;
 import com.example.myapplication.domain.Review;
+import com.example.myapplication.domain.ReviewRequest;
 import com.example.myapplication.domain.dto.asset.ProductResponse;
 import com.example.myapplication.utilities.RetrofitClient;
 import okhttp3.MultipartBody;
@@ -79,8 +81,8 @@ public class ProductService {
         call.enqueue(callback);
     }
 
-    public void submitReview(String token, String productId, RequestBody reviewData, Callback<String> callback) {
-        Call<String> call = apiService.submitReview(token, productId, reviewData);
+    public void submitReview(String token, String productId, ReviewRequest reviewData, Callback<ApiResponse> callback) {
+        Call<ApiResponse> call = apiService.submitReview(token, productId, reviewData);
         call.enqueue(callback);
     }
 }

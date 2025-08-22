@@ -26,7 +26,9 @@ import android.widget.Toast;
 
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.ReviewLiveAdapter;
+import com.example.myapplication.domain.ApiResponse;
 import com.example.myapplication.domain.Review;
+import com.example.myapplication.domain.ReviewRequest;
 import com.example.myapplication.domain.dto.event.EventInfoResponse;
 import com.example.myapplication.domain.dto.event.EventSignupRequest;
 import com.example.myapplication.fragments.ChatFragment;
@@ -39,7 +41,9 @@ import com.example.myapplication.services.UserService;
 import com.example.myapplication.utilities.JwtTokenUtil;
 import com.example.myapplication.utilities.NotificationsUtils;
 import com.example.myapplication.viewmodels.EventViewModel;
+import com.google.android.gms.common.api.Api;
 import com.google.android.material.button.MaterialButton;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -489,20 +493,24 @@ public class EventOverviewFragment extends Fragment {
             return;
         }
 
-        String userId = jwtTokenUtil.getUserId();
-        RequestBody reviewData = createReviewRequestBody(this.eventId, userId, userComment, userRating);
-        Log.e("id", "id is " + userId);
-        eventService.submitReview(this.eventId, reviewData, new Callback<String>() {
+        String userId = JwtTokenUtil.getUserId();
+        ReviewRequest reviewData = new ReviewRequest(userComment, (int) userRating, userId);
+
+        Gson gson = new Gson();
+        String json = gson.toJson(reviewData);
+        Log.e("ReviewRequestJSON", json);
+
+        eventService.submitReview(this.eventId, reviewData, new Callback<ApiResponse>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    String message = response.body();
-                    if (message.equalsIgnoreCase("Review submitted successfully")) {
-                        Toast.makeText(getContext(), "Review submitted successfully!", Toast.LENGTH_SHORT).show();
+                    ApiResponse apiResponse = response.body();
+                    if (apiResponse.isSuccess()) {
+                        Toast.makeText(getContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
                         reviewCommentEditText.setText("");
                         reviewRatingBar.setRating(0);
-                    } else if (message.equalsIgnoreCase("You already reviewed this event")) {
-                        Toast.makeText(getContext(), "You already reviewed this event.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Log.e("EventOverviewFragment", "Failed to submit review: " + response.code());
@@ -511,25 +519,11 @@ public class EventOverviewFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
                 Log.e("EventOverviewFragment", "Error submitting review", t);
                 Toast.makeText(getContext(), "An error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private RequestBody createReviewRequestBody(String eventId, String userId, String comment, float rating) {
-        JSONObject reviewJson = new JSONObject();
-        try {
-            reviewJson.put("eventId", eventId);
-            reviewJson.put("userId", userId);
-            reviewJson.put("comment", comment);
-            reviewJson.put("rating", rating);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return RequestBody.create(MediaType.parse("application/json"), reviewJson.toString());
     }
 
     private void openChatFragment() {

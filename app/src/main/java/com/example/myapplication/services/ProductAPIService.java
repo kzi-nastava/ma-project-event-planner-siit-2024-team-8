@@ -1,7 +1,9 @@
 package com.example.myapplication.services;
 
+import com.example.myapplication.domain.ApiResponse;
 import com.example.myapplication.domain.Product;
 import com.example.myapplication.domain.Review;
+import com.example.myapplication.domain.ReviewRequest;
 import com.example.myapplication.domain.dto.asset.ProductResponse;
 
 import okhttp3.MultipartBody;
@@ -59,6 +61,9 @@ public interface ProductAPIService {
     Call<String> removeProductFromFavorites(@Header("Authorization") String token, @Path("id") String id);
 
     @POST("products/{id}/review")
-    Call<String> submitReview(@Header("Authorization") String token, @Path("id") String productId, @Body RequestBody reviewData);
+    Call<ApiResponse> submitReview(
+            @Header("Authorization") String token,
+            @Path("id") String productId,
+            @Body ReviewRequest reviewData);
 
 }

@@ -24,13 +24,11 @@ import com.example.myapplication.adapters.AssetCardAdapter;
 import com.example.myapplication.adapters.EventCardAdapter;
 import com.example.myapplication.domain.enumerations.OfferingType;
 import com.example.myapplication.fragments.asset.AssetCategoriesFragment;
+import com.example.myapplication.fragments.user.LoginFragment;
+import com.example.myapplication.fragments.user.ProfileInfoFragment;
 import com.example.myapplication.utilities.JwtTokenUtil;
 import com.example.myapplication.viewmodels.AssetViewModel;
 import com.example.myapplication.viewmodels.EventViewModel;
-import com.google.android.material.button.MaterialButton;
-
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class HomePageFragment extends Fragment {
 

@@ -26,7 +26,7 @@ import com.example.myapplication.domain.Invitation;
 import com.example.myapplication.domain.dto.event.EventInfoResponse;
 import com.example.myapplication.domain.dto.GuestResponse;
 import com.example.myapplication.domain.dto.event.InvitationUpdateRequest;
-import com.example.myapplication.fragments.ProfileInfoFragment;
+import com.example.myapplication.fragments.user.ProfileInfoFragment;
 import com.example.myapplication.services.ClientUtils;
 import com.example.myapplication.utilities.HashUtils;
 import com.example.myapplication.utilities.JwtTokenUtil;

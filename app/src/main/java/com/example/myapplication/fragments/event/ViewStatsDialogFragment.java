@@ -1,4 +1,4 @@
-package com.example.myapplication.fragments;
+package com.example.myapplication.fragments.event;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -24,7 +24,6 @@ import com.example.myapplication.domain.dto.event.EventCardResponse;
 import com.example.myapplication.services.ClientUtils;
 import com.example.myapplication.utilities.NotificationsUtils;
 import com.example.myapplication.viewmodels.EventViewModel;
-import com.example.myapplication.viewmodels.UserViewModel;
 
 import java.io.IOException;
 import java.io.OutputStream;

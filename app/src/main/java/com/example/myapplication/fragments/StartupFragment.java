@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.fragments.register.RegisterFragment;
+import com.example.myapplication.fragments.user.LoginFragment;
+import com.example.myapplication.fragments.user.ProfileInfoFragment;
 
 /**
  * A simple {@link Fragment} subclass.

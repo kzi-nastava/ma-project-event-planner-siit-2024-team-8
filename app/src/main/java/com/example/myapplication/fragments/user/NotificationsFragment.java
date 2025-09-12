@@ -1,4 +1,4 @@
-package com.example.myapplication.fragments;
+package com.example.myapplication.fragments.user;
 
 import android.os.Bundle;
 
@@ -22,7 +22,6 @@ import com.example.myapplication.domain.dto.NotificationResponse;
 import com.example.myapplication.services.BudgetService;
 import com.example.myapplication.services.ClientUtils;
 import com.example.myapplication.services.NotificationService;
-import com.example.myapplication.utilities.NotificationsUtils;
 import com.example.myapplication.viewmodels.UserViewModel;
 
 import retrofit2.Call;
@@ -131,11 +130,13 @@ public class  NotificationsFragment extends Fragment implements NotificationServ
             ClientUtils.notifcationsAPIService.markAsSeen(notification.getId()).enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
-
+                    if(response.isSuccessful()){
+                        Log.d("aa","kaka");
+                    }
                 }
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
-
+                    Log.d("sss",t.getMessage().toString());
                 }
             });
         }

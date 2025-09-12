@@ -1,4 +1,4 @@
-package com.example.myapplication.fragments;
+package com.example.myapplication.fragments.user;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -22,22 +22,16 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.example.myapplication.R;
-import com.example.myapplication.adapters.InvitationsAdapter;
 import com.example.myapplication.adapters.ReportsAdapter;
-import com.example.myapplication.domain.Invitation;
 import com.example.myapplication.domain.PagedResponse;
 import com.example.myapplication.domain.dto.ReportResponse;
-import com.example.myapplication.domain.enumerations.OfferingType;
 import com.example.myapplication.services.ClientUtils;
-import com.example.myapplication.utilities.JwtTokenUtil;
 import com.example.myapplication.viewmodels.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.UUID;
 
 import retrofit2.Call;
 import retrofit2.Callback;

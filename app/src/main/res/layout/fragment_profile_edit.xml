@@ -9,7 +9,7 @@
         android:layout_marginTop="20dp"
         android:orientation="vertical"
         app:layout_anchorGravity="center_vertical"
-        tools:context=".fragments.ProfileEditFragment">
+        tools:context=".fragments.user.ProfileEditFragment">
 
         <TextView
             android:id="@+id/nameEditView"

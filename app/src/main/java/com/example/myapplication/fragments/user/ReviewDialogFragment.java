@@ -1,4 +1,4 @@
-package com.example.myapplication.fragments;
+package com.example.myapplication.fragments.user;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -12,8 +12,6 @@ import androidx.fragment.app.DialogFragment;
 import com.example.myapplication.R;
 import com.example.myapplication.domain.Review;
 import com.example.myapplication.services.ReviewService;
-
-import java.io.Serializable;
 
 import retrofit2.Call;
 import retrofit2.Callback;

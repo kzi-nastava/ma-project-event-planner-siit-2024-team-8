@@ -1,4 +1,4 @@
-package com.example.myapplication.fragments;
+package com.example.myapplication.fragments.asset;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -27,7 +27,6 @@ import com.example.myapplication.domain.AssetCategory;
 import com.example.myapplication.domain.dto.user.SearchAssetRequest;
 import com.example.myapplication.domain.enumerations.AssetType;
 import com.example.myapplication.services.AssetCategoryService;
-import com.example.myapplication.utilities.JwtTokenUtil;
 import com.example.myapplication.viewmodels.AssetViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.slider.RangeSlider;
@@ -35,8 +34,6 @@ import com.google.android.material.slider.RangeSlider;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import retrofit2.Call;

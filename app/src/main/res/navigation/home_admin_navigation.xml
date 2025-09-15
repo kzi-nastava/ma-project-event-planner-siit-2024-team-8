@@ -14,7 +14,7 @@
 
     <fragment
         android:id="@+id/calendarFragment"
-        android:name="com.example.myapplication.fragments.CalendarFragment"
+        android:name="com.example.myapplication.fragments.event.CalendarFragment"
         android:label="Calendar"
         tools:layout="@layout/fragment_calendar" />
     <fragment
@@ -24,12 +24,12 @@
         tools:layout="@layout/fragment_create_event"/>
     <fragment
         android:id="@+id/inboxFragment"
-        android:name="com.example.myapplication.fragments.InboxFragment"
+        android:name="com.example.myapplication.fragments.user.InboxFragment"
         android:label="Inbox"
         tools:layout="@layout/fragment_to_do" />
     <fragment
         android:id="@+id/notificationsFragment"
-        android:name="com.example.myapplication.fragments.NotificationsFragment"
+        android:name="com.example.myapplication.fragments.user.NotificationsFragment"
         android:label="Notifications"
         tools:layout="@layout/fragment_to_do" />
 

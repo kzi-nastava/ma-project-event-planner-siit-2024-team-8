@@ -56,11 +56,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
 
         holder.notification.setOnClickListener(v -> {
+            listener.onNotificationClicked(item);
             if(!item.isSeen()){
                 item.setSeen(true);
                 notifyDataSetChanged();
             }
-            listener.onNotificationClicked(item);
         });
     }
     private String getRelativeTime(LocalDateTime dateTime) {

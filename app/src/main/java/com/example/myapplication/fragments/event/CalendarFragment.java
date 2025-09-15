@@ -1,4 +1,4 @@
-package com.example.myapplication.fragments;
+package com.example.myapplication.fragments.event;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;

@@ -31,6 +31,8 @@ import com.example.myapplication.adapters.EventCardAdapter;
 import com.example.myapplication.domain.dto.user.SearchAssetRequest;
 import com.example.myapplication.domain.enumerations.OfferingType;
 import com.example.myapplication.domain.dto.event.SearchEventsRequest;
+import com.example.myapplication.fragments.asset.AssetsFilterFragmentBottomSheet;
+import com.example.myapplication.fragments.event.FilterBottomSheetFragment;
 import com.example.myapplication.viewmodels.AssetViewModel;
 import com.example.myapplication.viewmodels.EventViewModel;
 

@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.example.myapplication.domain.ApiResponse;
 import com.example.myapplication.domain.PagedResponse;
+import com.example.myapplication.domain.ReviewRequest;
 import com.example.myapplication.domain.dto.event.CreateEventRequest;
 import com.example.myapplication.domain.dto.event.EventCardResponse;
 import com.example.myapplication.domain.dto.event.EventInfoResponse;
@@ -114,8 +115,8 @@ public class EventService {
     }
 
 
-    public void submitReview(String eventId, RequestBody reviewData, Callback<String> callback) {
-        Call<String> call = apiService.submitReview(eventId, reviewData);
+    public void submitReview(String eventId, ReviewRequest reviewData, Callback<ApiResponse> callback) {
+        Call<ApiResponse> call = apiService.submitReview(eventId, reviewData);
         call.enqueue(callback);
     }
 

@@ -9,6 +9,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface AssetAPIService {
@@ -34,4 +35,7 @@ public interface AssetAPIService {
 
     @GET("assets/asset-version/bought")
     Call<List<AssetResponse>> getBoughtAssets(@Query("assetVersionIds") List<String> assetVersionIds);
+
+    @GET("assets/version-to-asset-id/{versionId}")
+    Call<String> getAssetIdByVersionId(@Path("versionId") String versionId);
 }

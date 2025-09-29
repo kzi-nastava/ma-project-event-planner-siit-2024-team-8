@@ -24,13 +24,24 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.ReviewLiveAdapter;
+
+import com.example.myapplication.domain.ApiResponse;
+import com.example.myapplication.domain.Asset;
+import com.example.myapplication.domain.AssetCategory;
+import com.example.myapplication.domain.Product;
 import com.example.myapplication.domain.Review;
+import com.example.myapplication.domain.ReviewRequest;
+import com.example.myapplication.domain.Utility;
 import com.example.myapplication.domain.dto.asset.ProductResponse;
 import com.example.myapplication.domain.dto.asset.UtilityResponse;
 import com.example.myapplication.domain.dto.user.AssetResponse;
 import com.example.myapplication.domain.dto.user.ProviderInfoResponse;
-import com.example.myapplication.fragments.user.ChatFragment;
+import com.example.myapplication.domain.enumerations.AssetType;
+import com.example.myapplication.fragments.ChatFragment;
+import com.example.myapplication.services.AssetAPIService;
+import com.example.myapplication.services.AssetCategoryService;
 import com.example.myapplication.services.BudgetService;
+import com.example.myapplication.services.ClientUtils;
 import com.example.myapplication.services.EventService;
 import com.example.myapplication.services.ProductService;
 import com.example.myapplication.services.ReviewService;
@@ -43,6 +54,7 @@ import com.example.myapplication.viewmodels.AssetViewModel;
 import com.example.myapplication.viewmodels.EventViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -505,48 +517,77 @@ public class AssetOverviewFragment extends Fragment {
             return;
         }
 
-        String userId = jwtTokenUtil.getUserId();
-        String assetId = this.assetId;
+        String userId = JwtTokenUtil.getUserId();
+        String versionId = this.assetId; // ovo je zapravo versionId
+        ReviewRequest reviewData = new ReviewRequest(userComment, (int) userRating, userId);
 
-        RequestBody reviewData = createReviewRequestBody(assetId, userId, userComment, userRating);
+        Gson gson = new Gson();
+        String json = gson.toJson(reviewData);
+        Log.d("ReviewRequestJSON", json);
 
         String authHeader = "Bearer " + JwtTokenUtil.getToken();
-        if ("UTILITY".equals(assetType)) {
-            utilityService.submitReview(authHeader, assetId, reviewData, new Callback<String>() {
-                @Override
-                public void onResponse(Call<String> call, Response<String> response) {
-                    if (response.isSuccessful()) {
-                        Toast.makeText(getContext(), "Review submitted successfully!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Log.e("AssetOverviewFragment", "Failed to submit review: " + response.code());
-                    }
-                }
 
-                @Override
-                public void onFailure(Call<String> call, Throwable t) {
-                    Log.e("AssetOverviewFragment", "Error submitting review: " + t.getMessage(), t);
-                }
-            });
-        } else if ("PRODUCT".equals(assetType)) {
-            productService.submitReview(authHeader, assetId, reviewData, new Callback<String>() {
-                @Override
-                public void onResponse(Call<String> call, Response<String> response) {
-                    if (response.isSuccessful()) {
-                        Toast.makeText(getContext(), "Review submitted successfully!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Log.e("AssetOverviewFragment", "Failed to submit review: " + response.code());
-                    }
-                }
+        ClientUtils.assetAPIService.getAssetIdByVersionId(versionId).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String originalAssetId = response.body();
+                    Log.d("OriginalAssetId", "Resolved assetId: " + originalAssetId);
 
-                @Override
-                public void onFailure(Call<String> call, Throwable t) {
-                    Log.e("AssetOverviewFragment", "Error submitting review: " + t.getMessage(), t);
-                    if (t.getMessage() == "404") {
-                        Toast.makeText(getContext(), "Already submitted a review for this asset", Toast.LENGTH_SHORT);
+                    // 2. sada šaljemo review sa originalnim assetId
+                    if ("UTILITY".equals(assetType)) {
+                        utilityService.submitReview(authHeader, originalAssetId, reviewData, new Callback<ApiResponse>() {
+                            @Override
+                            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                                handleReviewResponse(response, reviewCommentEditText, reviewRatingBar);
+                            }
+
+                            @Override
+                            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                                handleReviewFailure(t);
+                            }
+                        });
+                    } else if ("PRODUCT".equals(assetType)) {
+                        productService.submitReview(authHeader, originalAssetId, reviewData, new Callback<ApiResponse>() {
+                            @Override
+                            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                                handleReviewResponse(response, reviewCommentEditText, reviewRatingBar);
+                            }
+
+                            @Override
+                            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                                handleReviewFailure(t);
+                            }
+                        });
                     }
+                } else {
+                    Log.e("submitComment", "Failed to resolve assetId from versionId: " + response.code());
+                    Toast.makeText(getContext(), "Failed to resolve asset. Please try again.", Toast.LENGTH_SHORT).show();
                 }
-            });
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e("submitComment", "Error resolving assetId: " + t.getMessage(), t);
+                Toast.makeText(getContext(), "An error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void handleReviewResponse(Response<ApiResponse> response, EditText comment, RatingBar ratingBar) {
+        if (response.isSuccessful() && response.body() != null) {
+            Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+            comment.setText("");
+            ratingBar.setRating(0);
+        } else {
+            Log.e("AssetOverviewFragment", "Failed to submit review: " + response.code());
+            Toast.makeText(getContext(), "Failed to submit review. Please try again.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void handleReviewFailure(Throwable t) {
+        Log.e("AssetOverviewFragment", "Error submitting review: " + t.getMessage(), t);
+        Toast.makeText(getContext(), "An error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
     }
 
     private RequestBody createReviewRequestBody(String assetId, String userId, String comment, float rating) {

@@ -1,6 +1,8 @@
 package com.example.myapplication.services;
 
+import com.example.myapplication.domain.ApiResponse;
 import com.example.myapplication.domain.Review;
+import com.example.myapplication.domain.ReviewRequest;
 import com.example.myapplication.domain.Utility;
 import com.example.myapplication.domain.dto.asset.UtilityResponse;
 
@@ -66,5 +68,5 @@ public interface UtilityAPIService {
     Call<String> removeUtilityFromFavorites(@Header("Authorization") String token, @Path("id") String id);
 
     @POST("utilities/{id}/review")
-    Call<String> submitReview(@Header("Authorization") String token, @Path("id") String utilityId, @Body RequestBody reviewData);
+    Call<ApiResponse> submitReview(@Header("Authorization") String token, @Path("id") String utilityId, @Body ReviewRequest reviewData);
 }

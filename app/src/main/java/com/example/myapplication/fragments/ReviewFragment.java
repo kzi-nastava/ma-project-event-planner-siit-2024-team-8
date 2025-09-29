@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.ReviewAdapter;
 import com.example.myapplication.domain.Review;
+import com.example.myapplication.fragments.user.ReviewDialogFragment;
 import com.example.myapplication.services.ReviewService;
 
 import java.util.ArrayList;

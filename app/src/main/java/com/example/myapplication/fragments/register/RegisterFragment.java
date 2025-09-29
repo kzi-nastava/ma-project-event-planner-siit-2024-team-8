@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.example.myapplication.R;
 import com.example.myapplication.databinding.FragmentRegisterBinding;
 import com.example.myapplication.domain.dto.user.UserCreateRequest;
-import com.example.myapplication.fragments.LoginFragment;
+import com.example.myapplication.fragments.user.LoginFragment;
 import com.example.myapplication.viewmodels.UserViewModel;
 
 /**

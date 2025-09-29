@@ -1,4 +1,4 @@
-package com.example.myapplication.fragments;
+package com.example.myapplication.fragments.user;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.myapplication.R;
-import com.example.myapplication.activities.MainActivity;
 import com.example.myapplication.domain.AuthResponse;
 import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.domain.dto.LoginRequest;

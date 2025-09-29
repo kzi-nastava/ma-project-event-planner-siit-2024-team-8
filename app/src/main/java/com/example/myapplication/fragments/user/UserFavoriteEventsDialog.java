@@ -1,4 +1,4 @@
-package com.example.myapplication.fragments;
+package com.example.myapplication.fragments.user;
 
 import android.os.Bundle;
 
@@ -19,7 +19,6 @@ import com.example.myapplication.adapters.EventButtonAdapter;
 import com.example.myapplication.adapters.EventCardAdapter;
 import com.example.myapplication.domain.dto.event.EventCardResponse;
 import com.example.myapplication.fragments.event.event_info.EventInfoFragment;
-import com.example.myapplication.viewmodels.EventViewModel;
 import com.example.myapplication.viewmodels.UserViewModel;
 
 /**

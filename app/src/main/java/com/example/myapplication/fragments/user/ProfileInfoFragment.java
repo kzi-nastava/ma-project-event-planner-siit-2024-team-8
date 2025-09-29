@@ -1,4 +1,4 @@
-package com.example.myapplication.fragments;
+package com.example.myapplication.fragments.user;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -29,6 +29,11 @@ import com.example.myapplication.databinding.FragmentProfileInfoBinding;
 import com.example.myapplication.domain.enumerations.OfferingType;
 import com.example.myapplication.domain.enumerations.Role;
 import com.example.myapplication.domain.dto.user.UserInfoResponse;
+import com.example.myapplication.fragments.AllSolutionsFragment;
+import com.example.myapplication.fragments.CreateEventTypeFragment;
+import com.example.myapplication.fragments.ReviewFragment;
+import com.example.myapplication.fragments.StartupFragment;
+import com.example.myapplication.fragments.event.ViewStatsDialogFragment;
 import com.example.myapplication.fragments.asset.AssetCategoriesFragment;
 import com.example.myapplication.fragments.asset.CreateAssetFragment;
 import com.example.myapplication.fragments.asset.PriceListFragment;

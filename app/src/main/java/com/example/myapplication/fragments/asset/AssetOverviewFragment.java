@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.ReviewLiveAdapter;
+
 import com.example.myapplication.domain.ApiResponse;
 import com.example.myapplication.domain.Asset;
 import com.example.myapplication.domain.AssetCategory;
@@ -33,7 +34,6 @@ import com.example.myapplication.domain.ReviewRequest;
 import com.example.myapplication.domain.Utility;
 import com.example.myapplication.domain.dto.asset.ProductResponse;
 import com.example.myapplication.domain.dto.asset.UtilityResponse;
-import com.example.myapplication.domain.dto.event.EventInfoResponse;
 import com.example.myapplication.domain.dto.user.AssetResponse;
 import com.example.myapplication.domain.dto.user.ProviderInfoResponse;
 import com.example.myapplication.domain.enumerations.AssetType;
@@ -72,7 +72,6 @@ import java.util.UUID;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
-import okhttp3.internal.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
